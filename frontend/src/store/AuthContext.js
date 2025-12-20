@@ -46,7 +46,19 @@ export const AuthProvider = ({ children }) => {
       setUser(response.user);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('Register error:', error);
+      // 네트워크 에러인 경우 더 자세한 메시지 제공
+      if (error.message?.includes('Network Error') || error.code === 'NETWORK_ERROR') {
+        return { 
+          success: false, 
+          error: '서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인하세요.' 
+        };
+      }
+      // 서버 에러 응답이 있는 경우
+      if (error.response?.data?.message) {
+        return { success: false, error: error.response.data.message };
+      }
+      return { success: false, error: error.message || '회원가입에 실패했습니다.' };
     }
   };
 

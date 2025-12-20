@@ -28,7 +28,13 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
-    const result = await register(formData);
+    // grade를 숫자로 변환
+    const registerData = {
+      ...formData,
+      grade: parseInt(formData.grade, 10),
+    };
+
+    const result = await register(registerData);
     if (!result.success) {
       Alert.alert('회원가입 실패', result.error || '회원가입에 실패했습니다.');
     }
