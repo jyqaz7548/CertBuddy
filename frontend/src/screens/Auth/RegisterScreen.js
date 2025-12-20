@@ -79,31 +79,29 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(text) => setFormData({ ...formData, name: text })}
       />
 
-      <View style={styles.pickerWrapper}>
-        <Text style={styles.label}>학년</Text>
-        <TouchableOpacity
-          style={styles.selectButton}
-          onPress={() => setShowGradePicker(true)}
-        >
-          <Text style={styles.selectText}>
-            {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {/* 학년 선택 */}
+      <TouchableOpacity
+        style={styles.selectBox}
+        onPress={() => setShowGradePicker(true)}
+      >
+        <Text style={styles.selectLabel}>학년</Text>
+        <Text style={styles.selectValue}>
+          {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
+        </Text>
+      </TouchableOpacity>
 
-      <View style={styles.pickerWrapper}>
-        <Text style={styles.label}>학과</Text>
-        <TouchableOpacity
-          style={styles.selectButton}
-          onPress={() => setShowDepartmentPicker(true)}
-        >
-          <Text style={styles.selectText}>
-            {formData.department || '학과를 선택하세요'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      {/* 학과 선택 */}
+      <TouchableOpacity
+        style={styles.selectBox}
+        onPress={() => setShowDepartmentPicker(true)}
+      >
+        <Text style={styles.selectLabel}>학과</Text>
+        <Text style={styles.selectValue}>
+          {formData.department || '학과를 선택하세요'}
+        </Text>
+      </TouchableOpacity>
 
-      {/* 학년 선택 Modal */}
+      {/* 학년 Picker Modal */}
       <Modal
         visible={showGradePicker}
         transparent
@@ -111,6 +109,11 @@ export default function RegisterScreen({ navigation }) {
         onRequestClose={() => setShowGradePicker(false)}
       >
         <View style={styles.modalBackground}>
+          <TouchableOpacity
+            style={styles.modalBackdrop}
+            activeOpacity={1}
+            onPress={() => setShowGradePicker(false)}
+          />
           <View style={styles.modalContent}>
             <Picker
               selectedValue={formData.grade}
@@ -124,16 +127,16 @@ export default function RegisterScreen({ navigation }) {
             </Picker>
 
             <TouchableOpacity
-              style={styles.doneButton}
+              style={styles.modalButton}
               onPress={() => setShowGradePicker(false)}
             >
-              <Text style={styles.doneText}>완료</Text>
+              <Text style={styles.modalButtonText}>완료</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
 
-      {/* 학과 선택 Modal */}
+      {/* 학과 Picker Modal */}
       <Modal
         visible={showDepartmentPicker}
         transparent
@@ -141,6 +144,11 @@ export default function RegisterScreen({ navigation }) {
         onRequestClose={() => setShowDepartmentPicker(false)}
       >
         <View style={styles.modalBackground}>
+          <TouchableOpacity
+            style={styles.modalBackdrop}
+            activeOpacity={1}
+            onPress={() => setShowDepartmentPicker(false)}
+          />
           <View style={styles.modalContent}>
             <Picker
               selectedValue={formData.department}
@@ -155,10 +163,10 @@ export default function RegisterScreen({ navigation }) {
             </Picker>
 
             <TouchableOpacity
-              style={styles.doneButton}
+              style={styles.modalButton}
               onPress={() => setShowDepartmentPicker(false)}
             >
-              <Text style={styles.doneText}>완료</Text>
+              <Text style={styles.modalButtonText}>완료</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -185,7 +193,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
-    paddingTop: 100,
+    paddingTop: 120,
   },
   title: {
     fontSize: 28,
@@ -202,50 +210,46 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
   },
-  pickerWrapper: {
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 14,
-    color: '#8E8E93',
-    marginBottom: 5,
-  },
-  selectButton: {
+  selectBox: {
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 8,
     padding: 15,
-    backgroundColor: '#fff',
-    minHeight: 60,
-    justifyContent: 'center',
+    marginBottom: 15,
   },
-  selectText: {
+  selectLabel: {
+    fontSize: 13,
+    color: '#8E8E93',
+    marginBottom: 5,
+  },
+  selectValue: {
     fontSize: 16,
     color: '#000',
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   modalContent: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    maxHeight: '50%',
+    paddingBottom: 20,
   },
-  doneButton: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
+  modalButton: {
     alignItems: 'center',
+    padding: 15,
   },
-  doneText: {
+  modalButtonText: {
     fontSize: 16,
-    color: '#fff',
     fontWeight: 'bold',
+    color: '#007AFF',
   },
   button: {
     backgroundColor: '#007AFF',
