@@ -7,14 +7,22 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  Modal,
-  FlatList,
-  Pressable,
 } from 'react-native';
+import ModalSelector from 'react-native-modal-selector';
 import { useAuth } from '../../store/AuthContext';
 
-const GRADES = ['1', '2', '3'];
-const DEPARTMENTS = ['로봇설계과', '로봇제어과', '로봇소프트웨어과', '로봇정보통신과'];
+const GRADES = [
+  { key: '1', label: '1학년' },
+  { key: '2', label: '2학년' },
+  { key: '3', label: '3학년' },
+];
+
+const DEPARTMENTS = [
+  { key: '로봇설계과', label: '로봇설계과' },
+  { key: '로봇제어과', label: '로봇제어과' },
+  { key: '로봇소프트웨어과', label: '로봇소프트웨어과' },
+  { key: '로봇정보통신과', label: '로봇정보통신과' },
+];
 
 export default function RegisterScreen({ navigation }) {
   const [formData, setFormData] = useState({
@@ -24,8 +32,6 @@ export default function RegisterScreen({ navigation }) {
     department: '',
     grade: '1',
   });
-  const [showGradeModal, setShowGradeModal] = useState(false);
-  const [showDepartmentModal, setShowDepartmentModal] = useState(false);
   const { register } = useAuth();
 
   const handleRegister = async () => {
@@ -84,144 +90,54 @@ export default function RegisterScreen({ navigation }) {
       />
 
       <View style={styles.pickerWrapper}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.pickerContainer,
-            pressed && styles.pickerContainerPressed,
-          ]}
-          onPressIn={() => console.log('학년 onPressIn')}
-          onPress={() => {
-            console.log('학년 선택 버튼 클릭');
-            setShowGradeModal(true);
+        <Text style={styles.label}>학년</Text>
+        <ModalSelector
+          data={GRADES}
+          initValue="학년을 선택하세요"
+          selectedKey={formData.grade}
+          onChange={(option) => {
+            setFormData({ ...formData, grade: option.key });
           }}
-          onPressOut={() => console.log('학년 onPressOut')}
+          cancelText="취소"
+          animationType="slide"
+          overlayStyle={styles.modalOverlay}
+          optionContainerStyle={styles.modalContent}
+          optionTextStyle={styles.modalItemText}
+          cancelContainerStyle={styles.modalCloseButton}
+          cancelTextStyle={styles.modalCloseButtonText}
         >
-          <Text style={styles.label}>학년</Text>
-          <Text style={styles.pickerValue}>
-            {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
-          </Text>
-        </Pressable>
+          <View style={styles.pickerContainer}>
+            <Text style={styles.pickerValue}>
+              {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
+            </Text>
+          </View>
+        </ModalSelector>
       </View>
 
       <View style={styles.pickerWrapper}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.pickerContainer,
-            pressed && styles.pickerContainerPressed,
-          ]}
-          onPressIn={() => console.log('학과 onPressIn')}
-          onPress={() => {
-            console.log('학과 선택 버튼 클릭');
-            setShowDepartmentModal(true);
+        <Text style={styles.label}>학과</Text>
+        <ModalSelector
+          data={DEPARTMENTS}
+          initValue="학과를 선택하세요"
+          selectedKey={formData.department}
+          onChange={(option) => {
+            setFormData({ ...formData, department: option.key });
           }}
-          onPressOut={() => console.log('학과 onPressOut')}
+          cancelText="취소"
+          animationType="slide"
+          overlayStyle={styles.modalOverlay}
+          optionContainerStyle={styles.modalContent}
+          optionTextStyle={styles.modalItemText}
+          cancelContainerStyle={styles.modalCloseButton}
+          cancelTextStyle={styles.modalCloseButtonText}
         >
-          <Text style={styles.label}>학과</Text>
-          <Text style={styles.pickerValue}>
-            {formData.department || '학과를 선택하세요'}
-          </Text>
-        </Pressable>
+          <View style={styles.pickerContainer}>
+            <Text style={styles.pickerValue}>
+              {formData.department || '학과를 선택하세요'}
+            </Text>
+          </View>
+        </ModalSelector>
       </View>
-
-      {/* 학년 선택 Modal */}
-      <Modal
-        visible={showGradeModal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowGradeModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity
-            style={styles.modalOverlayTouchable}
-            activeOpacity={1}
-            onPress={() => setShowGradeModal(false)}
-          />
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>학년 선택</Text>
-            <FlatList
-              data={GRADES}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.modalItem,
-                    formData.grade === item && styles.modalItemSelected,
-                  ]}
-                  onPress={() => {
-                    setFormData({ ...formData, grade: item });
-                    setShowGradeModal(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.modalItemText,
-                      formData.grade === item && styles.modalItemTextSelected,
-                    ]}
-                  >
-                    {item}학년
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setShowGradeModal(false)}
-            >
-              <Text style={styles.modalCloseButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* 학과 선택 Modal */}
-      <Modal
-        visible={showDepartmentModal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowDepartmentModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity
-            style={styles.modalOverlayTouchable}
-            activeOpacity={1}
-            onPress={() => setShowDepartmentModal(false)}
-          />
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>학과 선택</Text>
-            <FlatList
-              data={DEPARTMENTS}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.modalItem,
-                    formData.department === item && styles.modalItemSelected,
-                  ]}
-                  onPress={() => {
-                    setFormData({ ...formData, department: item });
-                    setShowDepartmentModal(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.modalItemText,
-                      formData.department === item && styles.modalItemTextSelected,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setShowDepartmentModal(false)}
-            >
-              <Text style={styles.modalCloseButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>회원가입</Text>
@@ -273,10 +189,6 @@ const styles = StyleSheet.create({
     minHeight: 60,
     justifyContent: 'center',
   },
-  pickerContainerPressed: {
-    backgroundColor: '#F5F5F5',
-    borderColor: '#007AFF',
-  },
   label: {
     fontSize: 14,
     color: '#8E8E93',
@@ -285,19 +197,11 @@ const styles = StyleSheet.create({
   pickerValue: {
     fontSize: 16,
     color: '#000',
-    marginTop: 5,
   },
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
-  },
-  modalOverlayTouchable: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
   },
   modalContent: {
     backgroundColor: '#fff',
@@ -305,29 +209,11 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     padding: 20,
     maxHeight: '70%',
-    zIndex: 1,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  modalItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  modalItemSelected: {
-    backgroundColor: '#E3F2FD',
   },
   modalItemText: {
     fontSize: 16,
     color: '#000',
-  },
-  modalItemTextSelected: {
-    color: '#007AFF',
-    fontWeight: 'bold',
+    padding: 15,
   },
   modalCloseButton: {
     marginTop: 20,
