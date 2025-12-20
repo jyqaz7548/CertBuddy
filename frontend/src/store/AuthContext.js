@@ -16,10 +16,11 @@ export const AuthProvider = ({ children }) => {
   const loadUser = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        // TODO: 토큰으로 사용자 정보 조회
-        // const userData = await authService.getCurrentUser();
-        // setUser(userData);
+      const userId = await AsyncStorage.getItem('userId');
+      if (token && userId) {
+        // Mock API 사용 시 userId로 사용자 정보 조회
+        const userData = await authService.getCurrentUser(parseInt(userId, 10));
+        setUser(userData);
       }
     } catch (error) {
       console.error('Load user error:', error);
@@ -32,10 +33,12 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.login(email, password);
       await AsyncStorage.setItem('authToken', response.token);
+      await AsyncStorage.setItem('userId', response.user.id.toString()); // Mock용 userId 저장
       setUser(response.user);
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      console.error('Login error:', error);
+      return { success: false, error: error.message || '로그인에 실패했습니다.' };
     }
   };
 
@@ -43,6 +46,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authService.register(userData);
       await AsyncStorage.setItem('authToken', response.token);
+      await AsyncStorage.setItem('userId', response.user.id.toString()); // Mock용 userId 저장
       setUser(response.user);
       return { success: true };
     } catch (error) {

@@ -1,119 +1,97 @@
-# CertBuddy 📚
+# CertBuddy
 
-학생들이 매일 짧게 자격증 공부를 하고 친구들과 함께 경쟁하며 학습 동기를 유지할 수 있도록 돕는 모바일 학습 애플리케이션
+자격증 학습을 위한 플래시카드 기반 학습 앱
 
-## 프로젝트 개요
+## 개발 전략
 
-- **앱 이름**: CertBuddy
-- **목표**: 학생들이 매일 5~15분의 짧은 시간 동안 자격증 공부를 꾸준히 할 수 있게 하는 앱
-- **핵심 가치**: 꾸준함, 가벼운 학습, 친구와 함께, 학교 기반 추천
-- **참고 모델**: 듀오링고(Duolingo)의 XP/스트릭 시스템 + 퀴즐렛(Quizlet)의 플래시카드 방식
+이 프로젝트는 **프론트엔드 우선 개발(Frontend-First Development)** 전략을 사용합니다.
 
-## 기술 스택
+### 현재 상태
 
-### 프론트엔드
-- **언어**: JavaScript
-- **프레임워크**: React Native
-- **개발 도구**: Expo
+- ✅ 프론트엔드 기본 구조 완성
+- ✅ Mock API 서비스 구현 완료
+- ✅ 백엔드 코드 정리 완료
 
-### 백엔드
-- **언어**: Java
-- **프레임워크**: Spring Boot
-- **주요 모듈**: Spring Web, Spring Data JPA
+### 개발 순서
 
-### 데이터베이스
-- **DBMS**: MySQL
+1. **프론트엔드 완성** (Mock 데이터 사용) ← 현재 단계
+2. API 스펙 정의
+3. 백엔드 개발
+4. 통합 및 테스트
 
-### 기타
-- **디자인**: Figma
-- **아키텍처**: REST API 기반 서버/클라이언트 구조
-
-## 핵심 기능
-
-### MVP (최소 기능 제품)
-1. ✅ 로그인 / 회원가입 (학년, 학과 입력)
-2. ✅ 홈 화면 (대시보드)
-   - 오늘의 학습 시작
-   - 나의 XP / 스트릭 표시
-   - 학교·학과 기반 자격증 추천
-   - 친구 랭킹 Top3
-3. ✅ 일일 학습 (플래시카드)
-   - 플래시카드 학습
-   - 모르는 문제 복습 리스트 저장
-   - 학습 완료 후 XP 지급 및 스트릭 업데이트
-4. ✅ 복습 모드
-5. ✅ 마이페이지
-   - 프로필
-   - 누적 XP, 스트릭
-   - 완료한 카드, 복습 카드
-
-### 확장 기능
-6. 🔄 친구 기능
-   - 친구 추가 / 친구 그룹 XP 랭킹
-   - 함께 학습하기 (같은 문제 세트 시작)
-7. 🔄 선배 취업 자격증 리스트 제공
-8. 🔄 시험 일정 조회
-
-## 프로젝트 구조
-
-```
-CertBuddy/
-├── frontend/          # React Native + Expo 앱
-├── backend/           # Spring Boot 서버
-├── docs/              # 프로젝트 문서
-│   ├── api/          # API 문서
-│   ├── database/     # DB 스키마 문서
-│   └── design/       # 디자인 문서
-└── README.md
-```
-
-## 개발 단계
-
-### Phase 1: 프로젝트 초기 설정 ✅
-- [x] 프로젝트 구조 설계
-- [x] 폴더 구조 생성
-- [ ] 프론트엔드 초기 설정
-- [ ] 백엔드 초기 설정
-
-### Phase 2: 데이터베이스 설계
-- [ ] ERD 작성
-- [ ] 테이블 스키마 설계
-- [ ] 샘플 데이터 준비
-
-### Phase 3: 백엔드 개발
-- [ ] 인증/인가 시스템
-- [ ] 사용자 관리 API
-- [ ] 학습 관련 API
-- [ ] 친구/랭킹 API
-
-### Phase 4: 프론트엔드 개발
-- [ ] 네비게이션 구조
-- [ ] 인증 화면
-- [ ] 홈 화면
-- [ ] 학습 화면
-- [ ] 마이페이지
-
-### Phase 5: 통합 및 테스트
-- [ ] API 연동
-- [ ] 통합 테스트
-- [ ] 사용자 테스트
+---
 
 ## 시작하기
 
 ### 프론트엔드 실행
+
 ```bash
 cd frontend
 npm install
-npm start
+npx expo start
 ```
 
-### 백엔드 실행
-```bash
-cd backend
-./mvnw spring-boot:run
+### Mock API 사용
+
+현재 모든 API 호출은 Mock 데이터를 사용합니다. 각 서비스 파일에서 `USE_MOCK_API = true`로 설정되어 있습니다.
+
+백엔드가 준비되면:
+1. 각 서비스 파일에서 `USE_MOCK_API = false`로 변경
+2. `API_BASE_URL`을 실제 백엔드 주소로 변경
+
+---
+
+## 프로젝트 구조
+
 ```
+├── frontend/          # React Native + Expo 프론트엔드
+│   ├── src/
+│   │   ├── screens/   # 화면 컴포넌트
+│   │   ├── services/  # API 서비스 (Mock 포함)
+│   │   ├── store/     # 상태 관리
+│   │   └── navigation/ # 네비게이션
+│   └── ...
+├── backend/           # Spring Boot 백엔드 (현재 정리됨)
+└── docs/             # 문서
+    ├── FRONTEND_FIRST_DEVELOPMENT.md
+    └── NEW_DEVELOPMENT_PLAN.md
+```
+
+---
+
+## 문서
+
+- [프론트엔드 우선 개발 가이드](./docs/FRONTEND_FIRST_DEVELOPMENT.md)
+- [새로운 개발 계획](./docs/NEW_DEVELOPMENT_PLAN.md)
+
+---
+
+## 주요 기능
+
+- 사용자 인증 (로그인/회원가입)
+- 자격증 추천
+- 플래시카드 학습
+- 복습 시스템
+- XP 및 스트릭 추적
+- 친구 랭킹
+
+---
+
+## 기술 스택
+
+### 프론트엔드
+- React Native
+- Expo
+- React Navigation
+- AsyncStorage
+
+### 백엔드 (예정)
+- Spring Boot
+- MySQL
+- JWT
+
+---
 
 ## 라이선스
 
-MIT License
-
+MIT
