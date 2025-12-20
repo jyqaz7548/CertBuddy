@@ -7,13 +7,9 @@ import {
   StyleSheet,
   Alert,
   ScrollView,
-  Modal,
-  FlatList,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useAuth } from '../../store/AuthContext';
-
-const GRADES = ['1', '2', '3'];
-const DEPARTMENTS = ['로봇설계과', '로봇제어과', '로봇소프트웨어과', '로봇정보통신과'];
 
 export default function RegisterScreen({ navigation }) {
   const [formData, setFormData] = useState({
@@ -23,8 +19,6 @@ export default function RegisterScreen({ navigation }) {
     department: '',
     grade: '1',
   });
-  const [showGradeModal, setShowGradeModal] = useState(false);
-  const [showDepartmentModal, setShowDepartmentModal] = useState(false);
   const { register } = useAuth();
 
   const handleRegister = async () => {
@@ -80,115 +74,33 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(text) => setFormData({ ...formData, name: text })}
       />
 
-      <TouchableOpacity
-        style={styles.pickerContainer}
-        onPress={() => setShowGradeModal(true)}
-      >
+      <View style={styles.pickerContainer}>
         <Text style={styles.label}>학년</Text>
-        <Text style={styles.pickerValue}>
-          {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
-        </Text>
-      </TouchableOpacity>
+        <Picker
+          selectedValue={formData.grade}
+          style={styles.picker}
+          onValueChange={(value) => setFormData({ ...formData, grade: value })}
+        >
+          <Picker.Item label="1학년" value="1" />
+          <Picker.Item label="2학년" value="2" />
+          <Picker.Item label="3학년" value="3" />
+        </Picker>
+      </View>
 
-      <TouchableOpacity
-        style={styles.pickerContainer}
-        onPress={() => setShowDepartmentModal(true)}
-      >
+      <View style={styles.pickerContainer}>
         <Text style={styles.label}>학과</Text>
-        <Text style={styles.pickerValue}>
-          {formData.department || '학과를 선택하세요'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* 학년 선택 Modal */}
-      <Modal
-        visible={showGradeModal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowGradeModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>학년 선택</Text>
-            <FlatList
-              data={GRADES}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.modalItem,
-                    formData.grade === item && styles.modalItemSelected,
-                  ]}
-                  onPress={() => {
-                    setFormData({ ...formData, grade: item });
-                    setShowGradeModal(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.modalItemText,
-                      formData.grade === item && styles.modalItemTextSelected,
-                    ]}
-                  >
-                    {item}학년
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setShowGradeModal(false)}
-            >
-              <Text style={styles.modalCloseButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* 학과 선택 Modal */}
-      <Modal
-        visible={showDepartmentModal}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setShowDepartmentModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>학과 선택</Text>
-            <FlatList
-              data={DEPARTMENTS}
-              keyExtractor={(item) => item}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.modalItem,
-                    formData.department === item && styles.modalItemSelected,
-                  ]}
-                  onPress={() => {
-                    setFormData({ ...formData, department: item });
-                    setShowDepartmentModal(false);
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.modalItemText,
-                      formData.department === item && styles.modalItemTextSelected,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                </TouchableOpacity>
-              )}
-            />
-            <TouchableOpacity
-              style={styles.modalCloseButton}
-              onPress={() => setShowDepartmentModal(false)}
-            >
-              <Text style={styles.modalCloseButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+        <Picker
+          selectedValue={formData.department}
+          style={styles.picker}
+          onValueChange={(value) => setFormData({ ...formData, department: value })}
+        >
+          <Picker.Item label="학과를 선택하세요" value="" />
+          <Picker.Item label="로봇설계과" value="로봇설계과" />
+          <Picker.Item label="로봇제어과" value="로봇제어과" />
+          <Picker.Item label="로봇소프트웨어과" value="로봇소프트웨어과" />
+          <Picker.Item label="로봇정보통신과" value="로봇정보통신과" />
+        </Picker>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>회원가입</Text>
@@ -233,64 +145,18 @@ const styles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderRadius: 8,
     marginBottom: 15,
-    padding: 15,
+    overflow: 'hidden',
     backgroundColor: '#fff',
   },
   label: {
+    padding: 10,
+    paddingBottom: 5,
     fontSize: 14,
     color: '#8E8E93',
-    marginBottom: 5,
   },
-  pickerValue: {
-    fontSize: 16,
-    color: '#000',
-    marginTop: 5,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    maxHeight: '70%',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  modalItem: {
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  modalItemSelected: {
-    backgroundColor: '#E3F2FD',
-  },
-  modalItemText: {
-    fontSize: 16,
-    color: '#000',
-  },
-  modalItemTextSelected: {
-    color: '#007AFF',
-    fontWeight: 'bold',
-  },
-  modalCloseButton: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  modalCloseButtonText: {
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: 'bold',
+  picker: {
+    height: 50,
+    width: '100%',
   },
   button: {
     backgroundColor: '#007AFF',
