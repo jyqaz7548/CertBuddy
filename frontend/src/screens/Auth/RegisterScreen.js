@@ -9,6 +9,7 @@ import {
   ScrollView,
   Modal,
   FlatList,
+  Pressable,
 } from 'react-native';
 import { useAuth } from '../../store/AuthContext';
 
@@ -54,6 +55,7 @@ export default function RegisterScreen({ navigation }) {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled"
+      nestedScrollEnabled={true}
     >
       <Text style={styles.title}>회원가입</Text>
 
@@ -81,33 +83,45 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(text) => setFormData({ ...formData, name: text })}
       />
 
-      <TouchableOpacity
-        style={styles.pickerContainer}
-        onPress={() => {
-          console.log('학년 선택 버튼 클릭');
-          setShowGradeModal(true);
-        }}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.label}>학년</Text>
-        <Text style={styles.pickerValue}>
-          {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.pickerWrapper}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.pickerContainer,
+            pressed && styles.pickerContainerPressed,
+          ]}
+          onPressIn={() => console.log('학년 onPressIn')}
+          onPress={() => {
+            console.log('학년 선택 버튼 클릭');
+            setShowGradeModal(true);
+          }}
+          onPressOut={() => console.log('학년 onPressOut')}
+        >
+          <Text style={styles.label}>학년</Text>
+          <Text style={styles.pickerValue}>
+            {formData.grade ? `${formData.grade}학년` : '학년을 선택하세요'}
+          </Text>
+        </Pressable>
+      </View>
 
-      <TouchableOpacity
-        style={styles.pickerContainer}
-        onPress={() => {
-          console.log('학과 선택 버튼 클릭');
-          setShowDepartmentModal(true);
-        }}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.label}>학과</Text>
-        <Text style={styles.pickerValue}>
-          {formData.department || '학과를 선택하세요'}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.pickerWrapper}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.pickerContainer,
+            pressed && styles.pickerContainerPressed,
+          ]}
+          onPressIn={() => console.log('학과 onPressIn')}
+          onPress={() => {
+            console.log('학과 선택 버튼 클릭');
+            setShowDepartmentModal(true);
+          }}
+          onPressOut={() => console.log('학과 onPressOut')}
+        >
+          <Text style={styles.label}>학과</Text>
+          <Text style={styles.pickerValue}>
+            {formData.department || '학과를 선택하세요'}
+          </Text>
+        </Pressable>
+      </View>
 
       {/* 학년 선택 Modal */}
       <Modal
@@ -247,15 +261,21 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
   },
+  pickerWrapper: {
+    marginBottom: 15,
+  },
   pickerContainer: {
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 8,
-    marginBottom: 15,
     padding: 15,
     backgroundColor: '#fff',
     minHeight: 60,
     justifyContent: 'center',
+  },
+  pickerContainerPressed: {
+    backgroundColor: '#F5F5F5',
+    borderColor: '#007AFF',
   },
   label: {
     fontSize: 14,
