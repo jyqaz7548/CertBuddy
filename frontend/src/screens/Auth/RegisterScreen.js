@@ -102,20 +102,12 @@ export default function RegisterScreen({ navigation }) {
       </TouchableOpacity>
 
       {/* 학년 Picker Modal */}
-      <Modal
-        visible={showGradePicker}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowGradePicker(false)}
-      >
+      <Modal visible={showGradePicker} transparent animationType="slide">
         <View style={styles.modalBackground}>
-          <TouchableOpacity
-            style={styles.modalBackdrop}
-            activeOpacity={1}
-            onPress={() => setShowGradePicker(false)}
-          />
           <View style={styles.modalContent}>
             <Picker
+              style={{ height: 216 }}
+              itemStyle={{ color: '#000', fontSize: 18 }}
               selectedValue={formData.grade}
               onValueChange={(value) =>
                 setFormData({ ...formData, grade: value })
@@ -137,20 +129,12 @@ export default function RegisterScreen({ navigation }) {
       </Modal>
 
       {/* 학과 Picker Modal */}
-      <Modal
-        visible={showDepartmentPicker}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setShowDepartmentPicker(false)}
-      >
+      <Modal visible={showDepartmentPicker} transparent animationType="slide">
         <View style={styles.modalBackground}>
-          <TouchableOpacity
-            style={styles.modalBackdrop}
-            activeOpacity={1}
-            onPress={() => setShowDepartmentPicker(false)}
-          />
           <View style={styles.modalContent}>
             <Picker
+              style={{ height: 216 }}
+              itemStyle={{ color: '#000', fontSize: 18 }}
               selectedValue={formData.department}
               onValueChange={(value) =>
                 setFormData({ ...formData, department: value })
