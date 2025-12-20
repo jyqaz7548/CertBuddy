@@ -107,8 +107,12 @@ export default function RegisterScreen({ navigation }) {
         animationType="slide"
         onRequestClose={() => setShowGradeModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowGradeModal(false)}
+        >
+          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
             <Text style={styles.modalTitle}>학년 선택</Text>
             <FlatList
               data={GRADES}
@@ -142,7 +146,7 @@ export default function RegisterScreen({ navigation }) {
               <Text style={styles.modalCloseButtonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
 
       {/* 학과 선택 Modal */}
@@ -152,8 +156,12 @@ export default function RegisterScreen({ navigation }) {
         animationType="slide"
         onRequestClose={() => setShowDepartmentModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowDepartmentModal(false)}
+        >
+          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
             <Text style={styles.modalTitle}>학과 선택</Text>
             <FlatList
               data={DEPARTMENTS}
@@ -187,7 +195,7 @@ export default function RegisterScreen({ navigation }) {
               <Text style={styles.modalCloseButtonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
@@ -235,6 +243,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     padding: 15,
     backgroundColor: '#fff',
+    minHeight: 60,
+    justifyContent: 'center',
   },
   label: {
     fontSize: 14,
