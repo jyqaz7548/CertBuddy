@@ -35,7 +35,110 @@ const mockCertifications = [
     recommendedSchools: ['공과대학'],
     recommendedDepartments: ['컴퓨터공학과', '데이터과학과'],
   },
+  {
+    id: 3,
+    name: '컴퓨터활용능력',
+    category: 'IT',
+    description: '컴퓨터 활용 능력 자격증',
+  },
+  {
+    id: 4,
+    name: '네트워크관리사',
+    category: 'IT',
+    description: '네트워크 관리 전문가 자격증',
+  },
 ];
+
+// 튜토리얼용 기업 목록
+const mockCompanies = [
+  { id: 1, name: '대기업(삼성, LG 등)' },
+  { id: 2, name: 'IT 기업(네이버, 카카오 등)' },
+  { id: 3, name: '공기업' },
+  { id: 4, name: '스타트업' },
+  { id: 5, name: '모르겠습니다' },
+];
+
+// 튜토리얼용 자격증 목록
+const mockTutorialCertifications = [
+  { id: 1, name: '정보처리기사' },
+  { id: 2, name: 'SQLD' },
+  { id: 3, name: '컴퓨터활용능력' },
+  { id: 4, name: '네트워크관리사' },
+  { id: 5, name: '모르겠습니다' },
+];
+
+// 학과별 자격증 선택 통계 (Mock 데이터)
+// 실제로는 서버에서 같은 학과+학년 사용자들의 선택 데이터를 집계
+const mockDepartmentCertStats = {
+  '로봇설계과': {
+    1: [
+      { certificationId: 1, name: '정보처리기사', percentage: 42 },
+      { certificationId: 2, name: 'SQLD', percentage: 31 },
+      { certificationId: 3, name: '컴퓨터활용능력', percentage: 19 },
+    ],
+    2: [
+      { certificationId: 1, name: '정보처리기사', percentage: 45 },
+      { certificationId: 2, name: 'SQLD', percentage: 28 },
+      { certificationId: 3, name: '컴퓨터활용능력', percentage: 22 },
+    ],
+    3: [
+      { certificationId: 1, name: '정보처리기사', percentage: 48 },
+      { certificationId: 2, name: 'SQLD', percentage: 30 },
+      { certificationId: 3, name: '컴퓨터활용능력', percentage: 15 },
+    ],
+  },
+  '로봇제어과': {
+    1: [
+      { certificationId: 1, name: '정보처리기사', percentage: 40 },
+      { certificationId: 2, name: 'SQLD', percentage: 35 },
+      { certificationId: 4, name: '네트워크관리사', percentage: 18 },
+    ],
+    2: [
+      { certificationId: 1, name: '정보처리기사', percentage: 43 },
+      { certificationId: 2, name: 'SQLD', percentage: 32 },
+      { certificationId: 4, name: '네트워크관리사', percentage: 20 },
+    ],
+    3: [
+      { certificationId: 1, name: '정보처리기사', percentage: 46 },
+      { certificationId: 2, name: 'SQLD', percentage: 30 },
+      { certificationId: 4, name: '네트워크관리사', percentage: 17 },
+    ],
+  },
+  '로봇소프트웨어과': {
+    1: [
+      { certificationId: 1, name: '정보처리기사', percentage: 50 },
+      { certificationId: 2, name: 'SQLD', percentage: 28 },
+      { certificationId: 3, name: '컴퓨터활용능력', percentage: 15 },
+    ],
+    2: [
+      { certificationId: 1, name: '정보처리기사', percentage: 52 },
+      { certificationId: 2, name: 'SQLD', percentage: 26 },
+      { certificationId: 3, name: '컴퓨터활용능력', percentage: 16 },
+    ],
+    3: [
+      { certificationId: 1, name: '정보처리기사', percentage: 55 },
+      { certificationId: 2, name: 'SQLD', percentage: 25 },
+      { certificationId: 3, name: '컴퓨터활용능력', percentage: 13 },
+    ],
+  },
+  '로봇정보통신과': {
+    1: [
+      { certificationId: 1, name: '정보처리기사', percentage: 38 },
+      { certificationId: 4, name: '네트워크관리사', percentage: 35 },
+      { certificationId: 2, name: 'SQLD', percentage: 20 },
+    ],
+    2: [
+      { certificationId: 1, name: '정보처리기사', percentage: 40 },
+      { certificationId: 4, name: '네트워크관리사', percentage: 33 },
+      { certificationId: 2, name: 'SQLD', percentage: 21 },
+    ],
+    3: [
+      { certificationId: 1, name: '정보처리기사', percentage: 42 },
+      { certificationId: 4, name: '네트워크관리사', percentage: 32 },
+      { certificationId: 2, name: 'SQLD', percentage: 19 },
+    ],
+  },
+};
 
 // Mock 플래시카드 데이터
 const mockFlashCards = {
@@ -131,6 +234,9 @@ export const mockData = {
   flashCards: mockFlashCards,
   learningSessions: mockLearningSessions,
   reviewCards: mockReviewCards,
+  companies: mockCompanies,
+  tutorialCertifications: mockTutorialCertifications,
+  departmentCertStats: mockDepartmentCertStats,
   loadFromStorage,
   saveToStorage,
   STORAGE_KEYS,

@@ -41,8 +41,8 @@ export default function RegisterScreen({ navigation }) {
     if (!result.success) {
       Alert.alert('회원가입 실패', result.error || '회원가입에 실패했습니다.');
     } else {
-      Alert.alert('성공', '회원가입이 완료되었습니다!');
-      // 회원가입 성공 시 홈 화면으로 이동 (네비게이션 처리)
+      // 회원가입 성공 시 튜토리얼 화면으로 이동
+      navigation.navigate('Tutorial');
     }
   };
 
