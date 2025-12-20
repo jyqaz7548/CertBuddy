@@ -45,9 +45,17 @@ function AppNavigator() {
     return null;
   }
 
+  // user와 tutorialCompleted 상태에 따라 key를 변경하여 Navigator 재마운트
+  const navigatorKey = user
+    ? tutorialCompleted
+      ? 'main'
+      : 'tutorial'
+    : 'auth';
+
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
+        key={navigatorKey}
         screenOptions={{ headerShown: false }}
         initialRouteName={
           user

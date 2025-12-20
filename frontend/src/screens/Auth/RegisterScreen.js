@@ -41,8 +41,8 @@ export default function RegisterScreen({ navigation }) {
     if (!result.success) {
       Alert.alert('회원가입 실패', result.error || '회원가입에 실패했습니다.');
     } else {
-      // 회원가입 성공 시 튜토리얼 화면으로 이동
-      navigation.navigate('Tutorial');
+      // 회원가입 성공 - App.js에서 자동으로 튜토리얼 화면 표시
+      // user가 설정되면 App.js가 다시 렌더링되면서 Tutorial 화면이 표시됨
     }
   };
 
