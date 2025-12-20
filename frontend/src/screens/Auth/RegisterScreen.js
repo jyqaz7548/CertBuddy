@@ -16,14 +16,13 @@ export default function RegisterScreen({ navigation }) {
     email: '',
     password: '',
     name: '',
-    school: '',
     department: '',
     grade: '1',
   });
   const { register } = useAuth();
 
   const handleRegister = async () => {
-    if (!formData.email || !formData.password || !formData.name) {
+    if (!formData.email || !formData.password || !formData.name || !formData.department) {
       Alert.alert('오류', '필수 정보를 모두 입력해주세요.');
       return;
     }
@@ -32,6 +31,7 @@ export default function RegisterScreen({ navigation }) {
     const registerData = {
       ...formData,
       grade: parseInt(formData.grade, 10),
+      school: '', // 학교는 빈 문자열로 전송 (백엔드 호환성)
     };
 
     const result = await register(registerData);
@@ -44,7 +44,10 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <Text style={styles.title}>회원가입</Text>
 
       <TextInput
@@ -71,20 +74,6 @@ export default function RegisterScreen({ navigation }) {
         onChangeText={(text) => setFormData({ ...formData, name: text })}
       />
 
-      <TextInput
-        style={styles.input}
-        placeholder="학교"
-        value={formData.school}
-        onChangeText={(text) => setFormData({ ...formData, school: text })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="학과"
-        value={formData.department}
-        onChangeText={(text) => setFormData({ ...formData, department: text })}
-      />
-
       <View style={styles.pickerContainer}>
         <Text style={styles.label}>학년</Text>
         <Picker
@@ -95,7 +84,21 @@ export default function RegisterScreen({ navigation }) {
           <Picker.Item label="1학년" value="1" />
           <Picker.Item label="2학년" value="2" />
           <Picker.Item label="3학년" value="3" />
-          <Picker.Item label="4학년" value="4" />
+        </Picker>
+      </View>
+
+      <View style={styles.pickerContainer}>
+        <Text style={styles.label}>학과</Text>
+        <Picker
+          selectedValue={formData.department}
+          style={styles.picker}
+          onValueChange={(value) => setFormData({ ...formData, department: value })}
+        >
+          <Picker.Item label="학과를 선택하세요" value="" />
+          <Picker.Item label="로봇설계과" value="로봇설계과" />
+          <Picker.Item label="로봇제어과" value="로봇제어과" />
+          <Picker.Item label="로봇소프트웨어과" value="로봇소프트웨어과" />
+          <Picker.Item label="로봇정보통신과" value="로봇정보통신과" />
         </Picker>
       </View>
 
@@ -116,15 +119,17 @@ export default function RegisterScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#fff',
+  },
+  contentContainer: {
+    padding: 20,
+    paddingTop: 60,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 30,
-    marginTop: 20,
     color: '#007AFF',
   },
   input: {
