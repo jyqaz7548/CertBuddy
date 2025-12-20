@@ -53,6 +53,7 @@ export default function RegisterScreen({ navigation }) {
     <ScrollView 
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled"
     >
       <Text style={styles.title}>회원가입</Text>
 
@@ -82,7 +83,11 @@ export default function RegisterScreen({ navigation }) {
 
       <TouchableOpacity
         style={styles.pickerContainer}
-        onPress={() => setShowGradeModal(true)}
+        onPress={() => {
+          console.log('학년 선택 버튼 클릭');
+          setShowGradeModal(true);
+        }}
+        activeOpacity={0.7}
       >
         <Text style={styles.label}>학년</Text>
         <Text style={styles.pickerValue}>
@@ -92,7 +97,11 @@ export default function RegisterScreen({ navigation }) {
 
       <TouchableOpacity
         style={styles.pickerContainer}
-        onPress={() => setShowDepartmentModal(true)}
+        onPress={() => {
+          console.log('학과 선택 버튼 클릭');
+          setShowDepartmentModal(true);
+        }}
+        activeOpacity={0.7}
       >
         <Text style={styles.label}>학과</Text>
         <Text style={styles.pickerValue}>
@@ -107,12 +116,13 @@ export default function RegisterScreen({ navigation }) {
         animationType="slide"
         onRequestClose={() => setShowGradeModal(false)}
       >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowGradeModal(false)}
-        >
-          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlayTouchable}
+            activeOpacity={1}
+            onPress={() => setShowGradeModal(false)}
+          />
+          <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>학년 선택</Text>
             <FlatList
               data={GRADES}
@@ -146,7 +156,7 @@ export default function RegisterScreen({ navigation }) {
               <Text style={styles.modalCloseButtonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
 
       {/* 학과 선택 Modal */}
@@ -156,12 +166,13 @@ export default function RegisterScreen({ navigation }) {
         animationType="slide"
         onRequestClose={() => setShowDepartmentModal(false)}
       >
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowDepartmentModal(false)}
-        >
-          <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlayTouchable}
+            activeOpacity={1}
+            onPress={() => setShowDepartmentModal(false)}
+          />
+          <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>학과 선택</Text>
             <FlatList
               data={DEPARTMENTS}
@@ -195,7 +206,7 @@ export default function RegisterScreen({ navigation }) {
               <Text style={styles.modalCloseButtonText}>취소</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
@@ -261,12 +272,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
+  modalOverlayTouchable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   modalContent: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 20,
     maxHeight: '70%',
+    zIndex: 1,
   },
   modalTitle: {
     fontSize: 20,
