@@ -3,10 +3,12 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useAuth } from '../../store/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { questionService } from '../../services/questionService';
+import { learningService } from '../../services/learningService';
 
 export default function HomeScreen({ navigation }) {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [reviewCount, setReviewCount] = useState(0);
+  const [recommendedCerts, setRecommendedCerts] = useState([]);
 
   const loadReviewCount = async () => {
     try {
@@ -17,16 +19,47 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  // 화면이 포커스될 때마다 복습 개수 갱신
+  const loadRecommendations = async () => {
+    try {
+      if (user?.school && user?.department) {
+        // 현재는 학교/학과 기반 추천 사용
+        // TODO: 나중에 튜토리얼에서 선택한 기업의 선배 자격증 내역을 우선 표시하도록 확장
+        // 1. AsyncStorage에서 selectedCompanyId 조회
+        // 2. 기업 기반 선배 자격증 추천 API 호출
+        // 3. 있으면 그것을 우선 표시, 없으면 학교/학과 기반 추천 표시
+        const recommendations = await learningService.getRecommendations(
+          user.school,
+          user.department
+        );
+        setRecommendedCerts(recommendations);
+      }
+    } catch (error) {
+      console.error('추천 자격증 로딩 실패:', error);
+    }
+  };
+
+  // 화면이 포커스될 때마다 복습 개수 갱신 및 사용자 정보 갱신
   useFocusEffect(
     React.useCallback(() => {
       loadReviewCount();
-    }, [user?.id])
+      loadRecommendations();
+      // XP 업데이트를 위해 사용자 정보 갱신
+      if (refreshUser) {
+        refreshUser();
+      }
+    }, [user?.id, user?.school, user?.department, refreshUser])
   );
 
   const handleStartReview = () => {
     navigation.navigate('Question', {
       isReview: true,
+    });
+  };
+
+  const handleCertificationSelect = (certificationId) => {
+    // 자격증 선택 시 문제 풀이 화면으로 이동
+    navigation.navigate('Question', {
+      certificationId: certificationId,
     });
   };
 
@@ -88,7 +121,40 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.sectionSubtitle}>
           {user?.school} {user?.department} 학생에게 추천
         </Text>
-        {/* TODO: 추천 자격증 리스트 */}
+        {recommendedCerts.length > 0 ? (
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            style={styles.certScrollView}
+            contentContainerStyle={styles.certScrollContent}
+          >
+            {recommendedCerts.map((cert) => (
+              <TouchableOpacity
+                key={cert.id}
+                style={styles.certCard}
+                onPress={() => handleCertificationSelect(cert.id)}
+                activeOpacity={0.7}
+              >
+                <View style={styles.certCardHeader}>
+                  <Text style={styles.certName}>{cert.name}</Text>
+                  <Text style={styles.certCategory}>{cert.category || '자격증'}</Text>
+                </View>
+                <Text style={styles.certDescription} numberOfLines={2}>
+                  {cert.description || '자격증 설명이 없습니다.'}
+                </Text>
+                <View style={styles.certCardFooter}>
+                  <Text style={styles.certActionText}>학습 시작하기 →</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyStateText}>
+              추천 자격증이 없습니다.
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* 친구 랭킹 Top3 */}
@@ -207,6 +273,63 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#8E8E93',
     marginBottom: 15,
+  },
+  certScrollView: {
+    marginHorizontal: -5,
+  },
+  certScrollContent: {
+    paddingHorizontal: 5,
+    gap: 12,
+  },
+  certCard: {
+    width: 200,
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+  },
+  certCardHeader: {
+    marginBottom: 10,
+  },
+  certName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  certCategory: {
+    fontSize: 12,
+    color: '#8E8E93',
+    backgroundColor: '#E5E5E5',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+  certDescription: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+    marginBottom: 12,
+    flex: 1,
+  },
+  certCardFooter: {
+    marginTop: 'auto',
+  },
+  certActionText: {
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '600',
+  },
+  emptyState: {
+    padding: 30,
+    alignItems: 'center',
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: '#8E8E93',
   },
 });
 

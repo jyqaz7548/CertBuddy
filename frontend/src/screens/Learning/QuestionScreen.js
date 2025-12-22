@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { questionService } from '../../services/questionService';
 import { useAuth } from '../../store/AuthContext';
+import XpResultScreen from '../Learning/XpResultScreen';
 
 export default function QuestionScreen({ route, navigation }) {
   const { user } = useAuth();
@@ -59,6 +60,61 @@ export default function QuestionScreen({ route, navigation }) {
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
+  
+  // 실시간 예상 XP 계산
+  const calculateExpectedXp = () => {
+    if (questions.length === 0) return 0;
+    
+    const isReviewMode = route?.params?.isReview || false;
+    const answeredCount = results.length;
+    const correctCount = results.filter(r => r.isCorrect).length;
+    const wrongCount = answeredCount - correctCount;
+    const remainingCount = questions.length - answeredCount;
+    
+    // 현재까지의 XP
+    const baseXp = questions.length * 10;
+    
+    if (isReviewMode) {
+      // 복습 모드: 문제당 5XP (일반 학습의 절반), 틀린 문제당 5XP 차감
+      const reviewBaseXp = questions.length * 5;
+      const penaltyXp = wrongCount * 5;
+      const currentXp = Math.max(0, reviewBaseXp - penaltyXp);
+      
+      // 남은 문제를 모두 맞춘다고 가정
+      const bestCaseXp = currentXp;
+      // 남은 문제를 모두 틀린다고 가정
+      const worstCaseXp = Math.max(0, reviewBaseXp - (wrongCount + remainingCount) * 5);
+      
+      return {
+        current: currentXp,
+        best: bestCaseXp,
+        worst: worstCaseXp,
+        answered: answeredCount,
+        correct: correctCount,
+        wrong: wrongCount,
+      };
+    } else {
+      // 일반 학습 모드: 틀린 문제당 10XP 차감 (문제당 XP 전체 차감)
+      const penaltyXp = wrongCount * 10;
+      const currentXp = Math.max(0, baseXp - penaltyXp);
+      
+      // 남은 문제를 모두 맞춘다고 가정
+      const bestCaseXp = currentXp;
+      // 남은 문제를 모두 틀린다고 가정
+      const worstCaseXp = Math.max(0, baseXp - (wrongCount + remainingCount) * 10);
+      
+      return {
+        current: currentXp,
+        best: bestCaseXp,
+        worst: worstCaseXp,
+        answered: answeredCount,
+        correct: correctCount,
+        wrong: wrongCount,
+      };
+    }
+  };
+  
+  const expectedXp = calculateExpectedXp();
 
   const handleAnswerSelect = async (choice) => {
     if (showExplanation) return; // 이미 정답을 확인한 경우 무시
@@ -120,28 +176,65 @@ export default function QuestionScreen({ route, navigation }) {
       // 학습/복습 완료 처리
       if (sessionId && results.length > 0) {
         try {
+          const correctAnswers = results.filter(r => r.isCorrect).length;
+          const allWrong = correctAnswers === 0; // 모두 틀렸는지 확인
+          
+          // 모두 틀렸으면 복습 필요 화면으로 이동
+          if (allWrong) {
+            // 일반 학습 모드에서 모두 틀렸을 때 복습 리스트에 모든 문제 추가
+            if (!isReviewMode) {
+              try {
+                for (const result of results) {
+                  await questionService.addReviewQuestion(
+                    user?.id || 1,
+                    result.questionId
+                  );
+                }
+              } catch (error) {
+                console.error('복습 리스트 추가 실패:', error);
+              }
+            }
+            
+            navigation.replace('ReviewNeeded', {
+              isReview: isReviewMode,
+            });
+            return;
+          }
+          
+          let completionResult;
           if (isReviewMode) {
             // 복습 세션 완료 (보너스 XP 지급)
-            const completionResult = await questionService.completeReviewSession(
+            completionResult = await questionService.completeReviewSession(
               sessionId,
               results,
               user?.id || 1
             );
-            console.log('복습 완료:', completionResult);
           } else {
             // 일반 학습 세션 완료
-            const completionResult = await questionService.completeQuestionSession(
+            completionResult = await questionService.completeQuestionSession(
               sessionId,
               results,
               user?.id || 1
             );
-            console.log('학습 완료:', completionResult);
           }
+          
+          // XP 결과 화면으로 이동
+          navigation.replace('XpResult', {
+            isReview: isReviewMode,
+            totalQuestions: completionResult.totalQuestions || results.length,
+            correctAnswers: completionResult.correctAnswers || results.filter(r => r.isCorrect).length,
+            wrongAnswers: completionResult.wrongAnswers || results.filter(r => !r.isCorrect).length,
+            xpEarned: completionResult.xpEarned || 0,
+            bonusXp: 0, // 복습 모드에서는 xpEarned만 사용
+            todayMaxXp: 0, // 더 이상 사용하지 않음
+          });
         } catch (error) {
           console.error('완료 처리 실패:', error);
+          navigation.goBack();
         }
+      } else {
+        navigation.goBack();
       }
-      navigation.goBack();
     } else {
       setCurrentIndex(currentIndex + 1);
       setSelectedAnswer(null);
@@ -222,9 +315,19 @@ export default function QuestionScreen({ route, navigation }) {
     <SafeAreaView style={styles.container}>
       {/* 상단 헤더 */}
       <View style={styles.header}>
-        <Text style={styles.progress}>
-          {currentIndex + 1} / {questions.length}
-        </Text>
+        <View style={styles.headerTop}>
+          <Text style={styles.progress}>
+            {currentIndex + 1} / {questions.length}
+          </Text>
+          {!route?.params?.isReview && expectedXp.answered > 0 && (
+            <View style={styles.xpPreview}>
+              <Text style={styles.xpPreviewLabel}>예상 XP</Text>
+              <Text style={styles.xpPreviewValue}>
+                {expectedXp.current}XP
+              </Text>
+            </View>
+          )}
+        </View>
         <View style={styles.typeContainer}>
           <Text style={styles.typeLabel}>{getTypeLabel(currentQuestion.type)}</Text>
           {currentQuestion.source === 'REAL_CBT' && (
@@ -306,11 +409,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#E5E5E5',
   },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   progress: {
     fontSize: 16,
     fontWeight: '600',
     color: '#007AFF',
-    marginBottom: 8,
+  },
+  xpPreview: {
+    alignItems: 'flex-end',
+  },
+  xpPreviewLabel: {
+    fontSize: 11,
+    color: '#8E8E93',
+    marginBottom: 2,
+  },
+  xpPreviewValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
   },
   typeContainer: {
     flexDirection: 'row',

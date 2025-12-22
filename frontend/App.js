@@ -16,62 +16,66 @@ function AppNavigator() {
   const [tutorialCompleted, setTutorialCompleted] = useState(null);
   const [checkingTutorial, setCheckingTutorial] = useState(true);
   const navigationRef = useRef(null);
+  const hasCheckedTutorial = useRef(false);
 
   useEffect(() => {
     const checkTutorialStatus = async () => {
-      if (user) {
-        try {
-          const completed = await AsyncStorage.getItem('tutorialCompleted');
-          const isCompleted = completed === 'true';
-          console.log('[Tutorial] 튜토리얼 상태 확인:', {
-            completed,
-            isCompleted,
-            userId: user?.id,
-            userName: user?.name
-          });
-          setTutorialCompleted(isCompleted);
-          
-          // 튜토리얼이 완료되었고 현재 Tutorial 화면에 있다면 Main으로 이동
-          if (isCompleted && navigationRef.current) {
-            navigationRef.current.navigate('Main');
-          }
-        } catch (error) {
-          console.error('Error checking tutorial status:', error);
-          setTutorialCompleted(false);
+      // 이미 확인했거나 사용자가 없으면 스킵
+      if (hasCheckedTutorial.current || !user) {
+        if (!user) {
+          setTutorialCompleted(null);
+          setCheckingTutorial(false);
         }
-      } else {
-        console.log('[Tutorial] 사용자 없음, 인증 화면으로');
+        return;
       }
-      setCheckingTutorial(false);
+
+      try {
+        const completed = await AsyncStorage.getItem('tutorialCompleted');
+        const isCompleted = completed === 'true';
+        setTutorialCompleted(isCompleted);
+        hasCheckedTutorial.current = true;
+      } catch (error) {
+        console.error('Error checking tutorial status:', error);
+        setTutorialCompleted(false);
+        hasCheckedTutorial.current = true;
+      } finally {
+        setCheckingTutorial(false);
+      }
     };
 
     checkTutorialStatus();
   }, [user]);
 
-  if (isLoading || checkingTutorial) {
-    // TODO: 로딩 화면 추가
-    return null;
-  }
+  // user가 변경되면 다시 확인하도록 리셋 (로그인/로그아웃 시)
+  useEffect(() => {
+    if (!user) {
+      hasCheckedTutorial.current = false;
+      setTutorialCompleted(null);
+    }
+  }, [user]);
 
   // user와 tutorialCompleted 상태에 따라 key를 변경하여 Navigator 재마운트
   const navigatorKey = user
-    ? tutorialCompleted
+    ? tutorialCompleted === true
       ? 'main'
-      : 'tutorial'
+      : tutorialCompleted === false
+      ? 'tutorial'
+      : 'loading'
     : 'auth';
 
   const initialRoute = user
-    ? tutorialCompleted
+    ? tutorialCompleted === true
       ? 'Main'
-      : 'Tutorial'
+      : tutorialCompleted === false
+      ? 'Tutorial'
+      : null // 아직 확인 중이면 null (로딩 화면 표시)
     : 'Auth';
 
-  console.log('[Navigation] Navigator 상태:', {
-    navigatorKey,
-    initialRoute,
-    hasUser: !!user,
-    tutorialCompleted
-  });
+  // 로딩 중이거나 튜토리얼 상태 확인 중이거나 초기 라우트가 결정되지 않았으면 로딩
+  if (isLoading || checkingTutorial || (user && initialRoute === null)) {
+    // TODO: 로딩 화면 추가
+    return null;
+  }
 
   return (
     <NavigationContainer ref={navigationRef}>

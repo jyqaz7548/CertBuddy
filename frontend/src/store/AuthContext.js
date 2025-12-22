@@ -73,9 +73,23 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('userId');
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
+    }
+  };
+
+  // 사용자 정보 갱신 (XP 업데이트 등)
+  const refreshUser = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      if (userId) {
+        const userData = await authService.getCurrentUser(parseInt(userId, 10));
+        setUser(userData);
+      }
+    } catch (error) {
+      console.error('Refresh user error:', error);
     }
   };
 
@@ -87,6 +101,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        refreshUser,
       }}
     >
       {children}

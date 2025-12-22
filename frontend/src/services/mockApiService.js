@@ -258,15 +258,15 @@ export const mockQuestionService = {
   completeQuestionSession: async (sessionId, results, userId) => {
     await delay(500);
     
-    // XP 계산: 문제당 10XP, 틀리면 1XP씩 차감
+    // XP 계산: 문제당 10XP, 틀리면 10XP씩 차감
     const totalQuestions = results.length;
     const correctAnswers = results.filter(r => r.isCorrect).length;
     const wrongAnswers = totalQuestions - correctAnswers;
     
     // 기본 XP: 문제당 10XP
     const baseXp = totalQuestions * 10;
-    // 틀린 문제당 1XP 차감
-    const penaltyXp = wrongAnswers * 1;
+    // 틀린 문제당 10XP 차감 (문제당 XP 전체 차감)
+    const penaltyXp = wrongAnswers * 10;
     // 최종 XP (최소 0XP)
     const xpEarned = Math.max(0, baseXp - penaltyXp);
     
@@ -417,35 +417,18 @@ export const mockQuestionService = {
     
     const totalQuestions = results.length;
     const correctAnswers = results.filter(r => r.isCorrect).length;
+    const wrongAnswers = totalQuestions - correctAnswers;
     
-    // 오늘 학습한 XP 가져오기
-    const todayLearningXp = await mockData.loadFromStorage(
-      'mock_today_learning_xp',
-      {}
-    );
-    
-    const userKey = `user_${userId}`;
-    const todayDate = new Date().toISOString().split('T')[0];
-    const userTodaySessions = todayLearningXp[userKey] || [];
-    
-    // 오늘 날짜의 학습 세션만 필터링
-    const todaySessions = userTodaySessions.filter(
-      s => s.date === todayDate
-    );
-    
-    // 오늘 학습한 XP 중 가장 큰 값 찾기
-    const todayMaxXp = todaySessions.length > 0
-      ? Math.max(...todaySessions.map(s => s.xp))
-      : 0;
-    
-    // 복습 보너스 XP: 오늘 학습 XP의 절반
-    const bonusXp = Math.floor(todayMaxXp / 2);
+    // 복습 모드 XP 계산: 문제당 5XP (일반 학습의 절반), 틀릴 때마다 그 문제의 XP를 차감
+    const baseXp = totalQuestions * 5; // 일반 학습의 절반
+    const penaltyXp = wrongAnswers * 5; // 틀린 문제당 5XP 차감 (문제당 XP 전체 차감)
+    const xpEarned = Math.max(0, baseXp - penaltyXp);
     
     // 사용자 XP 업데이트
     const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
     const user = users.find(u => u.id === userId);
-    if (user && bonusXp > 0) {
-      user.totalXp = (user.totalXp || 0) + bonusXp;
+    if (user && xpEarned > 0) {
+      user.totalXp = (user.totalXp || 0) + xpEarned;
       await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
     }
     
@@ -453,8 +436,11 @@ export const mockQuestionService = {
       success: true,
       totalQuestions,
       correctAnswers,
-      todayMaxXp,
-      bonusXp,
+      wrongAnswers,
+      baseXp,
+      penaltyXp,
+      xpEarned,
+      bonusXp: xpEarned, // 복습 XP를 보너스 XP로 표시
     };
   },
 };

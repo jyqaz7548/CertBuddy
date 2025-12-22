@@ -25,7 +25,7 @@ const mockCertifications = [
     category: 'IT',
     description: '정보처리 관련 국가기술자격증',
     recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['컴퓨터공학과', '정보통신공학과'],
+    recommendedDepartments: ['컴퓨터공학과', '정보통신공학과', '소프트웨어과'],
   },
   {
     id: 2,
@@ -33,38 +33,104 @@ const mockCertifications = [
     category: 'IT',
     description: 'SQL 개발자 자격증',
     recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['컴퓨터공학과', '데이터과학과'],
+    recommendedDepartments: ['컴퓨터공학과', '데이터과학과', '소프트웨어과'],
   },
   {
     id: 3,
     name: '컴퓨터활용능력',
     category: 'IT',
     description: '컴퓨터 활용 능력 자격증',
+    recommendedSchools: ['공과대학'],
+    recommendedDepartments: ['컴퓨터공학과', '정보통신공학과', '소프트웨어과'],
   },
   {
     id: 4,
     name: '네트워크관리사',
     category: 'IT',
     description: '네트워크 관리 전문가 자격증',
+    recommendedSchools: ['공과대학'],
+    recommendedDepartments: ['정보통신공학과', '컴퓨터공학과'],
+  },
+  {
+    id: 7,
+    name: '정보처리기능사',
+    category: 'IT',
+    description: '정보처리 기능사 자격증',
+    recommendedSchools: ['공과대학'],
+    recommendedDepartments: ['소프트웨어과', '컴퓨터공학과'],
+  },
+  {
+    id: 8,
+    name: '정보기기운용기능사',
+    category: 'IT',
+    description: '정보기기 운용 기능사 자격증',
+    recommendedSchools: ['공과대학'],
+    recommendedDepartments: ['소프트웨어과', '정보통신공학과'],
   },
 ];
 
 // 튜토리얼용 기업 목록
 const mockCompanies = [
-  { id: 1, name: '대기업(삼성, LG 등)' },
-  { id: 2, name: 'IT 기업(네이버, 카카오 등)' },
-  { id: 3, name: '공기업' },
-  { id: 4, name: '스타트업' },
-  { id: 5, name: '모르겠습니다' },
+  { id: 1, name: '세메스' },
+  { id: 2, name: 'LH 공사' },
+  { id: 3, name: 'AD 테크놀로지' },
+  { id: 4, name: '한국항공우주산업' },
+  { id: 5, name: '에이로봇' },
+  { id: 6, name: '모르겠습니다' },
 ];
 
 // 튜토리얼용 자격증 목록
 const mockTutorialCertifications = [
-  { id: 1, name: '정보처리기사' },
-  { id: 2, name: 'SQLD' },
-  { id: 3, name: '컴퓨터활용능력' },
-  { id: 4, name: '네트워크관리사' },
-  { id: 5, name: '모르겠습니다' },
+  { id: 1, name: '자동화설비기능사' },
+  { id: 2, name: '전기기능사' },
+  { id: 3, name: '프로그래밍기능사' },
+  { id: 4, name: '전자기능사' },
+  { id: 5, name: '컴활' },
+  { id: 6, name: '모르겠습니다' },
+  { id: 7, name: '정보처리기능사' },
+  { id: 8, name: '정보기기운용기능사' },
+  { id: 9, name: 'ITQ 엑셀' },
+  { id: 10, name: 'ITQ 한글' },
+];
+
+// 이름 모자이크 처리 함수 (성만 보이고 나머지는 OO로 표시)
+const maskName = (fullName) => {
+  if (!fullName || fullName.length === 0) return '';
+  if (fullName.length === 1) return fullName;
+  if (fullName.length === 2) return fullName.charAt(0) + 'O';
+  return fullName.charAt(0) + 'O'.repeat(fullName.length - 1);
+};
+
+// 실제 친구 데이터 (같은 학과 기반 추천용)
+const mockFriendsData = [
+  {
+    id: 1,
+    name: '백인선',
+    department: '정보통신과',
+    grade: 2,
+    certifications: [3, 2, 5], // 프로그래밍기능사, 전기기능사, 컴활
+  },
+  {
+    id: 2,
+    name: '이윤솔',
+    department: '소프트웨어과',
+    grade: 2,
+    certifications: [3, 8, 9, 10], // 프로그래밍기능사, 정보기기운용기능사, ITQ 엑셀, ITQ 한글
+  },
+  {
+    id: 3,
+    name: '장승원',
+    department: '소프트웨어과',
+    grade: 2,
+    certifications: [7, 8], // 정보처리기능사, 정보기기운용기능사
+  },
+  {
+    id: 4,
+    name: '이소울',
+    department: '소프트웨어과',
+    grade: 2,
+    certifications: [7], // 정보처리기능사
+  },
 ];
 
 // 학과별 자격증 선택 통계 (Mock 데이터)
@@ -136,6 +202,23 @@ const mockDepartmentCertStats = {
       { certificationId: 1, name: '정보처리기사', percentage: 42 },
       { certificationId: 4, name: '네트워크관리사', percentage: 32 },
       { certificationId: 2, name: 'SQLD', percentage: 19 },
+    ],
+  },
+  // 실제 친구 데이터 기반 통계
+  '정보통신과': {
+    2: [
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 100 },
+      { certificationId: 2, name: '전기기능사', percentage: 100 },
+      { certificationId: 5, name: '컴활1급', percentage: 100 },
+    ],
+  },
+  '소프트웨어과': {
+    2: [
+      { certificationId: 8, name: '정보기기운용기능사', percentage: 67 },
+      { certificationId: 7, name: '정보처리기능사', percentage: 67 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 33 },
+      { certificationId: 9, name: 'ITQ 엑셀', percentage: 33 },
+      { certificationId: 10, name: 'ITQ 한글', percentage: 33 },
     ],
   },
 };
@@ -346,6 +429,8 @@ export const mockData = {
   companies: mockCompanies,
   tutorialCertifications: mockTutorialCertifications,
   departmentCertStats: mockDepartmentCertStats,
+  friendsData: mockFriendsData,
+  maskName,
   loadFromStorage,
   saveToStorage,
   STORAGE_KEYS,

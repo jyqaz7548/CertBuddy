@@ -5,6 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/Home/HomeScreen';
 import LearningScreen from '../screens/Learning/LearningScreen';
 import QuestionScreen from '../screens/Learning/QuestionScreen';
+import XpResultScreen from '../screens/Learning/XpResultScreen';
+import ReviewNeededScreen from '../screens/Learning/ReviewNeededScreen';
 import FriendsScreen from '../screens/Friends/FriendsScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 
@@ -24,6 +26,16 @@ function HomeStack() {
         component={QuestionScreen}
         options={{ title: '문제 풀이' }}
       />
+      <Stack.Screen 
+        name="XpResult" 
+        component={XpResultScreen}
+        options={{ title: '학습 완료', headerShown: false }}
+      />
+      <Stack.Screen 
+        name="ReviewNeeded" 
+        component={ReviewNeededScreen}
+        options={{ title: '복습 필요', headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }
@@ -40,6 +52,16 @@ function LearningStack() {
         name="Question" 
         component={QuestionScreen}
         options={{ title: '문제 풀이' }}
+      />
+      <Stack.Screen 
+        name="XpResult" 
+        component={XpResultScreen}
+        options={{ title: '학습 완료', headerShown: false }}
+      />
+      <Stack.Screen 
+        name="ReviewNeeded" 
+        component={ReviewNeededScreen}
+        options={{ title: '복습 필요', headerShown: false }}
       />
     </Stack.Navigator>
   );

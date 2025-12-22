@@ -36,12 +36,12 @@ export default function TutorialScreen({ navigation }) {
 
   // Step 2: 자격증 선택
   const handleCertificationToggle = (certId) => {
-    if (certId === 5) {
+    if (certId === 6) {
       // "모르겠습니다"는 단독 선택
-      setSelectedCertifications([5]);
+      setSelectedCertifications([6]);
     } else {
       // 다른 자격증 선택 시 "모르겠습니다" 제거
-      const filtered = selectedCertifications.filter((id) => id !== 5);
+      const filtered = selectedCertifications.filter((id) => id !== 6);
       if (filtered.includes(certId)) {
         setSelectedCertifications(filtered.filter((id) => id !== certId));
       } else {
@@ -57,8 +57,8 @@ export default function TutorialScreen({ navigation }) {
     }
 
     // Step 3 분기 처리
-    const isCompanyUnknown = selectedCompany === 5;
-    const isCertUnknown = selectedCertifications.includes(5);
+    const isCompanyUnknown = selectedCompany === 6;
+    const isCertUnknown = selectedCertifications.includes(6);
 
     if (isCompanyUnknown && isCertUnknown) {
       // 자동 추천 화면으로
@@ -92,11 +92,16 @@ export default function TutorialScreen({ navigation }) {
       // 튜토리얼 완료 여부 저장
       await AsyncStorage.setItem('tutorialCompleted', 'true');
 
+      // 선택된 기업 정보 저장 (나중에 선배 자격증 추천에 사용)
+      if (selectedCompany && selectedCompany !== 6) {
+        await AsyncStorage.setItem('selectedCompanyId', selectedCompany.toString());
+      }
+
       // 선택된 자격증을 주 학습 자격증으로 설정
       let mainCertId = null;
       if (step === 3 && recommendedCert) {
         mainCertId = recommendedCert.certificationId;
-      } else if (selectedCertifications.length > 0 && !selectedCertifications.includes(5)) {
+      } else if (selectedCertifications.length > 0 && !selectedCertifications.includes(6)) {
         mainCertId = selectedCertifications[0]; // 첫 번째 선택 자격증
       }
 
@@ -150,7 +155,7 @@ export default function TutorialScreen({ navigation }) {
     return (
       <View style={styles.stepContainer}>
         <Text style={styles.question}>
-          관심 있거나 들어본 자격증이 있나요?
+          관심 있거나 취득하고 싶은 자격증이 있나요?
         </Text>
         <Text style={styles.subtitle}>복수 선택 가능</Text>
         <ScrollView style={styles.optionsContainer}>
