@@ -17,57 +17,9 @@ const mockUsers = [
   },
 ];
 
-// Mock 자격증 데이터
-const mockCertifications = [
-  {
-    id: 1,
-    name: '정보처리기사',
-    category: 'IT',
-    description: '정보처리 관련 국가기술자격증',
-    recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['컴퓨터공학과', '정보통신공학과', '소프트웨어과'],
-  },
-  {
-    id: 2,
-    name: 'SQLD',
-    category: 'IT',
-    description: 'SQL 개발자 자격증',
-    recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['컴퓨터공학과', '데이터과학과', '소프트웨어과'],
-  },
-  {
-    id: 3,
-    name: '컴퓨터활용능력',
-    category: 'IT',
-    description: '컴퓨터 활용 능력 자격증',
-    recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['컴퓨터공학과', '정보통신공학과', '소프트웨어과'],
-  },
-  {
-    id: 4,
-    name: '네트워크관리사',
-    category: 'IT',
-    description: '네트워크 관리 전문가 자격증',
-    recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['정보통신공학과', '컴퓨터공학과'],
-  },
-  {
-    id: 7,
-    name: '정보처리기능사',
-    category: 'IT',
-    description: '정보처리 기능사 자격증',
-    recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['소프트웨어과', '컴퓨터공학과'],
-  },
-  {
-    id: 8,
-    name: '정보기기운용기능사',
-    category: 'IT',
-    description: '정보기기 운용 기능사 자격증',
-    recommendedSchools: ['공과대학'],
-    recommendedDepartments: ['소프트웨어과', '정보통신공학과'],
-  },
-];
+// Mock 자격증 데이터 (추천 자격증 기능용)
+// 현재는 빈 배열로 설정되어 있음. 나중에 기업 기반 선배 자격증 데이터로 채울 예정
+const mockCertifications = [];
 
 // 튜토리얼용 기업 목록
 const mockCompanies = [
@@ -89,8 +41,6 @@ const mockTutorialCertifications = [
   { id: 6, name: '모르겠습니다' },
   { id: 7, name: '정보처리기능사' },
   { id: 8, name: '정보기기운용기능사' },
-  { id: 9, name: 'ITQ 엑셀' },
-  { id: 10, name: 'ITQ 한글' },
 ];
 
 // 이름 모자이크 처리 함수 (성만 보이고 나머지는 OO로 표시)
@@ -138,70 +88,70 @@ const mockFriendsData = [
 const mockDepartmentCertStats = {
   '로봇설계과': {
     1: [
-      { certificationId: 1, name: '정보처리기사', percentage: 42 },
-      { certificationId: 2, name: 'SQLD', percentage: 31 },
-      { certificationId: 3, name: '컴퓨터활용능력', percentage: 19 },
+      { certificationId: 1, name: '자동화설비기능사', percentage: 45 },
+      { certificationId: 2, name: '전기기능사', percentage: 30 },
+      { certificationId: 5, name: '컴활', percentage: 15 },
     ],
     2: [
-      { certificationId: 1, name: '정보처리기사', percentage: 45 },
-      { certificationId: 2, name: 'SQLD', percentage: 28 },
-      { certificationId: 3, name: '컴퓨터활용능력', percentage: 22 },
+      { certificationId: 1, name: '자동화설비기능사', percentage: 48 },
+      { certificationId: 2, name: '전기기능사', percentage: 28 },
+      { certificationId: 5, name: '컴활', percentage: 18 },
     ],
     3: [
-      { certificationId: 1, name: '정보처리기사', percentage: 48 },
-      { certificationId: 2, name: 'SQLD', percentage: 30 },
-      { certificationId: 3, name: '컴퓨터활용능력', percentage: 15 },
+      { certificationId: 1, name: '자동화설비기능사', percentage: 50 },
+      { certificationId: 2, name: '전기기능사', percentage: 30 },
+      { certificationId: 5, name: '컴활', percentage: 12 },
     ],
   },
   '로봇제어과': {
     1: [
-      { certificationId: 1, name: '정보처리기사', percentage: 40 },
-      { certificationId: 2, name: 'SQLD', percentage: 35 },
-      { certificationId: 4, name: '네트워크관리사', percentage: 18 },
+      { certificationId: 2, name: '전기기능사', percentage: 45 },
+      { certificationId: 4, name: '전자기능사', percentage: 30 },
+      { certificationId: 1, name: '자동화설비기능사', percentage: 15 },
     ],
     2: [
-      { certificationId: 1, name: '정보처리기사', percentage: 43 },
-      { certificationId: 2, name: 'SQLD', percentage: 32 },
-      { certificationId: 4, name: '네트워크관리사', percentage: 20 },
+      { certificationId: 2, name: '전기기능사', percentage: 48 },
+      { certificationId: 4, name: '전자기능사', percentage: 28 },
+      { certificationId: 1, name: '자동화설비기능사', percentage: 16 },
     ],
     3: [
-      { certificationId: 1, name: '정보처리기사', percentage: 46 },
-      { certificationId: 2, name: 'SQLD', percentage: 30 },
-      { certificationId: 4, name: '네트워크관리사', percentage: 17 },
+      { certificationId: 2, name: '전기기능사', percentage: 50 },
+      { certificationId: 4, name: '전자기능사', percentage: 30 },
+      { certificationId: 1, name: '자동화설비기능사', percentage: 12 },
     ],
   },
   '로봇소프트웨어과': {
     1: [
-      { certificationId: 1, name: '정보처리기사', percentage: 50 },
-      { certificationId: 2, name: 'SQLD', percentage: 28 },
-      { certificationId: 3, name: '컴퓨터활용능력', percentage: 15 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 40 },
+      { certificationId: 7, name: '정보처리기능사', percentage: 30 },
+      { certificationId: 5, name: '컴활', percentage: 20 },
     ],
     2: [
-      { certificationId: 1, name: '정보처리기사', percentage: 52 },
-      { certificationId: 2, name: 'SQLD', percentage: 26 },
-      { certificationId: 3, name: '컴퓨터활용능력', percentage: 16 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 42 },
+      { certificationId: 7, name: '정보처리기능사', percentage: 28 },
+      { certificationId: 5, name: '컴활', percentage: 22 },
     ],
     3: [
-      { certificationId: 1, name: '정보처리기사', percentage: 55 },
-      { certificationId: 2, name: 'SQLD', percentage: 25 },
-      { certificationId: 3, name: '컴퓨터활용능력', percentage: 13 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 45 },
+      { certificationId: 7, name: '정보처리기능사', percentage: 30 },
+      { certificationId: 5, name: '컴활', percentage: 15 },
     ],
   },
   '로봇정보통신과': {
     1: [
-      { certificationId: 1, name: '정보처리기사', percentage: 38 },
-      { certificationId: 4, name: '네트워크관리사', percentage: 35 },
-      { certificationId: 2, name: 'SQLD', percentage: 20 },
+      { certificationId: 4, name: '전자기능사', percentage: 40 },
+      { certificationId: 2, name: '전기기능사', percentage: 30 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 20 },
     ],
     2: [
-      { certificationId: 1, name: '정보처리기사', percentage: 40 },
-      { certificationId: 4, name: '네트워크관리사', percentage: 33 },
-      { certificationId: 2, name: 'SQLD', percentage: 21 },
+      { certificationId: 4, name: '전자기능사', percentage: 42 },
+      { certificationId: 2, name: '전기기능사', percentage: 28 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 22 },
     ],
     3: [
-      { certificationId: 1, name: '정보처리기사', percentage: 42 },
-      { certificationId: 4, name: '네트워크관리사', percentage: 32 },
-      { certificationId: 2, name: 'SQLD', percentage: 19 },
+      { certificationId: 4, name: '전자기능사', percentage: 45 },
+      { certificationId: 2, name: '전기기능사', percentage: 30 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 17 },
     ],
   },
   // 실제 친구 데이터 기반 통계
@@ -221,45 +171,19 @@ const mockDepartmentCertStats = {
       { certificationId: 10, name: 'ITQ 한글', percentage: 33 },
     ],
   },
+  '로봇소프트웨어과': {
+    2: [
+      { certificationId: 8, name: '정보기기운용기능사', percentage: 67 },
+      { certificationId: 7, name: '정보처리기능사', percentage: 67 },
+      { certificationId: 3, name: '프로그래밍기능사', percentage: 33 },
+      { certificationId: 9, name: 'ITQ 엑셀', percentage: 33 },
+      { certificationId: 10, name: 'ITQ 한글', percentage: 33 },
+    ],
+  },
 };
 
-// Mock 플래시카드 데이터
-const mockFlashCards = {
-  1: [ // 정보처리기사
-    {
-      id: 1,
-      front: '데이터베이스의 3단계 스키마 구조는?',
-      back: '외부 스키마, 개념 스키마, 내부 스키마',
-      certificationId: 1,
-    },
-    {
-      id: 2,
-      front: '정규화의 목적은?',
-      back: '데이터 중복을 제거하고 데이터 무결성을 보장하기 위함',
-      certificationId: 1,
-    },
-    {
-      id: 3,
-      front: '트랜잭션의 ACID 속성은?',
-      back: 'Atomicity(원자성), Consistency(일관성), Isolation(격리성), Durability(지속성)',
-      certificationId: 1,
-    },
-  ],
-  2: [ // SQLD
-    {
-      id: 4,
-      front: 'SELECT 문의 실행 순서는?',
-      back: 'FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY',
-      certificationId: 2,
-    },
-    {
-      id: 5,
-      front: 'JOIN의 종류는?',
-      back: 'INNER JOIN, LEFT JOIN, RIGHT JOIN, FULL OUTER JOIN',
-      certificationId: 2,
-    },
-  ],
-};
+// Mock 플래시카드 데이터 (현재는 비어있음, 필요시 추가)
+const mockFlashCards = {};
 
 // Mock 문제 데이터 (전기기능사 예시)
 const mockQuestions = [

@@ -6,6 +6,13 @@ import { mockData } from './mockData';
 // 간단한 지연 시뮬레이션 (네트워크 요청 느낌)
 const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
+// 자격증 ID로 카테고리 반환 (간단한 매핑)
+const getCategoryFromId = (id) => {
+  if (id === 9 || id === 10) return 'ITQ';
+  if (id >= 1 && id <= 8) return '기능사';
+  return '자격증';
+};
+
 // Mock 인증 서비스
 export const mockAuthService = {
   // 로그인
@@ -112,17 +119,66 @@ export const mockAuthService = {
 
 // Mock 학습 서비스
 export const mockLearningService = {
-  // 추천 자격증 조회
-  getRecommendations: async (school, department) => {
+  // 추천 자격증 조회 (같은 학과 학생들의 자격증 기반)
+  getRecommendations: async (school, department, grade) => {
     await delay(600);
     
-    return mockData.certifications.filter(cert => {
-      const matchesSchool = !cert.recommendedSchools || 
-        cert.recommendedSchools.some(s => school?.includes(s));
-      const matchesDept = !cert.recommendedDepartments || 
-        cert.recommendedDepartments.includes(department);
+    const recommendations = [];
+    
+    // 1. 같은 학과+학년 학생들의 자격증 통계 가져오기
+    if (department && grade) {
+      const stats = mockData.departmentCertStats[department]?.[grade] || [];
       
-      return matchesSchool && matchesDept;
+      // 통계를 자격증 객체로 변환
+      stats.forEach(stat => {
+        // 튜토리얼 자격증 목록에서 이름 찾기
+        const certInfo = mockData.tutorialCertifications.find(c => c.id === stat.certificationId);
+        if (certInfo) {
+          recommendations.push({
+            id: stat.certificationId,
+            name: certInfo.name,
+            category: getCategoryFromId(stat.certificationId),
+            description: `${stat.percentage}%의 학생들이 취득했어요`,
+            percentage: stat.percentage,
+            source: 'department_stats', // 통계 기반
+          });
+        }
+      });
+    }
+    
+    // 2. 같은 학과 친구들의 실제 자격증도 추가 (중복 제거)
+    if (department) {
+      const sameDeptFriends = mockData.friendsData.filter(
+        friend => friend.department === department
+      );
+      
+      sameDeptFriends.forEach(friend => {
+        friend.certifications.forEach(certId => {
+          // 이미 추가된 자격증인지 확인
+          if (!recommendations.find(r => r.id === certId)) {
+            const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
+            if (certInfo) {
+              const maskedName = mockData.maskName(friend.name);
+              recommendations.push({
+                id: certId,
+                name: certInfo.name,
+                category: getCategoryFromId(certId),
+                description: `${maskedName}님이 취득했어요`,
+                source: 'friend', // 친구 기반
+                friendName: maskedName,
+              });
+            }
+          }
+        });
+      });
+    }
+    
+    // percentage가 있는 것부터 정렬 (통계 기반이 우선)
+    return recommendations.sort((a, b) => {
+      if (a.percentage && !b.percentage) return -1;
+      if (!a.percentage && b.percentage) return 1;
+      if (a.percentage && b.percentage) return b.percentage - a.percentage;
+      return 0;
     });
   },
 
