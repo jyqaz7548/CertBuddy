@@ -34,3 +34,5 @@ logs/
 *.db
 *.sqlite
 
+node_modules/
+.expo/
