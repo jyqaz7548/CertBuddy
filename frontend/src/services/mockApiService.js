@@ -217,6 +217,248 @@ export const mockLearningService = {
   },
 };
 
+// Mock 문제 서비스
+export const mockQuestionService = {
+  // 문제 목록 조회 (자격증별)
+  getQuestions: async (certificationId) => {
+    await delay(500);
+    
+    // 현재는 전기기능사 예시 데이터만 있음
+    // 실제로는 certificationId에 따라 필터링
+    return mockData.questions || [];
+  },
+
+  // 문제 세션 시작 (학습 시작)
+  startQuestionSession: async (certificationId, userId) => {
+    await delay(300);
+    
+    const questions = await mockQuestionService.getQuestions(certificationId);
+    
+    return {
+      sessionId: `session_${Date.now()}`,
+      questions,
+      startedAt: new Date().toISOString(),
+    };
+  },
+
+  // 문제 답안 제출 및 결과 저장
+  submitAnswer: async (sessionId, questionId, selectedAnswer, isCorrect) => {
+    await delay(300);
+    
+    // Mock에서는 단순히 성공 응답만 반환
+    // 실제 백엔드에서는 DB에 저장
+    return {
+      success: true,
+      isCorrect,
+      correctAnswer: null, // 실제로는 서버에서 반환
+    };
+  },
+
+  // 학습 세션 완료
+  completeQuestionSession: async (sessionId, results, userId) => {
+    await delay(500);
+    
+    // XP 계산: 문제당 10XP, 틀리면 1XP씩 차감
+    const totalQuestions = results.length;
+    const correctAnswers = results.filter(r => r.isCorrect).length;
+    const wrongAnswers = totalQuestions - correctAnswers;
+    
+    // 기본 XP: 문제당 10XP
+    const baseXp = totalQuestions * 10;
+    // 틀린 문제당 1XP 차감
+    const penaltyXp = wrongAnswers * 1;
+    // 최종 XP (최소 0XP)
+    const xpEarned = Math.max(0, baseXp - penaltyXp);
+    
+    // 오늘 학습한 XP를 저장 (복습 보너스 계산용, userId별로 저장)
+    const todayLearningXp = await mockData.loadFromStorage(
+      'mock_today_learning_xp',
+      {}
+    );
+    const userKey = `user_${userId}`;
+    if (!todayLearningXp[userKey]) {
+      todayLearningXp[userKey] = [];
+    }
+    todayLearningXp[userKey].push({
+      sessionId,
+      xp: xpEarned,
+      date: new Date().toISOString().split('T')[0], // 오늘 날짜
+    });
+    await mockData.saveToStorage('mock_today_learning_xp', todayLearningXp);
+    
+    // 사용자 XP 업데이트
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      user.totalXp = (user.totalXp || 0) + xpEarned;
+      user.streak = (user.streak || 0) + 1;
+      await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+    }
+    
+    return {
+      success: true,
+      totalQuestions,
+      correctAnswers,
+      wrongAnswers,
+      baseXp,
+      penaltyXp,
+      xpEarned,
+      sessionId,
+    };
+  },
+
+  // 복습 문제 목록 조회
+  getReviewQuestions: async (userId) => {
+    await delay(400);
+    
+    const reviewQuestions = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+      []
+    );
+    
+    const userReviewQuestions = reviewQuestions.filter(
+      rq => rq.userId === userId && !rq.isCompleted
+    );
+    
+    // 문제 ID로 실제 문제 데이터 가져오기
+    const allQuestions = mockData.questions || [];
+    const questions = userReviewQuestions
+      .map(rq => allQuestions.find(q => q.id === rq.questionId))
+      .filter(q => q !== undefined);
+    
+    return questions;
+  },
+
+  // 복습 문제 추가 (틀린 문제를 복습 리스트에 추가)
+  addReviewQuestion: async (userId, questionId) => {
+    await delay(300);
+    
+    const reviewQuestions = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+      []
+    );
+    
+    // 이미 존재하는지 확인
+    const existing = reviewQuestions.find(
+      rq => rq.userId === userId && rq.questionId === questionId && !rq.isCompleted
+    );
+    
+    if (existing) {
+      return { success: true, message: '이미 복습 리스트에 추가되어 있습니다' };
+    }
+    
+    const newReviewQuestion = {
+      id: reviewQuestions.length + 1,
+      userId,
+      questionId,
+      createdAt: new Date().toISOString(),
+      lastReviewedAt: null,
+      reviewCount: 0,
+      isCompleted: false,
+    };
+    
+    reviewQuestions.push(newReviewQuestion);
+    await mockData.saveToStorage(
+      mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+      reviewQuestions
+    );
+    
+    return { success: true, reviewQuestion: newReviewQuestion };
+  },
+
+  // 복습 문제 완료 처리
+  completeReviewQuestion: async (userId, questionId, isCorrect) => {
+    await delay(300);
+    
+    const reviewQuestions = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+      []
+    );
+    
+    const reviewQuestion = reviewQuestions.find(
+      rq => rq.userId === userId && rq.questionId === questionId && !rq.isCompleted
+    );
+    
+    if (reviewQuestion) {
+      reviewQuestion.lastReviewedAt = new Date().toISOString();
+      reviewQuestion.reviewCount = (reviewQuestion.reviewCount || 0) + 1;
+      
+      // 정답을 맞췄으면 바로 완료 처리 (1번만 맞추면 완료)
+      if (isCorrect) {
+        reviewQuestion.isCompleted = true;
+      }
+      
+      await mockData.saveToStorage(
+        mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+        reviewQuestions
+      );
+    }
+    
+    return { success: true };
+  },
+
+  // 복습 세션 시작
+  startReviewSession: async (userId) => {
+    await delay(300);
+    
+    const questions = await mockQuestionService.getReviewQuestions(userId);
+    
+    return {
+      sessionId: `review_session_${Date.now()}`,
+      questions,
+      startedAt: new Date().toISOString(),
+      isReview: true,
+    };
+  },
+
+  // 복습 세션 완료 (보너스 XP 지급)
+  completeReviewSession: async (sessionId, results, userId) => {
+    await delay(500);
+    
+    const totalQuestions = results.length;
+    const correctAnswers = results.filter(r => r.isCorrect).length;
+    
+    // 오늘 학습한 XP 가져오기
+    const todayLearningXp = await mockData.loadFromStorage(
+      'mock_today_learning_xp',
+      {}
+    );
+    
+    const userKey = `user_${userId}`;
+    const todayDate = new Date().toISOString().split('T')[0];
+    const userTodaySessions = todayLearningXp[userKey] || [];
+    
+    // 오늘 날짜의 학습 세션만 필터링
+    const todaySessions = userTodaySessions.filter(
+      s => s.date === todayDate
+    );
+    
+    // 오늘 학습한 XP 중 가장 큰 값 찾기
+    const todayMaxXp = todaySessions.length > 0
+      ? Math.max(...todaySessions.map(s => s.xp))
+      : 0;
+    
+    // 복습 보너스 XP: 오늘 학습 XP의 절반
+    const bonusXp = Math.floor(todayMaxXp / 2);
+    
+    // 사용자 XP 업데이트
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    const user = users.find(u => u.id === userId);
+    if (user && bonusXp > 0) {
+      user.totalXp = (user.totalXp || 0) + bonusXp;
+      await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+    }
+    
+    return {
+      success: true,
+      totalQuestions,
+      correctAnswers,
+      todayMaxXp,
+      bonusXp,
+    };
+  },
+};
+
 // Mock 친구 서비스
 export const mockFriendService = {
   // 친구 목록 조회

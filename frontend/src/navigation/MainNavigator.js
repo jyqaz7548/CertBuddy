@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from '../screens/Home/HomeScreen';
 import LearningScreen from '../screens/Learning/LearningScreen';
-import ReviewScreen from '../screens/Review/ReviewScreen';
+import QuestionScreen from '../screens/Learning/QuestionScreen';
 import FriendsScreen from '../screens/Friends/FriendsScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 
@@ -19,6 +19,11 @@ function HomeStack() {
         component={HomeScreen}
         options={{ title: '홈' }}
       />
+      <Stack.Screen 
+        name="Question" 
+        component={QuestionScreen}
+        options={{ title: '문제 풀이' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -30,6 +35,11 @@ function LearningStack() {
         name="LearningMain" 
         component={LearningScreen}
         options={{ title: '학습' }}
+      />
+      <Stack.Screen 
+        name="Question" 
+        component={QuestionScreen}
+        options={{ title: '문제 풀이' }}
       />
     </Stack.Navigator>
   );
@@ -53,11 +63,6 @@ export default function MainNavigator() {
         name="Learning" 
         component={LearningStack}
         options={{ title: '학습' }}
-      />
-      <Tab.Screen 
-        name="Review" 
-        component={ReviewScreen}
-        options={{ title: '복습' }}
       />
       <Tab.Screen 
         name="Friends" 

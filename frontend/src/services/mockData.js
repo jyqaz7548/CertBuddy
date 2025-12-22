@@ -178,6 +178,114 @@ const mockFlashCards = {
   ],
 };
 
+// Mock 문제 데이터 (전기기능사 예시)
+const mockQuestions = [
+  {
+    id: 1,
+    type: "BLANK",
+    source: "AI_GENERATED",
+    question: "도체의 전기 저항은 도체의 길이에 비례하고, 도체의 [   ]에 반비례합니다. 빈칸에 들어갈 말은 무엇일까요?",
+    choices: [
+      "단면적",
+      "무게",
+      "부피",
+      "온도"
+    ],
+    answer: "단면적",
+    explanation: "전기 저항은 전자의 흐름을 방해하는 정도입니다. 도체의 길이가 길수록 방해가 심해져 저항이 커지고, 통로가 넓을수록(단면적이 클수록) 잘 흐르므로 저항은 작아집니다.",
+    examInfo: {
+      year: null,
+      round: null
+    }
+  },
+  {
+    id: 2,
+    type: "OX",
+    source: "AI_GENERATED",
+    question: "컨덕턴스(G)는 전류가 얼마나 잘 흐르는지를 나타내는 척도로, 저항(R)의 역수 관계이다.",
+    choices: [
+      "O",
+      "X"
+    ],
+    answer: "O",
+    explanation: "저항(R)은 흐름을 방해하는 성질이고, 컨덕턴스(G)는 흐름을 돕는 성질입니다. 따라서 둘은 G = 1/R의 역수 관계를 가집니다. 단위는 지멘스(S) 또는 모(℧)를 사용합니다.",
+    examInfo: {
+      year: null,
+      round: null
+    }
+  },
+  {
+    id: 3,
+    type: "OX",
+    source: "AI_GENERATED",
+    question: "동일한 크기의 저항을 여러 개 '병렬'로 연결할수록 전체 합성 저항값은 커진다.",
+    choices: [
+      "O",
+      "X"
+    ],
+    answer: "X",
+    explanation: "저항을 병렬로 연결하는 것은 전기가 흐를 수 있는 통로를 넓혀주는 것과 같습니다. 따라서 병렬로 연결할수록 전체 합성 저항값은 작아집니다.",
+    examInfo: {
+      year: null,
+      round: null
+    }
+  },
+  {
+    id: 4,
+    type: "BLANK",
+    source: "AI_GENERATED",
+    question: "전류가 흐르면 도체에서 열이 발생합니다. 이 열량은 전류의 제곱과 저항, 그리고 [   ]에 비례한다는 법칙을 '줄의 법칙'이라고 합니다.",
+    choices: [
+      "전압",
+      "주파수",
+      "시간",
+      "단면적"
+    ],
+    answer: "시간",
+    explanation: "줄의 법칙 공식은 H = 0.24I²Rt 입니다. 즉, 발생하는 열량(H)은 전류(I)의 제곱, 저항(R), 그리고 전류가 흐른 시간(t)에 비례합니다.",
+    examInfo: {
+      year: null,
+      round: null
+    }
+  },
+  {
+    id: 5,
+    type: "BLANK",
+    source: "AI_GENERATED",
+    question: "두 전하 사이에 작용하는 힘(흡인력 또는 반발력)의 크기는 두 전하량의 곱에 비례하고, 두 전하 사이의 [   ]의 제곱에 반비례합니다.",
+    choices: [
+      "거리",
+      "질량",
+      "속도",
+      "전위차"
+    ],
+    answer: "거리",
+    explanation: "쿨롱의 법칙에 대한 설명입니다. 자석이나 전하 사이의 힘은 거리가 멀어질수록 급격히 약해지는데, 정확히는 거리의 제곱에 반비례하여 작아집니다.",
+    examInfo: {
+      year: null,
+      round: null
+    }
+  },
+  {
+    id: 6,
+    type: "BLANK",
+    source: "REAL_CBT",
+    question: "물질이 평소의 중성 상태에서 전자를 잃거나 얻어서, 전기적인 성질(+전기 또는 -전기)을 띠게 되는 현상을 무엇이라고 합니까?",
+    choices: [
+      "방전",
+      "대전",
+      "분극",
+      "충전"
+    ],
+    answer: "대전",
+    explanation: "물질 내의 전자가 이동하여 전기의 균형이 깨지면서 전기를 띠게 되는 현상을 '대전'이라고 합니다. 이때 전기를 띤 물체를 대전체라고 부릅니다.",
+    examInfo: {
+      year: 2014,
+      round: "3회"
+    }
+  }
+];
+
 // Mock 학습 세션 데이터
 const mockLearningSessions = [];
 
@@ -232,6 +340,7 @@ export const mockData = {
   users: mockUsers,
   certifications: mockCertifications,
   flashCards: mockFlashCards,
+  questions: mockQuestions,
   learningSessions: mockLearningSessions,
   reviewCards: mockReviewCards,
   companies: mockCompanies,

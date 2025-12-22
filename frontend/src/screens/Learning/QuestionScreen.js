@@ -1,0 +1,485 @@
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  ActivityIndicator,
+} from 'react-native';
+import { questionService } from '../../services/questionService';
+import { useAuth } from '../../store/AuthContext';
+
+export default function QuestionScreen({ route, navigation }) {
+  const { user } = useAuth();
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [sessionId, setSessionId] = useState(null);
+  const [results, setResults] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [showExplanation, setShowExplanation] = useState(false);
+
+  // 문제 세션 시작
+  useEffect(() => {
+    const loadQuestions = async () => {
+      try {
+        setLoading(true);
+        
+        // 복습 모드인지 확인
+        const isReviewMode = route?.params?.isReview || false;
+        
+        if (isReviewMode) {
+          // 복습 세션 시작
+          const session = await questionService.startReviewSession(user?.id || 1);
+          setQuestions(session.questions || []);
+          setSessionId(session.sessionId);
+        } else {
+          // 일반 학습 세션 시작
+          const certificationId = route?.params?.certificationId || 1;
+          const session = await questionService.startQuestionSession(
+            certificationId,
+            user?.id || 1
+          );
+          setQuestions(session.questions || []);
+          setSessionId(session.sessionId);
+        }
+      } catch (error) {
+        console.error('문제 로딩 실패:', error);
+        // 에러 발생 시 빈 배열로 설정
+        setQuestions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadQuestions();
+  }, []);
+
+  const currentQuestion = questions[currentIndex];
+  const isLastQuestion = currentIndex === questions.length - 1;
+
+  const handleAnswerSelect = async (choice) => {
+    if (showExplanation) return; // 이미 정답을 확인한 경우 무시
+    
+    const isCorrect = choice === currentQuestion.answer;
+    setSelectedAnswer(choice);
+    setShowExplanation(true);
+
+    const isReviewMode = route?.params?.isReview || false;
+
+    // 답안 제출 (백엔드에 저장)
+    if (sessionId) {
+      try {
+        if (isReviewMode) {
+          // 복습 모드: 복습 문제 완료 처리
+          await questionService.completeReviewQuestion(
+            user?.id || 1,
+            currentQuestion.id,
+            isCorrect
+          );
+        } else {
+          // 일반 학습 모드: 답안 제출
+          await questionService.submitAnswer(
+            sessionId,
+            currentQuestion.id,
+            choice,
+            isCorrect
+          );
+          
+          // 틀린 문제는 복습 리스트에 추가
+          if (!isCorrect) {
+            try {
+              await questionService.addReviewQuestion(
+                user?.id || 1,
+                currentQuestion.id
+              );
+            } catch (error) {
+              console.error('복습 리스트 추가 실패:', error);
+            }
+          }
+        }
+        
+        // 결과 저장
+        setResults(prev => [...prev, {
+          questionId: currentQuestion.id,
+          selectedAnswer: choice,
+          isCorrect,
+        }]);
+      } catch (error) {
+        console.error('답안 제출 실패:', error);
+      }
+    }
+  };
+
+  const handleNext = async () => {
+    if (isLastQuestion) {
+      const isReviewMode = route?.params?.isReview || false;
+      
+      // 학습/복습 완료 처리
+      if (sessionId && results.length > 0) {
+        try {
+          if (isReviewMode) {
+            // 복습 세션 완료 (보너스 XP 지급)
+            const completionResult = await questionService.completeReviewSession(
+              sessionId,
+              results,
+              user?.id || 1
+            );
+            console.log('복습 완료:', completionResult);
+          } else {
+            // 일반 학습 세션 완료
+            const completionResult = await questionService.completeQuestionSession(
+              sessionId,
+              results,
+              user?.id || 1
+            );
+            console.log('학습 완료:', completionResult);
+          }
+        } catch (error) {
+          console.error('완료 처리 실패:', error);
+        }
+      }
+      navigation.goBack();
+    } else {
+      setCurrentIndex(currentIndex + 1);
+      setSelectedAnswer(null);
+      setShowExplanation(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>문제를 불러오는 중...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <Text style={styles.errorText}>문제를 불러올 수 없습니다.</Text>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.retryButtonText}>돌아가기</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const getTypeLabel = (type) => {
+    switch (type) {
+      case 'OX':
+        return 'O/X 문제';
+      case 'BLANK':
+        return '빈칸 채우기';
+      case 'ORDER':
+        return '순서 문제';
+      default:
+        return '문제';
+    }
+  };
+
+  const getButtonStyle = (choice) => {
+    if (!showExplanation) {
+      return selectedAnswer === choice ? styles.choiceButtonSelected : styles.choiceButton;
+    }
+
+    // 정답 확인 후 스타일
+    if (choice === currentQuestion.answer) {
+      return styles.choiceButtonCorrect;
+    }
+    if (selectedAnswer === choice && choice !== currentQuestion.answer) {
+      return styles.choiceButtonWrong;
+    }
+    return styles.choiceButton;
+  };
+
+  const getButtonTextStyle = (choice) => {
+    if (!showExplanation) {
+      return styles.choiceButtonText;
+    }
+
+    if (choice === currentQuestion.answer) {
+      return styles.choiceButtonTextCorrect;
+    }
+    if (selectedAnswer === choice && choice !== currentQuestion.answer) {
+      return styles.choiceButtonTextWrong;
+    }
+    return styles.choiceButtonText;
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* 상단 헤더 */}
+      <View style={styles.header}>
+        <Text style={styles.progress}>
+          {currentIndex + 1} / {questions.length}
+        </Text>
+        <View style={styles.typeContainer}>
+          <Text style={styles.typeLabel}>{getTypeLabel(currentQuestion.type)}</Text>
+          {currentQuestion.source === 'REAL_CBT' && (
+            <View style={styles.realCbtBadge}>
+              <Text style={styles.realCbtText}>실전 기출 문제</Text>
+              {currentQuestion.examInfo.year && (
+                <Text style={styles.examInfo}>
+                  {currentQuestion.examInfo.year}년 {currentQuestion.examInfo.round}
+                </Text>
+              )}
+            </View>
+          )}
+        </View>
+      </View>
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* 문제 본문 */}
+        <View style={styles.questionContainer}>
+          <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        </View>
+
+        {/* 선택지 */}
+        <View style={styles.choicesContainer}>
+          {currentQuestion.choices.map((choice, index) => (
+            <TouchableOpacity
+              key={index}
+              style={getButtonStyle(choice)}
+              onPress={() => handleAnswerSelect(choice)}
+              disabled={showExplanation}
+              activeOpacity={0.7}
+            >
+              <Text style={getButtonTextStyle(choice)}>{choice}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* 해설 */}
+        {showExplanation && (
+          <View style={styles.explanationContainer}>
+            <Text style={styles.explanationTitle}>해설</Text>
+            <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
+          </View>
+        )}
+      </ScrollView>
+
+      {/* 하단 버튼 */}
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={[
+            styles.nextButton,
+            !showExplanation && styles.nextButtonDisabled
+          ]}
+          onPress={handleNext}
+          disabled={!showExplanation}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.nextButtonText}>
+            {isLastQuestion ? '학습 완료' : '다음 문제'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  header: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  progress: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#007AFF',
+    marginBottom: 8,
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  typeLabel: {
+    fontSize: 14,
+    color: '#8E8E93',
+    marginRight: 12,
+  },
+  realCbtBadge: {
+    backgroundColor: '#FF3B30',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  realCbtText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  examInfo: {
+    color: '#fff',
+    fontSize: 11,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 20,
+  },
+  questionContainer: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  questionText: {
+    fontSize: 18,
+    lineHeight: 28,
+    color: '#000',
+  },
+  choicesContainer: {
+    gap: 12,
+    marginBottom: 20,
+  },
+  choiceButton: {
+    backgroundColor: '#fff',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E5E5E5',
+    alignItems: 'center',
+  },
+  choiceButtonSelected: {
+    backgroundColor: '#E3F2FD',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#007AFF',
+    alignItems: 'center',
+  },
+  choiceButtonCorrect: {
+    backgroundColor: '#E8F5E9',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#34C759',
+    alignItems: 'center',
+  },
+  choiceButtonWrong: {
+    backgroundColor: '#FFEBEE',
+    padding: 18,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#FF3B30',
+    alignItems: 'center',
+  },
+  choiceButtonText: {
+    fontSize: 16,
+    color: '#000',
+    fontWeight: '500',
+  },
+  choiceButtonTextCorrect: {
+    fontSize: 16,
+    color: '#34C759',
+    fontWeight: '600',
+  },
+  choiceButtonTextWrong: {
+    fontSize: 16,
+    color: '#FF3B30',
+    fontWeight: '600',
+  },
+  explanationContainer: {
+    backgroundColor: '#F8F9FA',
+    padding: 20,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
+    marginBottom: 20,
+  },
+  explanationTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 12,
+  },
+  explanationText: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#333',
+  },
+  footer: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E5E5',
+  },
+  nextButton: {
+    backgroundColor: '#007AFF',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  nextButtonDisabled: {
+    backgroundColor: '#C7C7CC',
+  },
+  nextButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#8E8E93',
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#FF3B30',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
