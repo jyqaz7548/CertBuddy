@@ -3,17 +3,28 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useAuth } from '../../store/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { questionService } from '../../services/questionService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LearningScreen({ route, navigation }) {
   const { user } = useAuth();
   const [certifications, setCertifications] = useState([]);
   const [progressMap, setProgressMap] = useState({});
   const [loading, setLoading] = useState(true);
+  const [priorityCertIds, setPriorityCertIds] = useState([]); // 우선 표시할 자격증 ID 목록
+
 
   // 자격증 목록 및 학습률 로드
   const loadCertifications = async () => {
     try {
       setLoading(true);
+      
+      // 우선 자격증 ID 목록 로드
+      const desiredCertsStr = await AsyncStorage.getItem('desiredCertifications');
+      let priorityIds = [];
+      if (desiredCertsStr) {
+        priorityIds = JSON.parse(desiredCertsStr);
+        setPriorityCertIds(priorityIds);
+      }
       
       // 문제가 있는 자격증 목록 가져오기
       const availableCerts = await questionService.getAvailableCertifications();
@@ -29,7 +40,22 @@ export default function LearningScreen({ route, navigation }) {
       
       const certsWithProgress = await Promise.all(progressPromises);
       
-      setCertifications(availableCerts);
+      // 우선 자격증을 상단에 배치
+      const priorityCerts = [];
+      const otherCerts = [];
+      
+      certsWithProgress.forEach(({ cert, progress }) => {
+        if (priorityIds.includes(cert.id)) {
+          priorityCerts.push({ cert, progress });
+        } else {
+          otherCerts.push({ cert, progress });
+        }
+      });
+      
+      // 우선 자격증을 먼저, 나머지를 나중에 배치
+      const sortedCerts = [...priorityCerts, ...otherCerts];
+      
+      setCertifications(sortedCerts.map(({ cert }) => cert));
       
       // 학습률 맵 생성
       const progressObj = {};
@@ -83,34 +109,61 @@ export default function LearningScreen({ route, navigation }) {
           </View>
         ) : (
           <View style={styles.certList}>
-            {certifications.map((cert) => {
+            {priorityCertIds.length > 0 && (
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>취득하고 싶은 자격증</Text>
+              </View>
+            )}
+            {certifications.map((cert, index) => {
               const progress = progressMap[cert.id] || 0;
+              const isPriority = priorityCertIds.includes(cert.id);
+              
+              // 첫 번째 일반 자격증 앞에 섹션 구분선 표시
+              const isFirstNonPriority = !isPriority && 
+                                         index > 0 && 
+                                         priorityCertIds.includes(certifications[index - 1]?.id);
               
               return (
-                <TouchableOpacity
-                  key={cert.id}
-                  style={styles.certCard}
-                  onPress={() => handleSelectCertification(cert)}
-                  activeOpacity={0.7}
-                >
-                  <View style={styles.certCardContent}>
-                    <Text style={styles.certName}>{cert.name}</Text>
-                    <View style={styles.progressContainer}>
-                      <View style={styles.progressBarContainer}>
-                        <View 
-                          style={[
-                            styles.progressBar, 
-                            { width: `${progress}%` }
-                          ]} 
-                        />
-                      </View>
-                      <Text style={styles.progressText}>{progress}%</Text>
+                <View key={cert.id}>
+                  {isFirstNonPriority && (
+                    <View style={styles.sectionContainer}>
+                      <Text style={styles.sectionTitle}>다른 자격증</Text>
                     </View>
-                  </View>
-                  <View style={styles.arrowContainer}>
-                    <Text style={styles.arrow}>›</Text>
-                  </View>
-                </TouchableOpacity>
+                  )}
+                  <TouchableOpacity
+                    style={[
+                      styles.certCard,
+                      isPriority && styles.priorityCertCard
+                    ]}
+                    onPress={() => handleSelectCertification(cert)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.certCardContent}>
+                      <View style={styles.certNameContainer}>
+                        <Text style={styles.certName}>{cert.name}</Text>
+                        {isPriority && (
+                          <View style={styles.priorityBadge}>
+                            <Text style={styles.priorityBadgeText}>우선</Text>
+                          </View>
+                        )}
+                      </View>
+                      <View style={styles.progressContainer}>
+                        <View style={styles.progressBarContainer}>
+                          <View 
+                            style={[
+                              styles.progressBar, 
+                              { width: `${progress}%` }
+                            ]} 
+                          />
+                        </View>
+                        <Text style={styles.progressText}>{progress}%</Text>
+                      </View>
+                    </View>
+                    <View style={styles.arrowContainer}>
+                      <Text style={styles.arrow}>›</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </View>
@@ -217,5 +270,36 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#C7C7CC',
     fontWeight: '300',
+  },
+  sectionContainer: {
+    marginTop: 20,
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
+  },
+  priorityCertCard: {
+    borderWidth: 2,
+    borderColor: '#007AFF',
+  },
+  certNameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  priorityBadge: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  priorityBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
   },
 });

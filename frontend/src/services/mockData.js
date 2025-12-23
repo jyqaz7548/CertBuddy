@@ -31,16 +31,19 @@ const mockCompanies = [
   { id: 6, name: '모르겠습니다' },
 ];
 
-// 튜토리얼용 자격증 목록
+// 튜토리얼용 자격증 목록 (취득한 자격증, 취득하고 싶은 자격증)
 const mockTutorialCertifications = [
-  { id: 1, name: '자동화설비기능사' },
   { id: 2, name: '전기기능사' },
-  { id: 3, name: '프로그래밍기능사' },
   { id: 4, name: '전자기능사' },
-  { id: 5, name: '컴활' },
-  { id: 6, name: '모르겠습니다' },
-  { id: 7, name: '프로그래밍기능사' },
+  { id: 9, name: '전산응용기계제도기능사' },
+  { id: 1, name: '자동화설비기능사' },
+  { id: 10, name: '컴활1급' },
+  { id: 3, name: '프로그래밍기능사' },
+  { id: 11, name: '3D프린터운용기능사' },
+  { id: 12, name: '웹디자인개발기능사' },
   { id: 8, name: '정보기기운용기능사' },
+  { id: 13, name: '기타' },
+  { id: 14, name: '없음' },
 ];
 
 // 이름 모자이크 처리 함수 (성만 보이고 나머지는 OO로 표시)
@@ -81,6 +84,34 @@ const mockFriendsData = [
     grade: 2,
     certifications: [7], // 프로그래밍기능사
   },
+  {
+    id: 5,
+    name: '유OO',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    certifications: [], // 자격증 없음
+  },
+  {
+    id: 6,
+    name: '김OO',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    certifications: [], // 자격증 없음
+  },
+  {
+    id: 7,
+    name: '한OO',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    certifications: [], // 자격증 없음
+  },
+  {
+    id: 8,
+    name: '최OO',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    certifications: [3, 2], // 프로그래밍기능사, 전기기능사
+  },
 ];
 
 // 친구 데이터를 기반으로 실제 통계 계산 함수
@@ -106,34 +137,63 @@ const calculateDepartmentStats = () => {
     const { department, grade, friends } = group;
     const totalFriends = friends.length;
     
-    // 각 자격증별로 몇 명이 가지고 있는지 카운트
-    const certCounts = {};
+    // 각 친구별로 보유한 자격증 이름 목록 (같은 이름은 하나로 통합)
+    const friendCertNames = {};
     friends.forEach(friend => {
+      friendCertNames[friend.id] = new Set();
       friend.certifications.forEach(certId => {
-        if (!certCounts[certId]) {
-          certCounts[certId] = 0;
+        const certInfo = mockTutorialCertifications.find(c => c.id === certId);
+        if (certInfo) {
+          friendCertNames[friend.id].add(certInfo.name);
         }
-        certCounts[certId]++;
       });
     });
     
-    // 퍼센테이지 계산
+    // 자격증 이름별로 몇 명이 가지고 있는지 카운트
+    const certCountsByName = {};
+    Object.values(friendCertNames).forEach(certNames => {
+      certNames.forEach(certName => {
+        if (!certCountsByName[certName]) {
+          certCountsByName[certName] = 0;
+        }
+        certCountsByName[certName]++;
+      });
+    });
+    
+    // 퍼센테이지 계산 (이름 기준으로 통합)
     const gradeStats = [];
-    Object.keys(certCounts).forEach(certId => {
-      const count = certCounts[certId];
+    const processedNames = new Set(); // 이미 처리한 이름 추적
+    Object.keys(certCountsByName).forEach(certName => {
+      // 같은 이름이 이미 처리되었으면 스킵
+      if (processedNames.has(certName)) {
+        return;
+      }
+      
+      const count = certCountsByName[certName];
       const percentage = Math.round((count / totalFriends) * 100);
-      const certInfo = mockTutorialCertifications.find(c => c.id === parseInt(certId));
+      // 가장 작은 ID를 대표 ID로 사용 (일관성 유지)
+      const certInfo = mockTutorialCertifications.find(c => c.name === certName);
       if (certInfo) {
         gradeStats.push({
-          certificationId: parseInt(certId),
-          name: certInfo.name,
+          certificationId: certInfo.id,
+          name: certName,
           percentage: percentage,
         });
+        processedNames.add(certName);
       }
     });
     
     // 퍼센테이지 순으로 정렬
     gradeStats.sort((a, b) => b.percentage - a.percentage);
+    
+    // 디버깅 로그
+    if (department === '로봇소프트웨어과' && grade === 2) {
+      console.log('calculateDepartmentStats - 로봇소프트웨어과 2학년:');
+      console.log('  - 친구 수:', totalFriends);
+      console.log('  - 친구별 자격증:', friendCertNames);
+      console.log('  - 이름별 카운트:', certCountsByName);
+      console.log('  - 최종 결과:', gradeStats);
+    }
     
     // stats에 저장
     if (!stats[department]) {
@@ -183,23 +243,7 @@ const mockDepartmentCertStats = {
       { certificationId: 1, name: '자동화설비기능사', percentage: 12 },
     ],
   },
-  '로봇소프트웨어과': {
-    1: [
-      { certificationId: 3, name: '프로그래밍기능사', percentage: 40 },
-      { certificationId: 7, name: '프로그래밍기능사', percentage: 30 },
-      { certificationId: 5, name: '컴활', percentage: 20 },
-    ],
-    2: [
-      { certificationId: 8, name: '정보기기운용기능사', percentage: 67 },
-      { certificationId: 7, name: '프로그래밍기능사', percentage: 67 },
-      { certificationId: 3, name: '프로그래밍기능사', percentage: 33 },
-    ],
-    3: [
-      { certificationId: 3, name: '프로그래밍기능사', percentage: 45 },
-      { certificationId: 7, name: '프로그래밍기능사', percentage: 30 },
-      { certificationId: 5, name: '컴활', percentage: 15 },
-    ],
-  },
+  // '로봇소프트웨어과'는 calculateDepartmentStats()로 계산된 값 사용
   '로봇정보통신과': {
     1: [
       { certificationId: 4, name: '전자기능사', percentage: 40 },
@@ -228,12 +272,14 @@ const mockDepartmentCertStats = {
 };
 
 // 친구 데이터 기반으로 실제 통계 계산 및 병합
+// 계산된 통계가 우선되도록 덮어쓰기
 const calculatedStats = calculateDepartmentStats();
 Object.keys(calculatedStats).forEach(dept => {
   if (!mockDepartmentCertStats[dept]) {
     mockDepartmentCertStats[dept] = {};
   }
   Object.keys(calculatedStats[dept]).forEach(grade => {
+    // 계산된 통계로 덮어쓰기 (하드코딩된 값보다 우선)
     mockDepartmentCertStats[dept][grade] = calculatedStats[dept][grade];
   });
 });

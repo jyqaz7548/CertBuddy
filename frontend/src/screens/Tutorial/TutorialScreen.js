@@ -14,99 +14,79 @@ import { mockData } from '../../services/mockData';
 export default function TutorialScreen({ navigation }) {
   const { user } = useAuth();
   const [step, setStep] = useState(1);
-  const [selectedCompany, setSelectedCompany] = useState(null);
-  const [selectedCertifications, setSelectedCertifications] = useState([]);
-  const [recommendedCert, setRecommendedCert] = useState(null);
+  const [acquiredCertifications, setAcquiredCertifications] = useState([]); // 취득한 자격증
+  const [desiredCertifications, setDesiredCertifications] = useState([]); // 취득하고 싶은 자격증
 
-  const companies = mockData.companies;
   const certifications = mockData.tutorialCertifications;
 
-  // Step 1: 기업 선택
-  const handleCompanySelect = (companyId) => {
-    setSelectedCompany(companyId);
+  // Step 1: 취득한 자격증 선택
+  const handleAcquiredCertToggle = (certId) => {
+    if (certId === 14) {
+      // "없음"은 단독 선택
+      setAcquiredCertifications([14]);
+    } else {
+      // 다른 자격증 선택 시 "없음" 제거
+      const filtered = acquiredCertifications.filter((id) => id !== 14);
+      if (filtered.includes(certId)) {
+        setAcquiredCertifications(filtered.filter((id) => id !== certId));
+      } else {
+        setAcquiredCertifications([...filtered, certId]);
+      }
+    }
   };
 
   const handleNextStep1 = () => {
-    if (!selectedCompany) {
-      Alert.alert('알림', '기업을 선택해주세요.');
+    // "없음"을 선택하지 않았고 아무것도 선택하지 않은 경우
+    if (acquiredCertifications.length === 0) {
+      Alert.alert('알림', '취득한 자격증을 선택해주세요. (없으면 "없음" 선택)');
       return;
     }
     setStep(2);
   };
 
-  // Step 2: 자격증 선택
-  const handleCertificationToggle = (certId) => {
-    if (certId === 6) {
-      // "모르겠습니다"는 단독 선택
-      setSelectedCertifications([6]);
+  // Step 2: 취득하고 싶은 자격증 선택
+  const handleDesiredCertToggle = (certId) => {
+    if (certId === 14) {
+      // "없음"은 단독 선택
+      setDesiredCertifications([14]);
     } else {
-      // 다른 자격증 선택 시 "모르겠습니다" 제거
-      const filtered = selectedCertifications.filter((id) => id !== 6);
+      // 다른 자격증 선택 시 "없음" 제거
+      const filtered = desiredCertifications.filter((id) => id !== 14);
       if (filtered.includes(certId)) {
-        setSelectedCertifications(filtered.filter((id) => id !== certId));
+        setDesiredCertifications(filtered.filter((id) => id !== certId));
       } else {
-        setSelectedCertifications([...filtered, certId]);
+        setDesiredCertifications([...filtered, certId]);
       }
     }
   };
 
   const handleNextStep2 = () => {
-    if (selectedCertifications.length === 0) {
-      Alert.alert('알림', '자격증을 선택해주세요.');
+    // "없음"을 선택하지 않았고 아무것도 선택하지 않은 경우
+    if (desiredCertifications.length === 0) {
+      Alert.alert('알림', '취득하고 싶은 자격증을 선택해주세요. (없으면 "없음" 선택)');
       return;
     }
-
-    // Step 3 분기 처리
-    const isCompanyUnknown = selectedCompany === 6;
-    const isCertUnknown = selectedCertifications.includes(6);
-
-    if (isCompanyUnknown && isCertUnknown) {
-      // 자동 추천 화면으로
-      setStep(3);
-      loadRecommendedCertifications();
-    } else {
-      // Step 4로 바로 이동
-      setStep(4);
-    }
+    setStep(3);
   };
 
-  // Step 3: 자동 추천
-  const loadRecommendedCertifications = () => {
-    if (!user?.department || !user?.grade) return;
-
-    const stats =
-      mockData.departmentCertStats[user.department]?.[user.grade] || [];
-    if (stats.length > 0) {
-      setRecommendedCert(stats[0]); // 첫 번째 추천 자격증
-    }
-  };
-
-  const handleRecommendedCertSelect = (certId) => {
-    setRecommendedCert({ certificationId: certId });
-    setStep(4);
-  };
-
-  // Step 4: 학습 시작
+  // Step 3: 학습 시작
   const handleCompleteTutorial = async () => {
     try {
       // 튜토리얼 완료 여부 저장
       await AsyncStorage.setItem('tutorialCompleted', 'true');
 
-      // 선택된 기업 정보 저장 (나중에 선배 자격증 추천에 사용)
-      if (selectedCompany && selectedCompany !== 6) {
-        await AsyncStorage.setItem('selectedCompanyId', selectedCompany.toString());
+      // 취득한 자격증 저장 (없음 제외)
+      const acquired = acquiredCertifications.filter(id => id !== 14);
+      if (acquired.length > 0) {
+        await AsyncStorage.setItem('acquiredCertifications', JSON.stringify(acquired));
       }
 
-      // 선택된 자격증을 주 학습 자격증으로 설정
-      let mainCertId = null;
-      if (step === 3 && recommendedCert) {
-        mainCertId = recommendedCert.certificationId;
-      } else if (selectedCertifications.length > 0 && !selectedCertifications.includes(6)) {
-        mainCertId = selectedCertifications[0]; // 첫 번째 선택 자격증
-      }
-
-      if (mainCertId) {
-        await AsyncStorage.setItem('mainCertificationId', mainCertId.toString());
+      // 취득하고 싶은 자격증 저장 (없음 제외)
+      const desired = desiredCertifications.filter(id => id !== 14);
+      if (desired.length > 0) {
+        await AsyncStorage.setItem('desiredCertifications', JSON.stringify(desired));
+        // 첫 번째 취득하고 싶은 자격증을 우선 표시용으로 저장
+        await AsyncStorage.setItem('priorityCertificationId', desired[0].toString());
       }
 
       // 홈 화면으로 이동
@@ -117,31 +97,36 @@ export default function TutorialScreen({ navigation }) {
     }
   };
 
-  // Step 1 렌더링
+  // Step 1 렌더링: 취득한 자격증 선택
   const renderStep1 = () => {
     return (
       <View style={styles.stepContainer}>
-        <Text style={styles.question}>취업하고 싶은 기업이 있나요?</Text>
+        <Text style={styles.question}>이미 취득한 자격증이 있나요?</Text>
+        <Text style={styles.subtitle}>복수 선택 가능</Text>
         <ScrollView style={styles.optionsContainer}>
-          {companies.map((company) => (
-            <TouchableOpacity
-              key={company.id}
-              style={[
-                styles.optionButton,
-                selectedCompany === company.id && styles.optionButtonSelected,
-              ]}
-              onPress={() => handleCompanySelect(company.id)}
-            >
-              <Text
+          <View style={styles.gridContainer}>
+            {certifications.map((cert) => (
+              <TouchableOpacity
+                key={cert.id}
                 style={[
-                  styles.optionText,
-                  selectedCompany === company.id && styles.optionTextSelected,
+                  styles.certBox,
+                  acquiredCertifications.includes(cert.id) &&
+                    styles.certBoxSelected,
                 ]}
+                onPress={() => handleAcquiredCertToggle(cert.id)}
               >
-                {company.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.certBoxText,
+                    acquiredCertifications.includes(cert.id) &&
+                      styles.certBoxTextSelected,
+                  ]}
+                >
+                  {cert.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
         <TouchableOpacity style={styles.nextButton} onPress={handleNextStep1}>
           <Text style={styles.nextButtonText}>다음</Text>
@@ -150,36 +135,38 @@ export default function TutorialScreen({ navigation }) {
     );
   };
 
-  // Step 2 렌더링
+  // Step 2 렌더링: 취득하고 싶은 자격증 선택
   const renderStep2 = () => {
     return (
       <View style={styles.stepContainer}>
         <Text style={styles.question}>
-          관심 있거나 취득하고 싶은 자격증이 있나요?
+          취득하고 싶은 자격증이 있나요?
         </Text>
         <Text style={styles.subtitle}>복수 선택 가능</Text>
         <ScrollView style={styles.optionsContainer}>
-          {certifications.map((cert) => (
-            <TouchableOpacity
-              key={cert.id}
-              style={[
-                styles.optionButton,
-                selectedCertifications.includes(cert.id) &&
-                  styles.optionButtonSelected,
-              ]}
-              onPress={() => handleCertificationToggle(cert.id)}
-            >
-              <Text
+          <View style={styles.gridContainer}>
+            {certifications.map((cert) => (
+              <TouchableOpacity
+                key={cert.id}
                 style={[
-                  styles.optionText,
-                  selectedCertifications.includes(cert.id) &&
-                    styles.optionTextSelected,
+                  styles.certBox,
+                  desiredCertifications.includes(cert.id) &&
+                    styles.certBoxSelected,
                 ]}
+                onPress={() => handleDesiredCertToggle(cert.id)}
               >
-                {cert.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.certBoxText,
+                    desiredCertifications.includes(cert.id) &&
+                      styles.certBoxTextSelected,
+                  ]}
+                >
+                  {cert.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </ScrollView>
         <TouchableOpacity style={styles.nextButton} onPress={handleNextStep2}>
           <Text style={styles.nextButtonText}>다음</Text>
@@ -188,68 +175,14 @@ export default function TutorialScreen({ navigation }) {
     );
   };
 
-  // Step 3 렌더링 (자동 추천)
+  // Step 3 렌더링 (학습 시작)
   const renderStep3 = () => {
-    const stats =
-      mockData.departmentCertStats[user?.department]?.[user?.grade] || [];
-
-    return (
-      <View style={styles.stepContainer}>
-        <Text style={styles.question}>
-          같은 학과 친구들은 이런 자격증을{'\n'}가장 많이 준비하고 있어요
-        </Text>
-        <ScrollView style={styles.optionsContainer}>
-          {stats.map((stat) => (
-            <TouchableOpacity
-              key={stat.certificationId}
-              style={[
-                styles.recommendedOption,
-                recommendedCert?.certificationId === stat.certificationId &&
-                  styles.optionButtonSelected,
-              ]}
-              onPress={() => handleRecommendedCertSelect(stat.certificationId)}
-            >
-              <View style={styles.recommendedContent}>
-                <Text
-                  style={[
-                    styles.recommendedName,
-                    recommendedCert?.certificationId === stat.certificationId &&
-                      styles.optionTextSelected,
-                  ]}
-                >
-                  {stat.name}
-                </Text>
-                <Text style={styles.recommendedPercentage}>
-                  {stat.percentage}%
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={() => {
-            if (recommendedCert) {
-              setStep(4);
-            } else {
-              Alert.alert('알림', '자격증을 선택해주세요.');
-            }
-          }}
-        >
-          <Text style={styles.nextButtonText}>다음</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  // Step 4 렌더링 (학습 시작)
-  const renderStep4 = () => {
     return (
       <View style={styles.stepContainer}>
         <Text style={styles.question}>학습을 시작해볼까요?</Text>
         <View style={styles.infoBox}>
           <Text style={styles.infoText}>
-            선택한 자격증의 플래시카드가{'\n'}자동으로 생성되었어요
+            선택한 자격증의 문제를{'\n'}학습할 수 있어요
           </Text>
           <Text style={styles.infoSubtext}>
             하루 5~15분이면 충분해요
@@ -272,14 +205,13 @@ export default function TutorialScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.stepIndicator}>
-          {step} / 4
+          {step} / 3
         </Text>
       </View>
       <ScrollView style={styles.content}>
         {step === 1 && renderStep1()}
         {step === 2 && renderStep2()}
         {step === 3 && renderStep3()}
-        {step === 4 && renderStep4()}
       </ScrollView>
     </View>
   );
@@ -325,6 +257,38 @@ const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 20,
   },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  certBox: {
+    width: '48%',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    padding: 16,
+    borderWidth: 2,
+    borderColor: '#E5E5EA',
+    minHeight: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  certBoxSelected: {
+    backgroundColor: '#E3F2FD',
+    borderColor: '#007AFF',
+  },
+  certBoxText: {
+    fontSize: 14,
+    color: '#000',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  certBoxTextSelected: {
+    color: '#007AFF',
+    fontWeight: 'bold',
+  },
   optionButton: {
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
@@ -345,29 +309,6 @@ const styles = StyleSheet.create({
   optionTextSelected: {
     color: '#007AFF',
     fontWeight: 'bold',
-  },
-  recommendedOption: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 15,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
-  recommendedContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  recommendedName: {
-    fontSize: 16,
-    color: '#000',
-    flex: 1,
-  },
-  recommendedPercentage: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#007AFF',
   },
   nextButton: {
     backgroundColor: '#007AFF',

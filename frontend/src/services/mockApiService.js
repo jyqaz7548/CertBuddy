@@ -126,40 +126,45 @@ export const mockLearningService = {
     await delay(600);
     
     const recommendations = [];
-    const certMap = new Map(); // 중복 제거용
+    const certMapByName = new Map(); // 이름 기준 중복 제거용
     
     // 1. 같은 학과의 모든 학년 학생들의 자격증 통계 가져오기 (학년 무관)
     if (department) {
       const deptStats = mockData.departmentCertStats[department];
       if (deptStats) {
-        // 모든 학년의 통계를 합쳐서 평균 계산
-        const allStats = {};
+        // 모든 학년의 통계를 합쳐서 평균 계산 (이름 기준으로 통합)
+        const allStatsByName = {};
         
         Object.keys(deptStats).forEach(gradeKey => {
           const stats = deptStats[gradeKey] || [];
           stats.forEach(stat => {
-            if (!allStats[stat.certificationId]) {
-              allStats[stat.certificationId] = {
-                certificationId: stat.certificationId,
-                name: stat.name,
+            const certName = stat.name;
+            if (!allStatsByName[certName]) {
+              allStatsByName[certName] = {
+                name: certName,
                 percentages: [],
+                certificationIds: new Set(), // 어떤 ID들이 이 이름에 해당하는지 추적
               };
             }
-            allStats[stat.certificationId].percentages.push(stat.percentage);
+            allStatsByName[certName].percentages.push(stat.percentage);
+            allStatsByName[certName].certificationIds.add(stat.certificationId);
           });
         });
         
         // 평균 퍼센트 계산하여 자격증 객체로 변환
-        Object.values(allStats).forEach(stat => {
+        Object.keys(allStatsByName).forEach(certName => {
+          const stat = allStatsByName[certName];
           const avgPercentage = Math.round(
             stat.percentages.reduce((sum, p) => sum + p, 0) / stat.percentages.length
           );
-          const certInfo = mockData.tutorialCertifications.find(c => c.id === stat.certificationId);
+          // 가장 작은 ID를 대표 ID로 사용
+          const minCertId = Math.min(...Array.from(stat.certificationIds));
+          const certInfo = mockData.tutorialCertifications.find(c => c.id === minCertId);
           if (certInfo) {
-            certMap.set(stat.certificationId, {
-              id: stat.certificationId,
-              name: certInfo.name,
-              category: getCategoryFromId(stat.certificationId),
+            certMapByName.set(certName, {
+              id: minCertId,
+              name: certName,
+              category: getCategoryFromId(minCertId),
               description: `같은 과 학생들의 ${avgPercentage}%가 취득했어요`,
               percentage: avgPercentage,
               source: 'department_stats',
@@ -169,7 +174,7 @@ export const mockLearningService = {
       }
     }
     
-    // 2. 같은 학과 친구들의 실제 자격증도 추가 (중복 제거)
+    // 2. 같은 학과 친구들의 실제 자격증도 추가 (이름 기준 중복 제거)
     if (department) {
       const sameDeptFriends = mockData.friendsData.filter(
         friend => friend.department === department
@@ -177,14 +182,15 @@ export const mockLearningService = {
       
       sameDeptFriends.forEach(friend => {
         friend.certifications.forEach(certId => {
-          // 이미 추가된 자격증인지 확인
-          if (!certMap.has(certId)) {
-            const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
-            if (certInfo) {
+          const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
+          if (certInfo) {
+            const certName = certInfo.name;
+            // 이미 추가된 자격증인지 이름으로 확인
+            if (!certMapByName.has(certName)) {
               const maskedName = mockData.maskName(friend.name);
-              certMap.set(certId, {
+              certMapByName.set(certName, {
                 id: certId,
-                name: certInfo.name,
+                name: certName,
                 category: getCategoryFromId(certId),
                 description: `${maskedName}님이 취득했어요`,
                 source: 'friend',
@@ -196,7 +202,7 @@ export const mockLearningService = {
       });
     }
     
-    return Array.from(certMap.values());
+    return Array.from(certMapByName.values());
   },
 
   // 플래시카드 조회
@@ -413,23 +419,21 @@ export const mockQuestionService = {
       []
     );
     
-    // 해당 자격증의 문제 ID 목록
-    const certQuestionIds = new Set(allQuestions.map(q => q.id));
-    
     // 해당 자격증의 복습 문제만 필터링
-    // certificationId가 있으면 그것으로 필터링, 없으면 문제 ID로 필터링 (하위 호환성)
+    // 반드시 certificationId로만 필터링 (각 자격증의 문제 ID가 1부터 시작하므로 문제 ID로는 구분 불가)
     const certReviewQuestions = reviewQuestions.filter(rq => {
+      // userId와 isCompleted 체크
       if (rq.userId !== userId || rq.isCompleted) {
         return false;
       }
       
-      // certificationId가 있으면 그것으로 필터링
-      if (rq.certificationId !== undefined && rq.certificationId !== null) {
-        return rq.certificationId === certificationId;
+      // certificationId가 반드시 있어야 함 (없으면 무시)
+      if (rq.certificationId === undefined || rq.certificationId === null) {
+        return false; // certificationId가 없으면 해당 자격증의 복습 문제가 아님
       }
       
-      // certificationId가 없으면 문제 ID로 필터링 (기존 데이터 호환성)
-      return certQuestionIds.has(rq.questionId);
+      // certificationId로만 필터링
+      return rq.certificationId === certificationId;
     });
     
     // 각 일차별 문제 ID 범위 계산 (하루에 6문제씩)
@@ -442,11 +446,7 @@ export const mockQuestionService = {
     // 각 일차별 복습 문제 수 계산
     const dayReviewCounts = {};
     certReviewQuestions.forEach(rq => {
-      // 문제 ID가 해당 자격증의 문제 범위에 있는지 확인
-      if (!certQuestionIds.has(rq.questionId)) {
-        return; // 해당 자격증의 문제가 아니면 스킵
-      }
-      
+      // certificationId가 이미 필터링되었으므로, 문제 ID 범위만 확인
       for (let day = 1; day <= TOTAL_DAYS; day++) {
         const { startId, endId } = getDayQuestionIds(day);
         if (rq.questionId >= startId && rq.questionId <= endId) {

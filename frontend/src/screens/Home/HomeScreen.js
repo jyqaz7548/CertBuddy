@@ -73,10 +73,11 @@ export default function HomeScreen({ navigation }) {
     });
   };
 
-  const handleCertificationSelect = (certificationId) => {
-    // 자격증 선택 시 문제 풀이 화면으로 이동
-    navigation.navigate('Question', {
+  const handleCertificationSelect = (certificationId, certificationName) => {
+    // 자격증 선택 시 일차 선택 화면으로 이동
+    navigation.navigate('DaySelect', {
       certificationId: certificationId,
+      certificationName: certificationName,
     });
   };
 
@@ -169,7 +170,7 @@ export default function HomeScreen({ navigation }) {
               <TouchableOpacity
                 key={cert.id}
                 style={styles.certCard}
-                onPress={() => handleCertificationSelect(cert.id)}
+                onPress={() => handleCertificationSelect(cert.id, cert.name)}
                 activeOpacity={0.7}
               >
                 <View style={styles.certCardHeader}>

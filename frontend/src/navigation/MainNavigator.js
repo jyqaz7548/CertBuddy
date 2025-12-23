@@ -24,6 +24,11 @@ function HomeStack() {
         options={{ title: '홈' }}
       />
       <Stack.Screen 
+        name="DaySelect" 
+        component={DaySelectScreen}
+        options={{ title: '일차 선택' }}
+      />
+      <Stack.Screen 
         name="Question" 
         component={QuestionScreen}
         options={{ title: '문제 풀이' }}
