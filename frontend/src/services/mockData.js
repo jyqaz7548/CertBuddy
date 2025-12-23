@@ -186,8 +186,340 @@ const mockDepartmentCertStats = {
 const mockFlashCards = {};
 
 // Mock 문제 데이터 (자격증별로 분리)
-// certificationId: 2 = 전기기능사
+// certificationId: 1 = 자동화설비기능사, 2 = 전기기능사
 const mockQuestions = {
+  1: [ // 자동화설비기능사
+    {
+      id: 1,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "선반 작업 시 발생한 칩(Chip)은 기계가 작동 중일 때 손으로 즉시 제거해야 안전하다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "칩은 매우 날카롭고 뜨거우며, 회전하는 기계에 손이 말려들어갈 위험이 있으므로 반드시 기계를 정지시킨 후 브러시나 갈고리 등을 사용하여 제거해야 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 2,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "CNC 선반 프로그래밍에서 공구를 급속 이송(위치 결정)시킬 때 사용하는 G 코드는 무엇인가?",
+      choices: [
+        "G00",
+        "G01",
+        "G02",
+        "G03"
+      ],
+      answer: "G00",
+      explanation: "G00은 급속 위치 결정(급송), G01은 직선 보간(절삭 이송), G02는 시계 방향 원호 보간, G03은 반시계 방향 원호 보간입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 3,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "유압 장치에서 작동유의 온도가 상승하면 점도는 낮아진다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "일반적으로 액체(작동유)는 온도가 상승하면 분자 운동이 활발해져 점도가 낮아(묽어)집니다. 반대로 기체는 온도가 오르면 점도가 높아지는 경향이 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 4,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기계 제도에서 물체의 보이지 않는 부분의 형상을 나타낼 때 사용하는 선의 명칭은 무엇인가?",
+      choices: [
+        "외형선",
+        "숨은선",
+        "중심선",
+        "파단선"
+      ],
+      answer: "숨은선",
+      explanation: "물체의 보이지 않는 부분은 점선 또는 파선 형태의 '숨은선'으로 표현합니다. 외형선은 보이는 부분, 중심선은 도형의 중심, 파단선은 불규칙한 경계를 나타냅니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 5,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "PLC 시퀀스 제어에서 두 개의 입력 접점이 직렬로 연결되어, 두 입력이 모두 ON일 때만 출력이 발생하는 논리 회로는?",
+      choices: [
+        "OR 회로",
+        "AND 회로",
+        "NOT 회로",
+        "NAND 회로"
+      ],
+      answer: "AND 회로",
+      explanation: "직렬 연결은 AND 논리(논리곱)에 해당하며, 모든 조건이 만족(1)되어야 결과가 출력됩니다. 병렬 연결은 OR 논리에 해당합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 6,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "CNC공작기계에 사용되는 좌표계 중에서 절대 좌표계의 기준이 되며, 프로그램 원점과 동일한 지점에 위치하는 좌표계는?",
+      choices: [
+        "기계 좌표계",
+        "상대 좌표계",
+        "측정 좌표계",
+        "공작물 좌표계"
+      ],
+      answer: "공작물 좌표계",
+      explanation: "공작물 좌표계(G54~G59)는 가공 프로그램을 작성할 때 기준이 되는 좌표계로, 일반적으로 프로그램 원점과 일치시켜 사용합니다. 기계 좌표계는 기계 원점을 기준으로 하는 고정된 좌표계입니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 7,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "연삭 숫돌의 입자가 무디거나 눈이 메워졌을 때, 숫돌의 표면을 깎아내어 예리한 날을 생성하는 작업을 '드레싱(Dressing)'이라고 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "드레싱(Dressing)은 눈메움이나 무딤 현상이 발생했을 때 새로운 절삭날을 생성하는 작업이며, 트루잉(Truing)은 숫돌의 형상을 수정하거나 편심을 잡는 작업입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 8,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 나사의 종류를 표시하는 기호가 잘못 짝지어진 것은?",
+      choices: [
+        "M : 미터 나사",
+        "R : 관용 테이퍼 수나사",
+        "Tr : 미터 사다리꼴 나사",
+        "UNC : 유니파이 가는 나사"
+      ],
+      answer: "UNC : 유니파이 가는 나사",
+      explanation: "UNC는 유니파이 보통 나사(Coarse)를 의미하며, 유니파이 가는 나사(Fine)는 UNF로 표기합니다. 나머지는 올바른 표기입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 9,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "공압 장치는 유압 장치에 비해 힘(출력)이 매우 크고, 속도 제어가 정밀하다는 장점이 있다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "공압은 공기의 압축성 때문에 정밀한 속도 제어가 어렵고 유압에 비해 큰 힘을 내기 어렵습니다. 큰 힘과 정밀한 제어는 유압 장치의 특징입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 10,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속 물체가 센서의 검출면에 접근할 때 발생하는 와전류 손실을 이용하여 물체의 유무를 감지하는 센서는?",
+      choices: [
+        "광전 센서",
+        "유도형 근접 센서",
+        "정전 용량형 센서",
+        "리미트 스위치"
+      ],
+      answer: "유도형 근접 센서",
+      explanation: "유도형(고주파 발진형) 근접 센서는 자성체(금속)에만 반응하며 와전류 손실 원리를 이용합니다. 정전 용량형은 금속, 비금속 모두 감지 가능합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 11,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "자동화 시스템의 5대 요소 중, 제어부의 명령을 받아 실제로 일을 수행(동작)하는 구동 기기에 해당하는 것은?",
+      choices: [
+        "센서(Sensor)",
+        "프로세서(Processor)",
+        "액추에이터(Actuator)",
+        "소프트웨어(Software)"
+      ],
+      answer: "액추에이터(Actuator)",
+      explanation: "액추에이터는 전기, 유압, 공압 등의 에너지를 기계적인 움직임으로 변환하는 구동 장치(모터, 실린더 등)를 말합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 12,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "전동기 과부하 보호용 계전기는?",
+      choices: [
+        "한시계전기",
+        "파워계전기",
+        "리드계전기",
+        "열동형계전기"
+      ],
+      answer: "열동형계전기",
+      explanation: "열동형 계전기(Thermal Relay)는 전류가 과하게 흐를 때 발생하는 열을 이용하여 바이메탈을 휘게 만들어 회로를 차단함으로써 전동기를 소손으로부터 보호합니다.",
+      examInfo: {
+        year: 2014,
+        round: "4회"
+      }
+    },
+    {
+      id: 13,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "3각법 투상도에서 평면도는 정면도의 위쪽에 배치된다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "제3각법에서는 눈 -> 투상면 -> 물체의 순서로 배치되므로, 정면도를 기준으로 평면도는 위쪽, 우측면도는 오른쪽에 배치됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 14,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "밀링 머신에서 공작물의 이송 방향과 커터의 회전 방향이 같은 방향으로 진행되는 절삭 방법은?",
+      choices: [
+        "상향 절삭",
+        "하향 절삭",
+        "정면 절삭",
+        "측면 절삭"
+      ],
+      answer: "하향 절삭",
+      explanation: "하향 절삭(Down milling)은 커터의 회전 방향과 공작물 이송 방향이 같습니다. 가공면이 깨끗하지만 백래시 제거 장치가 필요합니다. 상향 절삭은 방향이 반대입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 15,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "시퀀스 제어 회로에서 자기유지 회로를 해제하기 위해서는 주로 b접점(NC) 스위치를 직렬로 연결하여 사용한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "자기유지 회로는 한 번 신호를 주면 계속 동작 상태를 유지하는데, 이를 끊어주기(Reset/Stop) 위해서는 평소에 닫혀 있다가 누르면 열리는 b접점 스위치를 직렬로 연결합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 16,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기하공차 기호 중에서 '평행도'를 나타내는 기호는?",
+      choices: [
+        "⊥",
+        "∥",
+        "◎",
+        "∠"
+      ],
+      answer: "∥",
+      explanation: "∥는 평행도, ⊥는 직각도, ◎는 동심도, ∠는 경사도를 나타내는 기하공차 기호입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 17,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "산업용 로봇의 동작 형태 중 X, Y, Z 3개의 직선 운동 축으로 구성되어 직육면체 형태의 작업 영역을 가지는 로봇은?",
+      choices: [
+        "직교 좌표 로봇",
+        "원통 좌표 로봇",
+        "수직 다관절 로봇",
+        "스카라(SCARA) 로봇"
+      ],
+      answer: "직교 좌표 로봇",
+      explanation: "직교 좌표 로봇(Cartesian coordinate robot)은 서로 직각인 3개의 축(X, Y, Z)을 따라 직선 운동을 하며 작업 공간이 직육면체입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 18,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "공작기계의 기본 운동이 아닌 것은?",
+      choices: [
+        "절삭 운동",
+        "공작물 착탈 운동",
+        "위치조정 운동",
+        "이송 운동"
+      ],
+      answer: "공작물 착탈 운동",
+      explanation: "공작기계의 3대 기본 운동은 절삭 운동(주운동), 이송 운동, 위치조정(깊이조절) 운동입니다. 공작물을 붙이고 떼는 착탈 운동은 보조적인 준비 작업에 해당합니다.",
+      examInfo: {
+        year: 2015,
+        round: "2회"
+      }
+    }
+  ],
   2: [ // 전기기능사
     {
       id: 1,
