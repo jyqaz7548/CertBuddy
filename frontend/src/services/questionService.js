@@ -2,7 +2,7 @@ import api from './apiService';
 import { mockQuestionService } from './mockApiService';
 
 // Mock 모드 활성화 여부 (백엔드 준비되면 false로 변경)
-const USE_MOCK_API = true;
+const USE_MOCK_API = false; // 백엔드 연동 완료
 
 export const questionService = {
   // 문제가 있는 자격증 목록 조회

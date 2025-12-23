@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../constants/config';
 import { mockLearningService } from './mockApiService';
 
 // Mock 모드 활성화 여부 (백엔드 준비되면 false로 변경)
-const USE_MOCK_API = true;
+const USE_MOCK_API = false; // 백엔드 연동 완료
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -22,7 +22,7 @@ export const learningService = {
     const response = await api.get('/api/learning/recommendations', {
       params: { school, department, grade, userId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 플래시카드 조회
@@ -32,7 +32,7 @@ export const learningService = {
     }
     
     const response = await api.get(`/api/learning/cards/${certificationId}`);
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 학습 세션 시작
@@ -45,7 +45,7 @@ export const learningService = {
       certificationId,
       userId,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 학습 세션 완료
@@ -58,7 +58,7 @@ export const learningService = {
       cardsStudied,
       xpEarned,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 카드 조회
@@ -70,7 +70,7 @@ export const learningService = {
     const response = await api.get('/api/learning/review', {
       params: { userId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 카드 추가
@@ -83,6 +83,6 @@ export const learningService = {
       userId,
       flashCardId,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 };

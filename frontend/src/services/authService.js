@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../constants/config';
 import { mockAuthService } from './mockApiService';
 
 // Mock 모드 활성화 여부 (백엔드 준비되면 false로 변경)
-const USE_MOCK_API = true;
+const USE_MOCK_API = false; // 백엔드 연동 완료
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -19,7 +19,11 @@ export const authService = {
     }
     
     const response = await api.post('/api/auth/login', { email, password });
-    return response.data;
+    // 백엔드 응답: { success: true, message: "...", data: { token: "...", user: {...} } }
+    if (response.data.success && response.data.data) {
+      return response.data.data; // { token, user } 반환
+    }
+    throw new Error(response.data.message || '로그인에 실패했습니다.');
   },
 
   register: async (userData) => {
@@ -28,7 +32,11 @@ export const authService = {
     }
     
     const response = await api.post('/api/auth/register', userData);
-    return response.data;
+    // 백엔드 응답: { success: true, message: "...", data: { token: "...", user: {...} } }
+    if (response.data.success && response.data.data) {
+      return response.data.data; // { token, user } 반환
+    }
+    throw new Error(response.data.message || '회원가입에 실패했습니다.');
   },
 
   getCurrentUser: async (userId) => {
@@ -37,7 +45,11 @@ export const authService = {
     }
     
     const response = await api.get('/api/users/me');
-    return response.data;
+    // 백엔드 응답: { success: true, message: "...", data: { id, email, name, ... } }
+    if (response.data.success && response.data.data) {
+      return response.data.data; // user 객체 반환
+    }
+    throw new Error(response.data.message || '사용자 정보를 가져오는데 실패했습니다.');
   },
 };
 

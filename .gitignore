@@ -25,6 +25,8 @@ backend/.project
 backend/.settings/
 backend/*.iml
 backend/application-local.properties
+backend/src/main/resources/application.properties
+backend/src/main/resources/application-dev.properties
 
 # Logs
 *.log
@@ -36,3 +38,5 @@ logs/
 
 node_modules/
 .expo/
+backend/src/main/resources/application.properties
+*.properties

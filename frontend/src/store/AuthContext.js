@@ -16,14 +16,20 @@ export const AuthProvider = ({ children }) => {
   const loadUser = async () => {
     try {
       const token = await AsyncStorage.getItem('authToken');
-      const userId = await AsyncStorage.getItem('userId');
-      if (token && userId) {
-        // Mock API 사용 시 userId로 사용자 정보 조회
-        const userData = await authService.getCurrentUser(parseInt(userId, 10));
+      if (token) {
+        // 백엔드 API를 사용하여 현재 사용자 정보 조회 (토큰 기반)
+        const userData = await authService.getCurrentUser();
         setUser(userData);
+        // userId도 저장 (다른 곳에서 사용할 수 있도록)
+        if (userData.id) {
+          await AsyncStorage.setItem('userId', userData.id.toString());
+        }
       }
     } catch (error) {
       console.error('Load user error:', error);
+      // 토큰이 유효하지 않으면 삭제
+      await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('userId');
     } finally {
       setIsLoading(false);
     }
@@ -83,10 +89,13 @@ export const AuthProvider = ({ children }) => {
   // 사용자 정보 갱신 (XP 업데이트 등)
   const refreshUser = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      if (userId) {
-        const userData = await authService.getCurrentUser(parseInt(userId, 10));
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        const userData = await authService.getCurrentUser();
         setUser(userData);
+        if (userData.id) {
+          await AsyncStorage.setItem('userId', userData.id.toString());
+        }
       }
     } catch (error) {
       console.error('Refresh user error:', error);

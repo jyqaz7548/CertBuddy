@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../constants/config';
 import { mockFriendService } from './mockApiService';
 
 // Mock 모드 활성화 여부 (백엔드 준비되면 false로 변경)
-const USE_MOCK_API = true;
+const USE_MOCK_API = false; // 백엔드 연동 완료
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -22,7 +22,7 @@ export const friendService = {
     const response = await api.get('/api/friends', {
       params: { userId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 친구 추가 요청
@@ -32,7 +32,7 @@ export const friendService = {
     }
     
     const response = await api.post(`/api/friends/${friendId}`);
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 친구 요청 수락
@@ -42,7 +42,7 @@ export const friendService = {
     }
     
     const response = await api.post(`/api/friends/${friendId}/accept`);
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 친구 요청 목록 조회
@@ -54,7 +54,7 @@ export const friendService = {
     const response = await api.get('/api/friends/requests', {
       params: { userId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 친구 랭킹 조회
@@ -66,7 +66,7 @@ export const friendService = {
     const response = await api.get('/api/friends/ranking', {
       params: { userId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 사용자 고유 코드로 검색
@@ -78,7 +78,7 @@ export const friendService = {
     const response = await api.get('/api/users/search', {
       params: { userCode },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 같은 학과/학년 사용자 추천
@@ -90,6 +90,6 @@ export const friendService = {
     const response = await api.get('/api/friends/recommendations', {
       params: { userId, department, grade },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 };
