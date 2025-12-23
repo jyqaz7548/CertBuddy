@@ -1851,6 +1851,7 @@ const STORAGE_KEYS = {
   USERS: 'mock_users',
   SESSIONS: 'mock_sessions',
   REVIEW_CARDS: 'mock_review_cards',
+  LEARNING_START_DATE: 'learning_start_date', // 사용자별 학습 시작 날짜
 };
 
 // AsyncStorage에서 데이터 로드 (비동기)

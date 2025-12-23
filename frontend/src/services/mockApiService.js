@@ -1,6 +1,7 @@
 // Mock API 서비스 - 백엔드 없이 프론트엔드 개발용
 // 실제 백엔드가 준비되면 이 파일을 삭제하고 실제 API 서비스를 사용합니다
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockData } from './mockData';
 
 // 간단한 지연 시뮬레이션 (네트워크 요청 느낌)
@@ -303,12 +304,52 @@ export const mockQuestionService = {
   startQuestionSession: async (certificationId, userId) => {
     await delay(300);
     
-    const questions = await mockQuestionService.getQuestions(certificationId);
+    // 모든 문제 가져오기
+    const allQuestions = await mockQuestionService.getQuestions(certificationId);
+    
+    // 날짜 기반 문제 선택 (15일 학습 계획)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
+    
+    // 사용자별 학습 시작 날짜 가져오기 또는 설정
+    const startDateKey = `${mockData.STORAGE_KEYS.LEARNING_START_DATE}_${userId}_${certificationId}`;
+    let startDateStr = await AsyncStorage.getItem(startDateKey);
+    
+    if (!startDateStr) {
+      // 처음 학습하는 경우 오늘 날짜를 시작 날짜로 저장
+      startDateStr = today.toISOString();
+      await AsyncStorage.setItem(startDateKey, startDateStr);
+    }
+    
+    const startDate = new Date(startDateStr);
+    startDate.setHours(0, 0, 0, 0);
+    
+    // 오늘까지 경과한 일수 계산 (1일차부터 시작)
+    const diffTime = today.getTime() - startDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    
+    // 15일 학습 계획이므로 최대 15일차까지만
+    const currentDay = Math.min(Math.max(1, diffDays), 15);
+    
+    // 해당 일차의 문제만 선택 (하루에 6문제씩)
+    // Day 1: id 1~6, Day 2: id 7~12, ..., Day 15: id 85~90
+    const startId = (currentDay - 1) * 6 + 1;
+    const endId = currentDay * 6;
+    
+    const dayQuestions = allQuestions.filter(q => {
+      const questionId = q.id;
+      return questionId >= startId && questionId <= endId;
+    });
+    
+    // 문제가 없으면 (예: 15일을 넘어간 경우) 마지막 날짜의 문제 반환
+    const questions = dayQuestions.length > 0 ? dayQuestions : allQuestions.slice(-6);
     
     return {
       sessionId: `session_${Date.now()}`,
       questions,
       startedAt: new Date().toISOString(),
+      currentDay, // 현재 일차 정보도 반환
+      totalDays: 15, // 총 학습 일수
     };
   },
 
