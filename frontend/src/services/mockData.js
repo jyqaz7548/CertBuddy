@@ -1068,6 +1068,114 @@ const mockQuestions = {
         year: 2017,
         round: "2회"
       }
+    },
+    {
+      id: 49,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "교류 전기에서 1초 동안 반복되는 사이클의 횟수를 주파수(Hz)라고 하며, 1개의 사이클이 완성되는 데 걸리는 시간을 [   ]라고 합니다.",
+      choices: [
+        "주기",
+        "파장",
+        "진폭",
+        "위상"
+      ],
+      answer: "주기",
+      explanation: "주파수(f)와 주기(T)는 역수 관계입니다(T=1/f). 예를 들어 60Hz 전기는 1초에 60번 진동하며, 주기는 1/60초입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 50,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "회로에 흐르는 전류를 측정하기 위해서 전류계는 부하와 반드시 '병렬'로 연결해야 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "전류계는 회로를 끊고 그 사이에 연결하여 전류가 통과하도록 '직렬'로 연결해야 합니다. (전압계는 병렬로 연결)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 51,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "변압기는 1차 코일에 흐르는 전류가 변할 때, 철심을 통해 2차 코일에 기전력이 유도되는 [   ] 현상을 이용한 기기입니다.",
+      choices: [
+        "상호 유도",
+        "정전 유도",
+        "자기 포화",
+        "와류 손실"
+      ],
+      answer: "상호 유도",
+      explanation: "변압기는 전자기 유도 중에서도, 한쪽 코일의 자기장 변화가 인접한 다른 코일에 전압을 유도하는 '상호 유도 작용'을 원리로 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 52,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "3상 교류 회로에서 '델타(△) 결선'을 하면, 선간 전압과 상전압의 크기는 서로 같다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "델타(△) 결선에서는 선간 전압과 상전압이 같습니다(Vl = Vp). 반면 선전류는 상전류보다 √3배 큽니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 53,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "전기 기기의 금속제 외함에 접지(Grounding)를 하는 주된 목적은 기기의 성능을 높이기 위해서이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "접지의 가장 주된 목적은 누전 시 전류를 대지로 흘려보내 인체의 '감전 사고를 방지'하고 기기를 보호하는 것입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 54,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "금속 전선관 공사를 할 때, 관을 구부려 원하는 모양(굴곡)을 만들기 위해 사용하는 공구는 무엇입니까?",
+      choices: [
+        "히키 (Hickey)",
+        "오스터 (Oster)",
+        "리머 (Reamer)",
+        "클리퍼 (Clipper)"
+      ],
+      answer: "히키 (Hickey)",
+      explanation: "금속관을 구부릴(벤딩) 때는 히키(Hickey)나 파이프 벤더를 사용합니다. (오스터: 나사 내기, 리머: 관 입구 다듬기, 클리퍼: 굵은 전선 절단)",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
     }
   ]
 };
