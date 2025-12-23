@@ -3631,6 +3631,558 @@ const mockQuestions = {
         round: "1회"
       }
     }
+  ],
+  9: [ // 전산응용기계제도기능사
+    {
+      id: 1,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "금속 재료의 성질 중, 재료가 파괴되지 않고 가늘고 길게 늘어나는 성질을 연성(Ductility)이라고 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "연성은 금속을 잡아당겼을 때 길게 늘어나는 성질이며, 전성은 얇게 펴지는 성질입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 2,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "열처리 방법 중 담금질(Quenching)은 강을 연하게 하여 가공성을 높이기 위한 목적으로 실시한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "담금질(Quenching)은 강을 급랭시켜 경도와 강도를 높이기 위한 열처리입니다. 강을 연하게 하는 것은 풀림(Annealing)입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 3,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "탄소강에 포함된 5대 원소에 해당하지 않는 것은?",
+      choices: [
+        "탄소(C)",
+        "규소(Si)",
+        "망간(Mn)",
+        "니켈(Ni)"
+      ],
+      answer: "니켈(Ni)",
+      explanation: "탄소강의 5대 원소는 탄소(C), 규소(Si), 망간(Mn), 인(P), 황(S)입니다. 니켈(Ni)은 합금 원소로 주로 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 4,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "구리(Cu)와 아연(Zn)을 주성분으로 하는 합금으로, 전연성이 좋고 가공하기 쉬워 장식품이나 탄피 등에 사용되는 것은?",
+      choices: [
+        "황동",
+        "청동",
+        "주철",
+        "두랄루민"
+      ],
+      answer: "황동",
+      explanation: "구리와 아연의 합금은 황동(Brass)이며, 구리와 주석의 합금은 청동(Bronze)입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 5,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "주철의 일반적인 성질에 대한 설명으로 틀린 것은?",
+      choices: [
+        "주조성이 우수하다.",
+        "압축 강도가 인장 강도보다 크다.",
+        "충격에 강하고 인성이 크다.",
+        "마찰 저항이 우수하다."
+      ],
+      answer: "충격에 강하고 인성이 크다.",
+      explanation: "주철은 탄소 함유량이 많아 경도가 높고 압축 강도가 크지만, 인성이 부족하여 충격에 약하고 잘 깨지는 취성이 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 6,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "공구의 합금강을 담금질 및 뜨임처리하여 개선되는 재질의 특성이 아닌 것은?",
+      choices: [
+        "조직의 균질화",
+        "경도 조절",
+        "가공성 향상",
+        "취성 증가"
+      ],
+      answer: "취성 증가",
+      explanation: "공구강을 담금질 및 뜨임 처리(조질)하는 주된 목적은 인성을 부여하여 취성(깨지는 성질)을 감소시키고, 조직을 미세화/균질화하며 경도를 조절하는 것입니다. 취성 증가는 담금질만 했을 때 나타나는 현상으로, 뜨임을 통해 이를 제거해야 합니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 7,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "나사의 피치(Pitch)란 나사산과 바로 이웃하는 나사산 사이의 축 방향 거리를 의미한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "피치(Pitch)는 서로 인접한 나사산과 나사산 사이의 축 방향 거리를 뜻하며, 리드(Lead)는 나사가 1회전 했을 때 축 방향으로 이동한 거리입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 8,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "베어링은 회전하는 축을 지지하고 마찰을 줄여 회전을 원활하게 하는 기계요소이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "베어링은 축의 하중을 지지하며 마찰 저항을 감소시켜 기계의 회전 운동을 돕는 필수적인 기계요소입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 9,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "축과 보스 양쪽에 모두 키 홈을 가공하여 회전력을 전달하는 가장 일반적인 키는?",
+      choices: [
+        "안장 키",
+        "성크 키(묻힘 키)",
+        "납작 키",
+        "접선 키"
+      ],
+      answer: "성크 키(묻힘 키)",
+      explanation: "성크 키(Sunk Key, 묻힘 키)는 축과 보스 양쪽에 키 홈을 파서 사용하는 가장 널리 쓰이는 키입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 10,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "너트의 풀림을 방지하기 위한 방법으로 적절하지 않은 것은?",
+      choices: [
+        "와셔 사용",
+        "로크 너트 사용",
+        "분할 핀 사용",
+        "캡 너트 사용"
+      ],
+      answer: "캡 너트 사용",
+      explanation: "캡 너트는 나사 끝부분을 보호하거나 유체 누설을 방지하고 외관을 좋게 하기 위해 사용하며, 주된 목적이 풀림 방지는 아닙니다. 와셔, 로크 너트, 분할 핀은 대표적인 풀림 방지 요소입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 11,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "두 축이 평행하지도 않고 교차하지도 않는 경우에 사용되는 기어는?",
+      choices: [
+        "스퍼 기어",
+        "베벨 기어",
+        "헬리컬 기어",
+        "웜 기어"
+      ],
+      answer: "웜 기어",
+      explanation: "웜 기어(Worm Gear)는 두 축이 엇갈려 있는(평행하지도 교차하지도 않음) 경우에 사용되며 큰 감속비를 얻을 수 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 12,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "두 축이 평행하고 거리가 아주 가까울 때 각 속도의 변동 없이 토크를 전달할 경우 사용되는 커플링은?",
+      choices: [
+        "고정 커플링(fixed coupling)",
+        "플랙시블 커플링(flexible coupling)",
+        "올덤 커플링(Oldham's coupling)",
+        "유니버설 커플링(universal coupling)"
+      ],
+      answer: "올덤 커플링(Oldham's coupling)",
+      explanation: "올덤 커플링은 두 축이 평행하면서 중심선이 약간 어긋나 있을 때 등속도로 동력을 전달하는 데 적합한 커플링입니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 13,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "구성인선(Built-up Edge)은 절삭 깊이가 작고 절삭 속도가 빠를 때 발생하기 쉽다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "구성인선은 연한 재료를 저속으로 가공할 때 발생하기 쉽습니다. 방지하기 위해서는 절삭 속도를 높이고(고속 절삭), 절삭 깊이를 작게 하며, 경사각을 크게 해야 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 14,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "선반 가공에서 공작물은 회전 운동을 하고, 바이트(공구)는 이송 운동을 하여 가공한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "선반은 공작물을 회전시키고 공구인 바이트를 이동시켜 원통형 형상을 가공하는 공작 기계입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 15,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "밀링 머신에서 커터의 회전 방향과 일감의 이송 방향이 반대인 절삭 방법은?",
+      choices: [
+        "상향 절삭",
+        "하향 절삭",
+        "정면 절삭",
+        "측면 절삭"
+      ],
+      answer: "상향 절삭",
+      explanation: "상향 절삭은 커터의 회전 방향과 공작물의 이송 방향이 반대이며, 하향 절삭은 두 방향이 같습니다. 상향 절삭은 백래시의 영향이 적다는 장점이 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 16,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "연삭 숫돌의 3요소에 해당하지 않는 것은?",
+      choices: [
+        "입자",
+        "결합제",
+        "기공",
+        "입도"
+      ],
+      answer: "입도",
+      explanation: "연삭 숫돌의 3요소는 숫돌 입자, 결합제, 기공입니다. 입도는 입자의 크기를 나타내는 성질 중 하나입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 17,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "길이 측정에 사용되는 측정기로, 어미자와 아들자가 있어 정밀한 측정이 가능한 것은?",
+      choices: [
+        "버니어 캘리퍼스",
+        "마이크로미터",
+        "다이얼 게이지",
+        "블록 게이지"
+      ],
+      answer: "버니어 캘리퍼스",
+      explanation: "버니어 캘리퍼스(Vernier Calipers)는 어미자와 아들자(버니어)의 눈금 차이를 이용해 외경, 내경, 깊이 등을 정밀하게 측정하는 기기입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 18,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "드릴링 머신에서 볼트나 너트를 체결하기 곤란한 표면을 평탄하게 가공하여 체결이 잘되도록 하는 것은?",
+      choices: [
+        "리밍",
+        "태핑",
+        "카운터 싱킹",
+        "스폿 페이싱"
+      ],
+      answer: "스폿 페이싱",
+      explanation: "스폿 페이싱(Spot Facing)은 볼트 머리나 너트가 닿는 자리의 표면을 평평하게 다듬는 작업입니다. 카운터 싱킹은 접시머리 나사를 위한 원뿔형 가공입니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 19,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "기계 제도에서 보이지 않는 부분의 형상을 나타낼 때는 파선(숨은선)을 사용한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "숨은선은 물체의 보이지 않는 부분을 표현할 때 사용하며, 파선(짧은 점선)으로 그립니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 20,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "치수선과 치수 보조선은 외형선과 구분하기 위해 굵은 실선으로 그린다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "치수선, 치수 보조선, 지시선 등은 외형선(굵은 실선)과 구분하기 위해 가는 실선으로 그립니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 21,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "도면에서 물체의 중심이나 대칭의 기준을 나타내는 데 사용되는 선은?",
+      choices: [
+        "외형선",
+        "숨은선",
+        "중심선",
+        "파단선"
+      ],
+      answer: "중심선",
+      explanation: "중심선은 물체의 중심, 회전축, 대칭축 등을 나타내며, 가는 1점 쇄선을 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 22,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "제도 용지의 크기 중 A2 용지의 면적은 A3 용지의 약 몇 배인가?",
+      choices: [
+        "2배",
+        "3배",
+        "4배",
+        "0.5배"
+      ],
+      answer: "2배",
+      explanation: "A 계열 용지는 번호가 하나 작아질수록 면적이 2배가 됩니다. 즉, A2는 A3의 2배 크기입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 23,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "물체의 기본 중심선을 기준으로 1/4을 잘라내어 내부와 외부를 동시에 표시하는 단면도는?",
+      choices: [
+        "전 단면도",
+        "한쪽 단면도(반 단면도)",
+        "부분 단면도",
+        "회전 단면도"
+      ],
+      answer: "한쪽 단면도(반 단면도)",
+      explanation: "한쪽 단면도(반 단면도)는 대칭형 물체의 1/4을 절단하여 중심선을 경계로 절반은 외형, 절반은 단면으로 표시하는 방법입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 24,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음은 제3각법으로 도시한 물체의 투상도이다. 이 투상법에 대한 설명으로 틀린 것은?",
+      choices: [
+        "눈 → 투상면 → 물체의 순서로 놓고 투상한다.",
+        "평면도는 정면도 위에 배치된다.",
+        "물체를 제 1면각에 놓고 투상하는 방법이다.",
+        "배면도의 위치는 가장 오른쪽에 배열한다."
+      ],
+      answer: "물체를 제 1면각에 놓고 투상하는 방법이다.",
+      explanation: "제3각법은 물체를 제3면각(투상면 뒤쪽)에 놓고 투상하는 방법입니다. 제1면각에 놓고 투상하는 것은 제1각법입니다. 3각법의 배치는 눈-투상면-물체 순서가 맞습니다.",
+      examInfo: {
+        year: 2014,
+        round: "4회"
+      }
+    },
+    {
+      id: 25,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "치수 보조 기호 'R'은 원이나 호의 지름을 나타낼 때 사용한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "R은 반지름(Radius)을 나타내는 기호입니다. 지름은 파이(ø) 기호를 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 26,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "기하공차 중 진원도는 데이텀(기준)이 필요 없는 단독 형체 공차이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "진원도, 평면도, 원통도 등 모양 공차는 데이텀(기준) 없이 단독으로 규제할 수 있는 단독 형체입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 27,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "구멍의 치수가 축의 치수보다 작아서 조립 시 항상 죔새가 발생하는 끼워맞춤은?",
+      choices: [
+        "헐거운 끼워맞춤",
+        "중간 끼워맞춤",
+        "억지 끼워맞춤",
+        "상용 끼워맞춤"
+      ],
+      answer: "억지 끼워맞춤",
+      explanation: "억지 끼워맞춤은 구멍이 축보다 작아 강제로 끼워 넣어야 하는 맞춤으로, 항상 죔새가 발생합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 28,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "IT 기본 공차 등급은 총 몇 등급으로 나누어져 있는가?",
+      choices: [
+        "10등급",
+        "15등급",
+        "18등급",
+        "20등급"
+      ],
+      answer: "20등급",
+      explanation: "IT 공차는 IT01, IT0, IT1 ~ IT18까지 총 20등급으로 구분됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 29,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기하공차 기호 중 '원통도(Cylindricity)'를 나타내는 기호는?",
+      choices: [
+        "○",
+        "⌭",
+        "◎",
+        "⫽"
+      ],
+      answer: "⌭",
+      explanation: "원통도는 원통 형상의 정밀도를 나타내며 기호는 ⌭입니다. ○는 진원도, ◎는 동심도, ⫽는 평행도입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 30,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "자동차의 스티어링 장치, 수치제어 공작기계의 공구대, 이송 장치 등에 사용되는 나사는?",
+      choices: [
+        "둥근나사",
+        "볼나사",
+        "유니파이나사",
+        "미터나사"
+      ],
+      answer: "볼나사",
+      explanation: "볼 나사(Ball Screw)는 나사산과 너트 사이에 강구(Ball)를 넣어 구름 접촉을 하게 한 것으로, 마찰이 적고 정밀한 이송이 가능하여 CNC 공작기계 등에 널리 쓰입니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    }
   ]
 };
 
