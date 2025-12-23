@@ -1508,6 +1508,336 @@ const mockQuestions = {
         year: 2016,
         round: "2회"
       }
+    },
+    {
+      id: 73,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "밀링 머신에서 공작물은 고정되어 있고, 공구(커터)가 회전하며 절삭한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "밀링은 회전하는 공구에 공작물을 이송시켜 가공하는 방식이고, 선반은 회전하는 공작물에 공구를 이송시켜 가공하는 방식입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 74,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "유압 회로에서 작동유 내의 불순물을 제거하여 기기를 보호하는 부품은?",
+      choices: [
+        "오일 쿨러",
+        "스트레이너(필터)",
+        "어큐뮬레이터",
+        "압력계"
+      ],
+      answer: "스트레이너(필터)",
+      explanation: "스트레이너(Strainer)나 필터는 작동유에 섞인 금속 가루나 먼지 등의 이물질을 걸러내어 펌프와 밸브 고장을 예방합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 75,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 PLC 출력 모듈에서 '릴레이 출력 방식'의 장점이 아닌 것은?",
+      choices: [
+        "AC, DC 부하 모두 사용 가능하다.",
+        "과전압, 과전류에 비교적 강하다.",
+        "응답 속도가 매우 빠르다.",
+        "전압 강하가 적다."
+      ],
+      answer: "응답 속도가 매우 빠르다.",
+      explanation: "릴레이 출력은 기계적 접점을 사용하므로 트랜지스터(SSR) 방식에 비해 응답 속도가 느리고 기계적 수명에 한계가 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 76,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "나사의 피치(Pitch)는 나사산과 바로 이웃하는 나사산 사이의 축 방향 거리이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "피치는 나사산의 마루에서 이웃한 마루까지, 또는 골에서 골까지의 축 방향 거리를 말합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 77,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 자동화 시스템에서 제어 신호를 증폭하거나, 전기적 신호를 기계적 움직임으로 변환해 주는 장치는?",
+      choices: [
+        "센서",
+        "컨트롤러",
+        "솔레노이드",
+        "엔코더"
+      ],
+      answer: "솔레노이드",
+      explanation: "솔레노이드는 전기에너지를 자기로 바꾸고, 그 힘으로 플런저를 움직여 밸브를 여닫거나 직선 운동을 만드는 구동기(액추에이터)입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 78,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "압력수두+위치수두+속도수두=일정\"의 식과 가장 관계가 깊은 것은?",
+      choices: [
+        "연속 법칙",
+        "파스칼 원리",
+        "베르누이 정리",
+        "보일-샤를의 법칙"
+      ],
+      answer: "베르누이 정리",
+      explanation: "베르누이 정리는 이상 유체가 흐를 때 에너지 보존 법칙에 따라 압력 에너지, 위치 에너지, 운동 에너지의 합이 항상 일정하다는 법칙입니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 79,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "공압 시스템에서 공기 압축기로부터 나온 압축 공기의 온도를 낮추고 수분을 제거하기 위해 '애프터 쿨러(After Cooler)'를 사용한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "압축된 공기는 고온이므로 애프터 쿨러를 통과시켜 냉각시키고, 이 과정에서 응축된 수분을 제거하여 배관 부식을 방지합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 80,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 연삭 숫돌의 3요소에 해당하지 않는 것은?",
+      choices: [
+        "숫돌 입자",
+        "결합제",
+        "기공",
+        "입도"
+      ],
+      answer: "입도",
+      explanation: "연삭 숫돌의 3요소는 입자(Abrasive), 결합제(Bond), 기공(Pore)입니다. 입도는 입자의 크기를 나타내는 성질 중 하나입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 81,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기계 제도에서 단면도(Section View)를 그릴 때, 절단된 면을 나타내기 위해 45도 각도로 긋는 가는 실선은?",
+      choices: [
+        "파단선",
+        "해칭선",
+        "중심선",
+        "지시선"
+      ],
+      answer: "해칭선",
+      explanation: "해칭(Hatching)은 단면도의 절단면을 표시하기 위해 빗금(가는 실선)을 긋는 것을 말하며, 재질에 따라 모양을 달리하기도 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 82,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "서보 모터의 엔코더(Encoder)는 모터의 회전 속도와 위치 정보를 검출하는 센서이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "엔코더는 회전각이나 위치 변화를 펄스 신호로 변환하여 제어기에 피드백해 주는 핵심 센서입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 83,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "전기 회로에서 전압(V), 전류(I), 저항(R)의 관계를 나타낸 옴의 법칙(Ohm's Law) 공식으로 옳은 것은?",
+      choices: [
+        "V = I × R",
+        "I = V × R",
+        "R = V × I",
+        "V = R / I"
+      ],
+      answer: "V = I × R",
+      explanation: "옴의 법칙에 따르면 전압(V)은 전류(I)와 저항(R)의 곱과 같습니다. (V=IR, I=V/R, R=V/I)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 84,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "PLC 제어와 릴레이 제어의 비교 설명으로 틀린 것은?",
+      choices: [
+        "PLC는 제어 내용 변경이 쉽다.",
+        "릴레이 제어는 배선 작업이 복잡하다.",
+        "PLC는 소형화 및 신뢰성이 높다.",
+        "릴레이 제어는 접점 수명에 제한이 없다."
+      ],
+      answer: "릴레이 제어는 접점 수명에 제한이 없다.",
+      explanation: "릴레이는 기계적 접점을 사용하므로 아크 발생, 마모 등으로 인해 수명에 한계가 있습니다. 반면 PLC는 반도체 소자를 이용하므로 수명이 깁니다.",
+      examInfo: {
+        year: 2014,
+        round: "3회"
+      }
+    },
+    {
+      id: 85,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "유압 장치에서 '캐비테이션(Cavitation)' 현상은 압력이 너무 높아져서 배관이 파열되는 현상을 말한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "캐비테이션(공동 현상)은 국부적인 압력 저하로 인해 기포가 발생하고, 이 기포가 터지면서 소음, 진동, 침식을 유발하는 현상입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 86,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 축과 보스를 결합하여 회전력을 전달하며, 축 방향으로 이동이 가능한 키(Key)는?",
+      choices: [
+        "묻힘 키",
+        "반달 키",
+        "스플라인",
+        "안장 키"
+      ],
+      answer: "스플라인",
+      explanation: "스플라인(Spline)은 축에 여러 개의 키 홈을 파서 큰 동력을 전달할 수 있으며, 축 방향으로 보스가 미끄러져 이동할 수 있는 것이 특징입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 87,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "CNC 프로그램에서 보조 프로그램 호출 명령어는 M98이고, 보조 프로그램 종료 후 메인 프로그램 복귀 명령어는 M99이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "M98은 보조 프로그램 호출(Call), M99는 보조 프로그램 종료 및 메인 프로그램으로 복귀(Return)를 의미하는 M코드입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 88,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "공압 회로에서 실린더가 전진 끝단이나 후진 끝단에 도달했음을 감지하여 다음 동작 신호를 보내는 스위치는?",
+      choices: [
+        "푸시 버튼 스위치",
+        "리미트 스위치",
+        "토글 스위치",
+        "셀렉터 스위치"
+      ],
+      answer: "리미트 스위치",
+      explanation: "리미트 스위치(Limit Switch)는 기계적 움직임의 한계 위치나 특정 위치를 검출하여 전기 신호를 보내는 접촉식 센서입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 89,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 KS 재료 기호 'SM45C'의 설명으로 올바른 것은?",
+      choices: [
+        "회주철 45종",
+        "기계구조용 탄소강, 탄소 함유량 0.45%",
+        "스테인리스강 45종",
+        "알루미늄 합금"
+      ],
+      answer: "기계구조용 탄소강, 탄소 함유량 0.45%",
+      explanation: "SM은 기계구조용 탄소강(Steel Machine)을, 숫자 45C는 탄소 함유량이 약 0.45%임을 의미합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 90,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "3개의 조(Jaw)가 120도 간격으로 배치되어 있어 원형 공작물을 고정할 때 자동으로 중심이 맞춰지는 선반 척은?",
+      choices: [
+        "단동 척",
+        "연동 척",
+        "마그네틱 척",
+        "콜릿 척"
+      ],
+      answer: "연동 척",
+      explanation: "연동 척(Scroll Chuck)은 핸들을 돌리면 3개의 조가 동시에 움직여(연동) 자동으로 중심(Centering)을 잡아주므로 원형 공작물 고정에 편리합니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
     }
   ],
   2: [ // 전기기능사
