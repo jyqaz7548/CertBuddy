@@ -4,12 +4,18 @@ import { useAuth } from '../../store/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { questionService } from '../../services/questionService';
 import { learningService } from '../../services/learningService';
+import { friendService } from '../../services/friendService';
 import { mockData } from '../../services/mockData';
+import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function HomeScreen({ navigation }) {
   const { user, refreshUser } = useAuth();
   const [reviewCount, setReviewCount] = useState(0);
   const [recommendedCerts, setRecommendedCerts] = useState([]);
+  const [ranking, setRanking] = useState([]);
+  const [myRank, setMyRank] = useState(null);
+  const [topUser, setTopUser] = useState(null);
   const [todayStatus, setTodayStatus] = useState({
     isLearningCompleted: false,
     isReviewCompleted: false,
@@ -56,11 +62,37 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  // 친구 랭킹 로드
+  const loadRanking = async () => {
+    try {
+      const rankingList = await friendService.getRanking(user?.id || 1);
+      setRanking(rankingList);
+      
+      // 1등 찾기 (본인이 아닌 경우만)
+      const topUserInfo = rankingList.find(u => u.rank === 1 && !u.isMe);
+      if (topUserInfo) {
+        setTopUser(topUserInfo);
+      } else if (rankingList.length > 0 && rankingList[0].rank === 1) {
+        // 본인이 1등인 경우
+        setTopUser(rankingList[0]);
+      }
+      
+      // 내 등수 찾기
+      const myRankInfo = rankingList.find(u => u.isMe || u.id === user?.id);
+      if (myRankInfo) {
+        setMyRank(myRankInfo.rank);
+      }
+    } catch (error) {
+      console.error('랭킹 로딩 실패:', error);
+    }
+  };
+
   // 화면이 포커스될 때마다 상태 갱신
   useFocusEffect(
     React.useCallback(() => {
       loadTodayStatus();
       loadRecommendations();
+      loadRanking();
       // XP 업데이트를 위해 사용자 정보 갱신
       if (refreshUser) {
         refreshUser();
@@ -266,10 +298,108 @@ export default function HomeScreen({ navigation }) {
         )}
       </View>
 
-      {/* 친구 랭킹 Top3 */}
+      {/* 친구 랭킹 섹션 */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>친구 랭킹</Text>
-        {/* TODO: 친구 랭킹 리스트 */}
+        
+        {/* 1등 표시 */}
+        {topUser && (
+          <View style={styles.topRankCard}>
+            <View style={styles.topRankLeft}>
+              <View style={styles.topRankBadge}>
+                <View style={styles.profileImageContainer}>
+                  <Text style={styles.profileImageText}>
+                    {topUser.name.charAt(0)}
+                  </Text>
+                </View>
+                <View style={styles.crownOverlay}>
+                  <FontAwesome5 name="crown" size={16} color="#FFD700" solid />
+                </View>
+              </View>
+              <View style={styles.topRankInfo}>
+                <Text style={styles.topRankLabel}>1등</Text>
+                <Text style={styles.topRankName}>{topUser.name}</Text>
+                <Text style={styles.topRankDepartment}>
+                  {topUser.department}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.topRankRight}>
+              <View style={styles.topRankStats}>
+                <View style={styles.statItem}>
+                  <Ionicons name="trophy" size={16} color="#FFD700" />
+                  <Text style={styles.topRankStatText}>
+                    {topUser.totalXp.toLocaleString()} XP
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Ionicons name="flame" size={16} color="#FF6B6B" />
+                  <Text style={styles.topRankStatText}>
+                    {topUser.streak}일
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* 내 등수 표시 */}
+        {myRank !== null && (
+          <View style={styles.myRankCard}>
+            <View style={styles.myRankLeft}>
+              <View style={styles.myRankBadge}>
+                <View style={styles.profileImageContainer}>
+                  <Text style={styles.profileImageText}>
+                    {(user?.name || '나').charAt(0)}
+                  </Text>
+                </View>
+                <View style={styles.rankBadgeOverlay}>
+                  <Text style={styles.rankNumberSmall}>{myRank}</Text>
+                </View>
+              </View>
+              <View style={styles.myRankInfo}>
+                <View style={styles.myRankNameRow}>
+                  <Text style={styles.myRankName}>{user?.name || '나'}</Text>
+                  <View style={styles.meBadge}>
+                    <Text style={styles.meBadgeText}>나</Text>
+                  </View>
+                </View>
+                <Text style={styles.myRankDepartment}>
+                  {user?.department}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.myRankRight}>
+              <View style={styles.myRankStats}>
+                <View style={styles.statItem}>
+                  <Ionicons name="trophy" size={16} color="#FFD700" />
+                  <Text style={styles.myRankStatText}>
+                    {user?.totalXp?.toLocaleString() || 0} XP
+                  </Text>
+                </View>
+                <View style={styles.statItem}>
+                  <Ionicons name="flame" size={16} color="#FF6B6B" />
+                  <Text style={styles.myRankStatText}>
+                    {user?.streak || 0}일
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+
+        {/* 전체 랭킹 보기 버튼 */}
+        {ranking.length > 0 && (
+          <TouchableOpacity
+            style={styles.viewAllButton}
+            onPress={() => navigation.navigate('Friends', { initialTab: 'ranking' })}
+          >
+            <Text style={styles.viewAllButtonText}>
+              전체 랭킹 보기 ({ranking.length}명)
+            </Text>
+            <Ionicons name="chevron-forward" size={20} color="#007AFF" />
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
@@ -475,6 +605,192 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 14,
     color: '#8E8E93',
+  },
+  // 친구 랭킹 스타일
+  topRankCard: {
+    backgroundColor: '#FFF9E6',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFD700',
+  },
+  topRankLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  topRankBadge: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 12,
+    position: 'relative',
+  },
+  profileImageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  profileImageText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  rankBadgeOverlay: {
+    position: 'absolute',
+    bottom: -2,
+    right: -2,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFD700',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  crownOverlay: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    shadowColor: '#FFD700',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  topRankInfo: {
+    flex: 1,
+  },
+  topRankLabel: {
+    fontSize: 12,
+    color: '#FF9800',
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  topRankName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 4,
+  },
+  topRankDepartment: {
+    fontSize: 14,
+    color: '#666',
+  },
+  topRankRight: {
+    alignItems: 'flex-end',
+  },
+  topRankStats: {
+    gap: 8,
+  },
+  topRankStatText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 4,
+  },
+  myRankCard: {
+    backgroundColor: '#F0F7FF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#007AFF',
+  },
+  myRankLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  myRankBadge: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12,
+    position: 'relative',
+  },
+  rankNumberSmall: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  myRankInfo: {
+    flex: 1,
+  },
+  myRankNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  myRankName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+    marginRight: 8,
+  },
+  meBadge: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  meBadgeText: {
+    fontSize: 11,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  myRankDepartment: {
+    fontSize: 14,
+    color: '#666',
+  },
+  myRankRight: {
+    alignItems: 'flex-end',
+  },
+  myRankStats: {
+    gap: 8,
+  },
+  myRankStatText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    marginLeft: 4,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  viewAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  viewAllButtonText: {
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '600',
+    marginRight: 4,
   },
 });
 

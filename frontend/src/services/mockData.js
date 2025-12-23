@@ -3,6 +3,13 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// 사용자 고유 코드 생성 함수 (예: CERT-1234)
+const generateUserCode = (userId) => {
+  // 4자리 숫자로 변환 (예: 1 -> 0001, 123 -> 0123)
+  const paddedId = String(userId).padStart(4, '0');
+  return `CERT-${paddedId}`;
+};
+
 // Mock 사용자 데이터
 const mockUsers = [
   {
@@ -14,6 +21,41 @@ const mockUsers = [
     grade: 3,
     totalXp: 1250,
     streak: 7,
+    userCode: 'CERT-0001', // 고유 코드
+  },
+  // 친구 데이터에 사용될 사용자들 (mockFriendsData 기반)
+  {
+    id: 2,
+    email: 'friend1@example.com',
+    name: '이OO',
+    school: '테스트대학교',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    totalXp: 850,
+    streak: 5,
+    userCode: 'CERT-0002',
+  },
+  {
+    id: 3,
+    email: 'friend2@example.com',
+    name: '장OO',
+    school: '테스트대학교',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    totalXp: 1200,
+    streak: 10,
+    userCode: 'CERT-0003',
+  },
+  {
+    id: 4,
+    email: 'friend3@example.com',
+    name: '최OO',
+    school: '테스트대학교',
+    department: '로봇소프트웨어과',
+    grade: 2,
+    totalXp: 950,
+    streak: 8,
+    userCode: 'CERT-0004',
   },
 ];
 
@@ -3597,6 +3639,8 @@ const STORAGE_KEYS = {
   SESSIONS: 'mock_sessions',
   REVIEW_CARDS: 'mock_review_cards',
   LEARNING_START_DATE: 'learning_start_date', // 사용자별 학습 시작 날짜
+  FRIEND_RELATIONS: 'mock_friend_relations', // 친구 관계
+  REVIEW_QUESTIONS: 'mock_review_questions', // 복습 문제
 };
 
 // AsyncStorage에서 데이터 로드 (비동기)

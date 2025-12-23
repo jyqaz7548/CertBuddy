@@ -63,8 +63,10 @@ export const mockAuthService = {
     }
     
     // 새 사용자 생성
+    const newUserId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    const paddedId = String(newUserId).padStart(4, '0');
     const newUser = {
-      id: users.length + 1,
+      id: newUserId,
       email: userData.email,
       name: userData.name,
       school: userData.school || '',
@@ -72,6 +74,7 @@ export const mockAuthService = {
       grade: parseInt(userData.grade, 10) || 1,
       totalXp: 0,
       streak: 0,
+      userCode: `CERT-${paddedId}`, // 고유 코드 생성
     };
     
     users.push(newUser);
@@ -91,6 +94,7 @@ export const mockAuthService = {
         grade: newUser.grade,
         totalXp: newUser.totalXp,
         streak: newUser.streak,
+        userCode: newUser.userCode,
       },
     };
   },
@@ -106,6 +110,19 @@ export const mockAuthService = {
       throw new Error('사용자를 찾을 수 없습니다');
     }
     
+    // 사용자 코드가 없으면 생성
+    if (!user.userCode) {
+      const paddedId = String(user.id).padStart(4, '0');
+      user.userCode = `CERT-${paddedId}`;
+      // 저장
+      const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+      const userIndex = users.findIndex(u => u.id === user.id);
+      if (userIndex !== -1) {
+        users[userIndex].userCode = user.userCode;
+        await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+      }
+    }
+    
     return {
       id: user.id,
       email: user.email,
@@ -115,6 +132,7 @@ export const mockAuthService = {
       grade: user.grade,
       totalXp: user.totalXp,
       streak: user.streak,
+      userCode: user.userCode,
     };
   },
 };
@@ -1044,41 +1062,242 @@ export const mockFriendService = {
   getFriends: async (userId) => {
     await delay(600);
     
-    // Mock 친구 데이터 (실제로는 DB에서 조회)
-    return [
-      {
-        id: 2,
-        name: '친구1',
-        school: '테스트대학교',
-        department: '컴퓨터공학과',
-        totalXp: 800,
-        streak: 5,
-      },
-      {
-        id: 3,
-        name: '친구2',
-        school: '테스트대학교',
-        department: '정보통신공학과',
-        totalXp: 1200,
-        streak: 10,
-      },
-    ];
-  },
-
-  // 친구 랭킹 조회
-  getRanking: async (userId) => {
-    await delay(500);
+    // AsyncStorage에서 친구 관계 조회
+    const friendRelations = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      []
+    );
     
+    // 현재 사용자의 친구 ID 목록
+    const friendIds = friendRelations
+      .filter(rel => 
+        (rel.userId1 === userId && rel.status === 'accepted') ||
+        (rel.userId2 === userId && rel.status === 'accepted')
+      )
+      .map(rel => rel.userId1 === userId ? rel.userId2 : rel.userId1);
+    
+    // 친구 정보 가져오기
     const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
-    
-    return users
+    const friends = friendIds
+      .map(id => users.find(u => u.id === id))
+      .filter(u => u !== undefined)
       .map(user => ({
         id: user.id,
         name: user.name,
+        school: user.school,
+        department: user.department,
+        grade: user.grade,
         totalXp: user.totalXp || 0,
         streak: user.streak || 0,
-      }))
+      }));
+    
+    return friends;
+  },
+
+  // 친구 추가 요청
+  addFriend: async (userId, friendId) => {
+    await delay(500);
+    
+    const friendRelations = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      []
+    );
+    
+    // 이미 친구 관계가 있는지 확인
+    const existingRelation = friendRelations.find(rel =>
+      (rel.userId1 === userId && rel.userId2 === friendId) ||
+      (rel.userId1 === friendId && rel.userId2 === userId)
+    );
+    
+    if (existingRelation) {
+      if (existingRelation.status === 'accepted') {
+        throw new Error('이미 친구입니다.');
+      } else if (existingRelation.status === 'pending') {
+        throw new Error('이미 친구 요청이 있습니다.');
+      }
+    }
+    
+    // 새로운 친구 요청 생성
+    const newRelation = {
+      id: friendRelations.length + 1,
+      userId1: userId,
+      userId2: friendId,
+      status: 'pending', // pending, accepted, rejected
+      requestedAt: new Date().toISOString(),
+    };
+    
+    friendRelations.push(newRelation);
+    await mockData.saveToStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      friendRelations
+    );
+    
+    return { success: true, message: '친구 요청을 보냈습니다.' };
+  },
+
+  // 친구 요청 수락
+  acceptFriendRequest: async (userId, friendId) => {
+    await delay(500);
+    
+    const friendRelations = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      []
+    );
+    
+    const relation = friendRelations.find(rel =>
+      ((rel.userId1 === friendId && rel.userId2 === userId) ||
+       (rel.userId1 === userId && rel.userId2 === friendId)) &&
+      rel.status === 'pending'
+    );
+    
+    if (!relation) {
+      throw new Error('친구 요청을 찾을 수 없습니다.');
+    }
+    
+    relation.status = 'accepted';
+    relation.acceptedAt = new Date().toISOString();
+    
+    await mockData.saveToStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      friendRelations
+    );
+    
+    return { success: true, message: '친구 요청을 수락했습니다.' };
+  },
+
+  // 친구 랭킹 조회 (친구 + 본인)
+  getRanking: async (userId) => {
+    await delay(500);
+    
+    // 친구 목록 가져오기
+    const friends = await mockFriendService.getFriends(userId);
+    
+    // 본인 정보 가져오기
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    const currentUser = users.find(u => u.id === userId);
+    
+    if (!currentUser) {
+      return [];
+    }
+    
+    // 친구 + 본인을 합쳐서 랭킹 생성
+    const ranking = [
+      ...friends,
+      currentUser ? {
+        id: currentUser.id,
+        name: currentUser.name,
+        school: currentUser.school,
+        department: currentUser.department,
+        grade: currentUser.grade,
+        totalXp: currentUser.totalXp || 0,
+        streak: currentUser.streak || 0,
+        isMe: true,
+      } : null,
+    ]
+      .filter(u => u !== null)
       .sort((a, b) => b.totalXp - a.totalXp)
-      .slice(0, 10); // Top 10
+      .map((user, index) => ({
+        ...user,
+        rank: index + 1,
+      }));
+    
+    return ranking;
+  },
+
+  // 친구 요청 목록 조회
+  getFriendRequests: async (userId) => {
+    await delay(400);
+    
+    const friendRelations = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      []
+    );
+    
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    
+    // 나에게 온 친구 요청 (pending 상태)
+    const receivedRequests = friendRelations
+      .filter(rel => rel.userId2 === userId && rel.status === 'pending')
+      .map(rel => {
+        const requester = users.find(u => u.id === rel.userId1);
+        return requester ? {
+          id: rel.id,
+          friendId: requester.id,
+          name: requester.name,
+          school: requester.school,
+          department: requester.department,
+          requestedAt: rel.requestedAt,
+        } : null;
+      })
+      .filter(r => r !== null);
+    
+    return receivedRequests;
+  },
+
+  // 사용자 고유 코드로 검색
+  searchUserByCode: async (userCode) => {
+    await delay(400);
+    
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    
+    // 고유 코드로 사용자 찾기 (대소문자 무시)
+    const user = users.find(u => 
+      u.userCode && u.userCode.toUpperCase() === userCode.toUpperCase()
+    );
+    
+    if (!user) {
+      throw new Error('사용자를 찾을 수 없습니다.');
+    }
+    
+    return {
+      id: user.id,
+      name: user.name,
+      school: user.school,
+      department: user.department,
+      grade: user.grade,
+      totalXp: user.totalXp || 0,
+      streak: user.streak || 0,
+      userCode: user.userCode,
+    };
+  },
+
+  // 같은 학과/학년 사용자 추천
+  getRecommendedUsers: async (userId, department, grade) => {
+    await delay(500);
+    
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    const friendRelations = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.FRIEND_RELATIONS || 'mock_friend_relations',
+      []
+    );
+    
+    // 이미 친구이거나 친구 요청이 있는 사용자 ID 목록
+    const excludedIds = new Set([userId]);
+    friendRelations.forEach(rel => {
+      if (rel.userId1 === userId) excludedIds.add(rel.userId2);
+      if (rel.userId2 === userId) excludedIds.add(rel.userId1);
+    });
+    
+    // 같은 학과, 같은 학년 사용자 필터링 (본인 제외, 이미 친구인 사람 제외)
+    const recommended = users
+      .filter(u => 
+        u.id !== userId &&
+        !excludedIds.has(u.id) &&
+        u.department === department &&
+        u.grade === grade
+      )
+      .map(user => ({
+        id: user.id,
+        name: user.name,
+        school: user.school,
+        department: user.department,
+        grade: user.grade,
+        totalXp: user.totalXp || 0,
+        streak: user.streak || 0,
+        userCode: user.userCode || `CERT-${String(user.id).padStart(4, '0')}`,
+      }))
+      .slice(0, 10); // 최대 10명
+    
+    return recommended;
   },
 };

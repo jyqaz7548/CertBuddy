@@ -25,6 +25,38 @@ export const friendService = {
     return response.data;
   },
 
+  // 친구 추가 요청
+  addFriend: async (userId, friendId) => {
+    if (USE_MOCK_API) {
+      return await mockFriendService.addFriend(userId, friendId);
+    }
+    
+    const response = await api.post(`/api/friends/${friendId}`);
+    return response.data;
+  },
+
+  // 친구 요청 수락
+  acceptFriendRequest: async (userId, friendId) => {
+    if (USE_MOCK_API) {
+      return await mockFriendService.acceptFriendRequest(userId, friendId);
+    }
+    
+    const response = await api.post(`/api/friends/${friendId}/accept`);
+    return response.data;
+  },
+
+  // 친구 요청 목록 조회
+  getFriendRequests: async (userId) => {
+    if (USE_MOCK_API) {
+      return await mockFriendService.getFriendRequests(userId);
+    }
+    
+    const response = await api.get('/api/friends/requests', {
+      params: { userId },
+    });
+    return response.data;
+  },
+
   // 친구 랭킹 조회
   getRanking: async (userId) => {
     if (USE_MOCK_API) {
@@ -33,6 +65,30 @@ export const friendService = {
     
     const response = await api.get('/api/friends/ranking', {
       params: { userId },
+    });
+    return response.data;
+  },
+
+  // 사용자 고유 코드로 검색
+  searchUserByCode: async (userCode) => {
+    if (USE_MOCK_API) {
+      return await mockFriendService.searchUserByCode(userCode);
+    }
+    
+    const response = await api.get('/api/users/search', {
+      params: { userCode },
+    });
+    return response.data;
+  },
+
+  // 같은 학과/학년 사용자 추천
+  getRecommendedUsers: async (userId, department, grade) => {
+    if (USE_MOCK_API) {
+      return await mockFriendService.getRecommendedUsers(userId, department, grade);
+    }
+    
+    const response = await api.get('/api/friends/recommendations', {
+      params: { userId, department, grade },
     });
     return response.data;
   },
