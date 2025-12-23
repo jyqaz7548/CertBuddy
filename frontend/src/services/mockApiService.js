@@ -9,6 +9,7 @@ const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
 // 자격증 ID로 카테고리 반환 (간단한 매핑)
 const getCategoryFromId = (id) => {
+  if (id === 5) return '국가기술'; // 컴활은 국가기술자격증
   if (id === 9 || id === 10) return 'ITQ';
   if (id >= 1 && id <= 8) return '기능사';
   return '자격증';
@@ -403,10 +404,53 @@ export const mockQuestionService = {
         .filter(day => day !== undefined && day !== null)
     );
     
+    // 해당 자격증의 문제 목록 가져오기
+    const allQuestions = await mockQuestionService.getQuestions(certificationId);
+    
+    // 복습 문제 목록 가져오기
+    const reviewQuestions = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+      []
+    );
+    const userReviewQuestions = reviewQuestions.filter(
+      rq => rq.userId === userId && !rq.isCompleted
+    );
+    
+    // 해당 자격증의 문제 ID만 필터링
+    const certQuestionIds = new Set(allQuestions.map(q => q.id));
+    const certReviewQuestions = userReviewQuestions.filter(
+      rq => certQuestionIds.has(rq.questionId)
+    );
+    
+    // 각 일차별 문제 ID 범위 계산 (하루에 6문제씩)
+    const getDayQuestionIds = (day) => {
+      const startId = (day - 1) * 6 + 1;
+      const endId = day * 6;
+      return { startId, endId };
+    };
+    
+    // 각 일차별 복습 문제 수 계산
+    const dayReviewCounts = {};
+    certReviewQuestions.forEach(rq => {
+      for (let day = 1; day <= TOTAL_DAYS; day++) {
+        const { startId, endId } = getDayQuestionIds(day);
+        if (rq.questionId >= startId && rq.questionId <= endId) {
+          if (!dayReviewCounts[day]) {
+            dayReviewCounts[day] = 0;
+          }
+          dayReviewCounts[day]++;
+        }
+      }
+    });
+    
     // 각 일차별 상태 생성
     const dayStatuses = [];
     for (let day = 1; day <= TOTAL_DAYS; day++) {
       const isCompleted = completedDays.has(day);
+      const reviewCount = dayReviewCounts[day] || 0;
+      
+      // 복습 문제가 있으면 완료 처리하지 않음
+      const hasReviewQuestions = reviewCount > 0;
       
       // 이전 일차가 완료되었거나 1일차인 경우 잠금 해제
       let isLocked = false;
@@ -417,8 +461,9 @@ export const mockQuestionService = {
       
       dayStatuses.push({
         day,
-        isCompleted,
+        isCompleted: isCompleted && !hasReviewQuestions, // 복습 문제가 있으면 완료로 표시하지 않음
         isLocked,
+        reviewCount, // 복습 문제 수
       });
     }
     

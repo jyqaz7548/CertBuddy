@@ -32,8 +32,8 @@ export default function ReviewNeededScreen({ route, navigation }) {
   }, []);
 
   const handleReview = () => {
-    // 복습 리스트에 추가하고 복습 화면으로 이동
-    navigation.navigate('Question', {
+    // 복습 리스트에 추가하고 복습 화면으로 이동 (현재 화면을 교체)
+    navigation.replace('Question', {
       isReview: true,
     });
   };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
 
 import HomeScreen from '../screens/Home/HomeScreen';
 import LearningScreen from '../screens/Learning/LearningScreen';
@@ -85,22 +86,42 @@ export default function MainNavigator() {
       <Tab.Screen 
         name="Home" 
         component={HomeStack}
-        options={{ title: '홈' }}
+        options={{ 
+          title: '홈',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+        }}
       />
       <Tab.Screen 
         name="Learning" 
         component={LearningStack}
-        options={{ title: '학습' }}
+        options={{ 
+          title: '학습',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book" size={size} color={color} />
+          ),
+        }}
       />
       <Tab.Screen 
         name="Friends" 
         component={FriendsScreen}
-        options={{ title: '친구' }}
+        options={{ 
+          title: '친구',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="people" size={size} color={color} />
+          ),
+        }}
       />
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen}
-        options={{ title: '마이페이지' }}
+        options={{ 
+          title: '마이페이지',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person" size={size} color={color} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

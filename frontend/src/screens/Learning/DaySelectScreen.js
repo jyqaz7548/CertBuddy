@@ -47,12 +47,33 @@ export default function DaySelectScreen({ route, navigation }) {
     }, [certificationId, user?.id])
   );
 
-  const handleDaySelect = (day, isLocked, isCompleted) => {
+  const handleDaySelect = (day, isLocked, isCompleted, reviewCount) => {
     if (isLocked) {
       Alert.alert(
         '잠금됨',
         `${day - 1}일차 학습을 먼저 완료해주세요.`,
         [{ text: '확인' }]
+      );
+      return;
+    }
+
+    // 복습 문제가 있는 경우
+    if (reviewCount > 0) {
+      Alert.alert(
+        '복습 필요',
+        `${reviewCount}문제 복습이 필요합니다. 복습 하시겠습니까?`,
+        [
+          { text: '취소', style: 'cancel' },
+          {
+            text: '복습하기',
+            onPress: () => {
+              // 복습 화면으로 이동
+              navigation.navigate('Question', {
+                isReview: true,
+              });
+            },
+          },
+        ]
       );
       return;
     }
@@ -107,23 +128,26 @@ export default function DaySelectScreen({ route, navigation }) {
 
         <View style={styles.dayList}>
           {dayStatuses.map((status) => {
-            const { day, isCompleted, isLocked } = status;
+            const { day, isCompleted, isLocked, reviewCount = 0 } = status;
+            const hasReviewQuestions = reviewCount > 0;
             
             return (
               <TouchableOpacity
                 key={day}
                 style={[
                   styles.dayCard,
-                  isCompleted && styles.dayCardCompleted,
+                  isCompleted && !hasReviewQuestions && styles.dayCardCompleted,
+                  hasReviewQuestions && styles.dayCardReviewNeeded,
                   isLocked && styles.dayCardLocked,
                 ]}
-                onPress={() => handleDaySelect(day, isLocked, isCompleted)}
+                onPress={() => handleDaySelect(day, isLocked, isCompleted, reviewCount)}
                 activeOpacity={isLocked ? 1 : 0.7}
               >
                 <View style={styles.dayNumberContainer}>
                   <Text style={[
                     styles.dayNumber,
-                    isCompleted && styles.dayNumberCompleted,
+                    isCompleted && !hasReviewQuestions && styles.dayNumberCompleted,
+                    hasReviewQuestions && styles.dayNumberReviewNeeded,
                     isLocked && styles.dayNumberLocked,
                   ]}>
                     {day}
@@ -133,7 +157,8 @@ export default function DaySelectScreen({ route, navigation }) {
                 <View style={styles.dayInfo}>
                   <Text style={[
                     styles.dayTitle,
-                    isCompleted && styles.dayTitleCompleted,
+                    isCompleted && !hasReviewQuestions && styles.dayTitleCompleted,
+                    hasReviewQuestions && styles.dayTitleReviewNeeded,
                     isLocked && styles.dayTitleLocked,
                   ]}>
                     {day}일차
@@ -142,12 +167,16 @@ export default function DaySelectScreen({ route, navigation }) {
                     styles.dayQuestions,
                     isLocked && styles.dayQuestionsLocked,
                   ]}>
-                    6문제
+                    {hasReviewQuestions ? `${reviewCount}문제 복습 필요` : '6문제'}
                   </Text>
                 </View>
 
                 <View style={styles.statusContainer}>
-                  {isCompleted ? (
+                  {hasReviewQuestions ? (
+                    <View style={styles.reviewNeededBadge}>
+                      <Text style={styles.reviewNeededBadgeText}>복습 필요</Text>
+                    </View>
+                  ) : isCompleted ? (
                     <View style={styles.completedBadge}>
                       <Text style={styles.completedBadgeText}>✓ 완료</Text>
                     </View>
@@ -228,6 +257,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     opacity: 0.7,
   },
+  dayCardReviewNeeded: {
+    backgroundColor: '#FFF3E0',
+    borderWidth: 1,
+    borderColor: '#FF9800',
+  },
   dayNumberContainer: {
     width: 48,
     height: 48,
@@ -248,6 +282,9 @@ const styles = StyleSheet.create({
   dayNumberLocked: {
     color: '#fff',
   },
+  dayNumberReviewNeeded: {
+    color: '#fff',
+  },
   dayInfo: {
     flex: 1,
   },
@@ -262,6 +299,9 @@ const styles = StyleSheet.create({
   },
   dayTitleLocked: {
     color: '#8E8E93',
+  },
+  dayTitleReviewNeeded: {
+    color: '#FF9800',
   },
   dayQuestions: {
     fontSize: 14,
@@ -302,6 +342,17 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   pendingBadgeText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  reviewNeededBadge: {
+    backgroundColor: '#FF9800',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  reviewNeededBadgeText: {
     color: '#fff',
     fontSize: 13,
     fontWeight: '600',

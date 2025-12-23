@@ -55,28 +55,28 @@ const maskName = (fullName) => {
 const mockFriendsData = [
   {
     id: 1,
-    name: '백인선',
+    name: '백OO',
     department: '정보통신과',
     grade: 2,
     certifications: [3, 2, 5], // 프로그래밍기능사, 전기기능사, 컴활
   },
   {
     id: 2,
-    name: '이윤솔',
+    name: '이OO',
     department: '로봇소프트웨어과',
     grade: 2,
-    certifications: [3, 8, 9, 10], // 프로그래밍기능사, 정보기기운용기능사, ITQ 엑셀, ITQ 한글
+    certifications: [3, 8], // 프로그래밍기능사, 정보기기운용기능사
   },
   {
     id: 3,
-    name: '장승원',
+    name: '장OO',
     department: '로봇소프트웨어과',
     grade: 2,
     certifications: [7, 8], // 프로그래밍기능사, 정보기기운용기능사
   },
   {
     id: 4,
-    name: '이소울',
+    name: '이OO',
     department: '로봇소프트웨어과',
     grade: 2,
     certifications: [7], // 프로그래밍기능사
@@ -193,8 +193,6 @@ const mockDepartmentCertStats = {
       { certificationId: 8, name: '정보기기운용기능사', percentage: 67 },
       { certificationId: 7, name: '프로그래밍기능사', percentage: 67 },
       { certificationId: 3, name: '프로그래밍기능사', percentage: 33 },
-      { certificationId: 9, name: 'ITQ 엑셀', percentage: 33 },
-      { certificationId: 10, name: 'ITQ 한글', percentage: 33 },
     ],
     3: [
       { certificationId: 3, name: '프로그래밍기능사', percentage: 45 },
