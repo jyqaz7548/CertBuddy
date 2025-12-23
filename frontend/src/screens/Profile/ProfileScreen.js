@@ -157,20 +157,53 @@ export default function ProfileScreen({ navigation }) {
         .map(id => certMap[id])
         .filter(name => name && name !== '없음' && name !== '기타');
       
-      // 백엔드에 저장
-      await userService.setAcquiredCertifications(certificationNames);
-      
-      // AsyncStorage에도 저장 (호환성 유지)
+      // AsyncStorage에 먼저 저장 (호환성 유지)
       if (filtered.length > 0) {
         await AsyncStorage.setItem('acquiredCertifications', JSON.stringify(filtered));
       } else {
         await AsyncStorage.removeItem('acquiredCertifications');
       }
       
-      setShowAddAcquiredModal(false);
-      loadCertifications();
-      await refreshUser();
-      Alert.alert('완료', '취득한 자격증이 저장되었습니다.');
+      // 백엔드에 저장
+      try {
+        await userService.setAcquiredCertifications(certificationNames);
+        setShowAddAcquiredModal(false);
+        loadCertifications();
+        await refreshUser();
+        Alert.alert('완료', '취득한 자격증이 저장되었습니다.');
+      } catch (error) {
+        console.error('자격증 저장 실패:', error);
+        // 403 에러는 인증 문제일 수 있음
+        if (error.response?.status === 403) {
+          Alert.alert(
+            '인증 오류', 
+            '로그인이 만료되었습니다. 다시 로그인해주세요.',
+            [
+              {
+                text: '확인',
+                onPress: () => {
+                  setShowAddAcquiredModal(false);
+                  loadCertifications();
+                }
+              }
+            ]
+          );
+        } else {
+          Alert.alert(
+            '저장 오류', 
+            error.response?.data?.message || error.message || '자격증 저장에 실패했습니다. 로컬에는 저장되었습니다.',
+            [
+              {
+                text: '확인',
+                onPress: () => {
+                  setShowAddAcquiredModal(false);
+                  loadCertifications();
+                }
+              }
+            ]
+          );
+        }
+      }
     } catch (error) {
       console.error('자격증 저장 실패:', error);
       Alert.alert('오류', error.message || '자격증 저장에 실패했습니다.');

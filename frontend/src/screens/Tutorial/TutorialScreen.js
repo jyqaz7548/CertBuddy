@@ -89,17 +89,7 @@ export default function TutorialScreen({ navigation }) {
         .map(id => certMap[id])
         .filter(name => name && name !== '없음' && name !== '기타');
       
-      // 백엔드에 취득한 자격증 저장
-      if (certificationNames.length > 0 && user?.id) {
-        try {
-          await userService.setAcquiredCertifications(certificationNames);
-        } catch (error) {
-          console.error('백엔드 자격증 저장 실패:', error);
-          // 백엔드 저장 실패해도 계속 진행 (AsyncStorage는 저장)
-        }
-      }
-      
-      // AsyncStorage에도 저장 (호환성 유지)
+      // AsyncStorage에 먼저 저장 (호환성 유지)
       if (acquired.length > 0) {
         await AsyncStorage.setItem('acquiredCertifications', JSON.stringify(acquired));
       }
@@ -112,9 +102,26 @@ export default function TutorialScreen({ navigation }) {
         await AsyncStorage.setItem('priorityCertificationId', desired[0].toString());
       }
 
-      // 유저 정보 갱신
-      if (user?.id) {
-        await refreshUser();
+      // 백엔드에 취득한 자격증 저장 (토큰이 있고 사용자가 로그인되어 있을 때만)
+      const token = await AsyncStorage.getItem('authToken');
+      if (certificationNames.length > 0 && token && user?.id) {
+        try {
+          await userService.setAcquiredCertifications(certificationNames);
+        } catch (error) {
+          console.error('백엔드 자격증 저장 실패:', error);
+          // 백엔드 저장 실패해도 계속 진행 (AsyncStorage는 이미 저장됨)
+          // 403 에러는 토큰 문제일 수 있으므로 조용히 처리
+        }
+      }
+
+      // 유저 정보 갱신 (토큰이 있을 때만)
+      if (token && user?.id) {
+        try {
+          await refreshUser();
+        } catch (error) {
+          console.error('유저 정보 갱신 실패:', error);
+          // 갱신 실패해도 계속 진행
+        }
       }
 
       // 홈 화면으로 이동
