@@ -518,6 +518,996 @@ const mockQuestions = {
         year: 2015,
         round: "2회"
       }
+    },
+    {
+      id: 19,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "V-벨트 전동 장치에서 V-벨트의 단면 형상은 사각형이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "V-벨트의 단면 형상은 사다리꼴이며, 풀리의 V홈에 끼워져 쐐기 작용을 통해 마찰력을 높여 동력을 전달합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 20,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "유압 시스템에서 오일 탱크(Oil Tank)의 역할로 옳지 않은 것은?",
+      choices: [
+        "작동유의 저장",
+        "작동유의 냉각",
+        "작동유 내 기포 및 불순물 제거",
+        "작동유의 압력 생성"
+      ],
+      answer: "작동유의 압력 생성",
+      explanation: "오일 탱크는 작동유를 저장하고, 열을 방출하며, 기포와 이물질을 제거하는 역할을 합니다. 압력을 생성하는 것은 유압 펌프의 역할입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 21,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "나사의 호칭 지름은 수나사의 경우 바깥지름을 기준으로 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "수나사의 호칭 지름은 나사산의 가장 높은 부분인 바깥지름(대경)을 기준으로 표기합니다. 암나사는 암나사의 골지름에 해당하는 수나사의 바깥지름을 호칭으로 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 22,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "PLC 프로그램 명령어 중 'LD(Load)' 명령어의 기능으로 옳은 것은?",
+      choices: [
+        "모선의 시작(A접점 연결)",
+        "직렬 연결",
+        "병렬 연결",
+        "출력 코일 구동"
+      ],
+      answer: "모선의 시작(A접점 연결)",
+      explanation: "LD(Load) 명령어는 래더 다이어그램에서 모선(Bus bar)의 시작 부분에 A접점을 연결할 때 사용합니다. B접점 시작은 LD NOT을 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 23,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 자동화 시스템에서 '피드백 제어(Feedback Control)'의 필수 구성 요소가 아닌 것은?",
+      choices: [
+        "목표값(설정부)",
+        "비교부",
+        "개방 루프",
+        "검출부(센서)"
+      ],
+      answer: "개방 루프",
+      explanation: "피드백 제어(폐루프 제어)는 출력값을 검출하여 목표값과 비교한 뒤 오차를 수정하는 방식입니다. 개방 루프(Open Loop)는 피드백 없이 입력만으로 제어하는 방식이므로 피드백 제어의 요소가 아닙니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 24,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 운동용 나사에 해당하는 것은?",
+      choices: [
+        "미터가는나사",
+        "유니파이나사",
+        "볼나사",
+        "관용나사"
+      ],
+      answer: "볼나사",
+      explanation: "볼나사, 사다리꼴나사, 사각나사 등은 동력을 전달하거나 부품을 이동시키는 운동용 나사입니다. 미터나사, 유니파이나사, 관용나사는 주로 체결용 나사입니다.",
+      examInfo: {
+        year: 2006,
+        round: "4회"
+      }
+    },
+    {
+      id: 25,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "금속 재료의 기계적 성질 중 재료가 파괴되지 않고 가늘고 길게 늘어나는 성질을 '연성'이라고 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "연성(Ductility)은 재료가 탄성 한계를 넘어 파괴되지 않고 길게 늘어나는 성질입니다. 넓게 펴지는 성질은 전성(Malleability)이라고 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 26,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "공압 실린더의 속도를 제어할 때 실린더에서 배출되는 공기의 양을 조절하여 속도를 제어하는 방식은?",
+      choices: [
+        "미터 인(Meter-in) 회로",
+        "미터 아웃(Meter-out) 회로",
+        "블리드 오프(Bleed-off) 회로",
+        "시퀀스 회로"
+      ],
+      answer: "미터 아웃(Meter-out) 회로",
+      explanation: "미터 아웃 방식은 배기 측 유량을 제어하여 속도를 조절하는 방식으로, 공압 실린더의 속도를 안정적으로 제어할 때 가장 많이 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 27,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "센서 선정 시 감지 거리, 응답 속도, 사용 환경(온도, 습도 등)은 고려하지 않아도 된다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "센서를 선정할 때는 감지 대상 물체의 재질, 크기뿐만 아니라 감지 거리, 응답 속도, 설치 장소의 환경 조건 등을 반드시 고려해야 오작동을 막을 수 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 28,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "전기 회로에서 전류의 흐름을 방해하여 전압을 낮추거나 전류를 제한하는 소자는 무엇인가?",
+      choices: [
+        "커패시터(콘덴서)",
+        "인덕터(코일)",
+        "저항기(Resistor)",
+        "다이오드"
+      ],
+      answer: "저항기(Resistor)",
+      explanation: "저항기는 전류의 흐름을 억제하여 전압 강하를 유도하거나 전류 크기를 조절하는 역할을 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 29,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기계 가공 도면에서 표면 거칠기 기호 중 가장 거친 표면(주조, 단조 상태 그대로)을 의미하는 것은?",
+      choices: [
+        "x",
+        "y",
+        "z",
+        "w (또는 ~)"
+      ],
+      answer: "w (또는 ~)",
+      explanation: "표면 거칠기 기호에서 물결무늬(~) 또는 w는 가공하지 않은 면(주조, 압연 등)이나 가장 거친 가공면을 의미합니다. (x, y, z 순으로 정밀해짐)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 30,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 비경화 테이퍼 핀의 호칭 지름을 나타내는 부분은?",
+      choices: [
+        "가장 가는 쪽의 지름",
+        "가장 굵은 쪽의 지름",
+        "중간 부분의 지름",
+        "핀 구멍 지름"
+      ],
+      answer: "가장 가는 쪽의 지름",
+      explanation: "테이퍼 핀의 호칭 지름은 테이퍼의 작은 쪽(가는 쪽) 지름으로 표시합니다.",
+      examInfo: {
+        year: 2013,
+        round: "4회"
+      }
+    },
+    {
+      id: 31,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "직류(DC) 모터는 주파수를 변화시켜 회전 속도를 제어한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "직류(DC) 모터는 전압(전기자 전압)이나 전류(계자 전류)를 제어하여 속도를 조절합니다. 주파수 제어(인버터 사용)는 교류(AC) 유도 전동기 속도 제어에 주로 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 32,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "CAD 시스템에서 3차원 모델링 방식 중 물체의 표면뿐만 아니라 내부의 부피, 질량 정보까지 포함하는 가장 완벽한 모델링 방식은?",
+      choices: [
+        "와이어 프레임 모델링",
+        "서피스 모델링",
+        "솔리드 모델링",
+        "2D 드래프팅"
+      ],
+      answer: "솔리드 모델링",
+      explanation: "솔리드 모델링(Solid Modeling)은 속이 꽉 찬 입체로 표현하며 부피, 무게중심, 관성모멘트 등의 물리적 성질을 계산할 수 있는 방식입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 33,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "유량 제어 밸브는 회로 내의 압력을 일정하게 유지하거나 최고 압력을 제한하는 역할을 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "압력을 조절하는 것은 '압력 제어 밸브'(릴리프 밸브 등)입니다. 유량 제어 밸브는 흐르는 유체 양을 조절하여 액추에이터의 속도를 제어합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 34,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "치수 기입 시 치수 숫자를 기입할 자리가 부족할 때 인출선을 사용하여 기입하거나, 치수 보조선 사이에 점(dot)을 찍어 나타낼 수 있다.",
+      choices: [
+        "치수선",
+        "지시선",
+        "파단선",
+        "해칭선"
+      ],
+      answer: "지시선",
+      explanation: "좁은 공간에 치수나 가공 방법 등을 기입할 때는 '지시선(Leader line)'을 끌어내어 기입합니다. 점은 화살표를 그릴 공간이 없을 때 대신 사용하기도 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 35,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "서보 모터(Servo Motor)의 특징으로 가장 거리가 먼 것은?",
+      choices: [
+        "정밀한 위치 제어가 가능하다.",
+        "속도 응답성이 빠르다.",
+        "피드백 제어를 하지 않는다.",
+        "광범위한 속도 변속이 가능하다."
+      ],
+      answer: "피드백 제어를 하지 않는다.",
+      explanation: "서보 모터는 엔코더 등을 통해 위치와 속도 정보를 검출하고 이를 컨트롤러로 보내 오차를 보정하는 '피드백 제어(Closed Loop)'를 기본으로 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 36,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 밀링 머신으로 가공하기에 가장 부적합한 것은?",
+      choices: [
+        "평면 가공",
+        "기어 가공",
+        "홈 가공",
+        "원통 외경 선삭"
+      ],
+      answer: "원통 외경 선삭",
+      explanation: "원통 외경 선삭은 공작물을 회전시키고 바이트를 이송하여 깎는 '선반(Lathe)' 가공의 대표적인 작업입니다. 밀링은 평면, 홈, 기어 등을 가공합니다.",
+      examInfo: {
+        year: 2011,
+        round: "2회"
+      }
+    },
+    {
+      id: 37,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "스퍼 기어(Spur Gear)는 두 축이 서로 평행할 때 동력을 전달하는 가장 일반적인 기어이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "스퍼 기어(평기어)는 축이 평행한 상태에서 사용되며, 제작이 쉽고 효율이 좋아 가장 널리 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 38,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 전자의 이동 방향과 전류의 흐름 방향에 대한 설명으로 옳은 것은?",
+      choices: [
+        "둘 다 (+)에서 (-)로 흐른다.",
+        "둘 다 (-)에서 (+)로 흐른다.",
+        "전자는 (+)→(-), 전류는 (-)→(+)로 흐른다.",
+        "전류는 (+)→(-), 전자는 (-)→(+)로 흐른다."
+      ],
+      answer: "전류는 (+)→(-), 전자는 (-)→(+)로 흐른다.",
+      explanation: "관습적으로 전류는 양(+)극에서 음(-)극으로 흐른다고 정의하지만, 실제 전하를 운반하는 전자는 음(-)극에서 양(+)극으로 이동합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 39,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "유압 펌프에서 '기어 펌프'는 구조가 복잡하고 고압용으로만 사용된다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "기어 펌프는 구조가 가장 간단하고 가격이 저렴하며, 주로 저압~중압용으로 사용됩니다. 고압용으로는 피스톤 펌프(플런저 펌프)가 적합합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 40,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "PLC 입출력 모듈 중 트랜지스터 출력 방식의 특징으로 옳은 것은?",
+      choices: [
+        "교류(AC) 부하만 제어 가능하다.",
+        "직류(DC) 부하 제어에 적합하며 응답 속도가 빠르다.",
+        "기계적 수명이 짧다.",
+        "부하 전류 용량이 릴레이 방식보다 매우 크다."
+      ],
+      answer: "직류(DC) 부하 제어에 적합하며 응답 속도가 빠르다.",
+      explanation: "트랜지스터 출력은 무접점 방식으로 DC 부하 전용이며, 릴레이 방식에 비해 응답 속도가 매우 빠르고 수명이 깁니다. AC 제어는 트라이악이나 릴레이를 씁니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 41,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기계 제도의 치수 보조 기호 중 정사각형의 한 변의 길이를 나타낼 때 치수 숫자 앞에 붙이는 기호는?",
+      choices: [
+        "R",
+        "Ø",
+        "SØ",
+        "□"
+      ],
+      answer: "□",
+      explanation: "정사각형 변의 길이는 '□' 기호를, 지름은 'Ø', 반지름은 'R', 구의 지름은 'SØ'를 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 42,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "전해연마 가공에 대한 설명으로 틀린 것은?",
+      choices: [
+        "가공면에 방향성이 있다.",
+        "내부식성과 내마모성이 향상된다.",
+        "가공 표면에 변질층이 생기지 않는다.",
+        "복잡한 형상의 제품도 전해연마가 가능하다."
+      ],
+      answer: "가공면에 방향성이 있다.",
+      explanation: "전해연마는 전기화학적으로 표면을 녹여 매끄럽게 만드는 가공법으로, 기계적 가공흔이나 방향성이 남지 않고 광택이 나는 매끄러운 면을 얻을 수 있습니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 43,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "나사의 리드(Lead)는 나사가 1회전했을 때 축 방향으로 이동한 거리를 의미한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "리드(L)는 나사를 한 바퀴 돌렸을 때 전진하는 거리입니다. 한 줄 나사에서는 리드와 피치가 같지만, 여러 줄 나사에서는 '리드 = 줄 수 × 피치'입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 44,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 공유압 회로에서 압축 공기나 유압유의 역류를 방지하고 한쪽 방향으로만 흐르게 하는 밸브는?",
+      choices: [
+        "셔틀 밸브",
+        "체크 밸브",
+        "감압 밸브",
+        "릴리프 밸브"
+      ],
+      answer: "체크 밸브",
+      explanation: "체크 밸브(Check Valve)는 유체를 한쪽 방향으로만 흐르게 하고 반대 방향의 흐름은 차단하여 역류를 방지하는 역할을 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 45,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "PLC의 래더 다이어그램(Ladder Diagram)은 릴레이 제어 회로를 사다리 모양의 기호로 표현한 프로그래밍 언어이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "래더 다이어그램(LD)은 전기 시퀀스 회로도와 유사한 사다리 형태로, 직관적이고 이해하기 쉬워 가장 널리 사용되는 PLC 언어입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 46,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 기계적인 접촉 없이 빛을 이용하여 물체의 유무를 감지하는 센서는?",
+      choices: [
+        "리미트 스위치",
+        "마이크로 스위치",
+        "광전 센서",
+        "열전대"
+      ],
+      answer: "광전 센서",
+      explanation: "광전 센서(Photoelectric Sensor)는 투광부에서 빛을 쏘고 수광부에서 이를 받아 물체에 의한 빛의 차단이나 반사를 이용해 검출하는 비접촉 센서입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 47,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속 재료를 가열했다가 급격히 냉각시켜 경도(단단함)를 높이는 열처리 방법은?",
+      choices: [
+        "풀림(Annealing)",
+        "불림(Normalizing)",
+        "담금질(Quenching)",
+        "뜨임(Tempering)"
+      ],
+      answer: "담금질(Quenching)",
+      explanation: "담금질(퀜칭)은 고온으로 가열 후 물이나 기름에 급랭시켜 재료를 단단하게(경화) 만드는 열처리입니다. 하지만 취성(깨짐)이 생기므로 보통 뜨임 처리를 후속으로 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 48,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "센터리스 연삭의 특징으로 틀린 것은?",
+      choices: [
+        "긴 축 재료의 연삭이 가능하다.",
+        "대형, 중량물의 연삭에 적합하다.",
+        "속이 빈 원통의 외면 연삭에 편리하다.",
+        "연속 작업이 가능하여 대량 생산에 적합하다."
+      ],
+      answer: "대형, 중량물의 연삭에 적합하다.",
+      explanation: "센터리스 연삭기는 센터나 척을 사용하지 않고 조정 숫돌과 지지대로 공작물을 지지하므로, 대형 중량물보다는 가늘고 긴 축이나 소형 핀 등의 대량 생산에 훨씬 유리합니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 49,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "키(Key)는 축과 회전체(기어, 풀리 등)를 고정하여 회전력을 전달하는 기계 요소이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "키(Key)는 축과 보스 사이에 끼워져 헛돌지 않게 하고 동력을 전달하는 결합용 기계 요소입니다. (평행키, 반달키, 묻힘키 등)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 50,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "도면에서 치수를 기입할 때, 치수의 기준이 되는 점, 선, 면을 무엇이라 하는가?",
+      choices: [
+        "데이텀(Datum)",
+        "피치(Pitch)",
+        "공차(Tolerance)",
+        "스케일(Scale)"
+      ],
+      answer: "데이텀(Datum)",
+      explanation: "데이텀(Datum)은 가공이나 치수 측정의 기준이 되는 이론적으로 정확한 점, 직선, 평면 등을 의미하며 기하공차 적용 시 중요한 기준이 됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 51,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "유압유의 점도가 너무 높으면 유동 저항이 커져 동력 손실이 발생하고 압력이 상승할 수 있다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "점도가 지나치게 높으면 끈적임 때문에 흐름이 원활하지 않아 마찰 저항과 동력 손실이 커지고 펌프 흡입 불량(캐비테이션) 등의 원인이 됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 52,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 자동화 시스템에서 디지털 신호를 아날로그 신호로 변환해 주는 장치는?",
+      choices: [
+        "A/D 변환기",
+        "D/A 변환기",
+        "증폭기(Amplifier)",
+        "필터(Filter)"
+      ],
+      answer: "D/A 변환기",
+      explanation: "디지털(Digital)을 아날로그(Analog)로 변환하는 것은 'D/A 변환기(DAC)'입니다. 반대는 'A/D 변환기(ADC)'입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 53,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "전기 시퀀스 회로에서, 비상 정지 버튼(Emergency Stop)은 안전을 위해 어떤 접점을 사용하는가?",
+      choices: [
+        "a접점 (NO)",
+        "b접점 (NC)",
+        "c접점 (전환)",
+        "무접점"
+      ],
+      answer: "b접점 (NC)",
+      explanation: "비상 정지 스위치는 평소에 회로가 연결되어 있다가, 누르거나 단선 시 즉시 전원을 차단해야 하므로 안전상 'b접점(Normally Closed)'을 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 54,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 M10×1.5 탭을 가공하기 위한 드릴링 작업 기초구멍으로 적합한 지름은?",
+      choices: [
+        "6.5mm",
+        "7.5mm",
+        "8.5mm",
+        "9.5mm"
+      ],
+      answer: "8.5mm",
+      explanation: "탭 기초 구멍 지름은 보통 '호칭 지름 - 피치'로 계산합니다. 10mm - 1.5mm = 8.5mm가 적합한 드릴 지름입니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 55,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "밀링 머신에서 분할대(Dividing Head)는 원주를 등분하거나 기어를 가공할 때 공작물을 일정한 각도로 회전시키는 장치이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "분할대는 공작물을 정확한 각도로 회전시켜 등분할 수 있게 해주는 부속 장치로, 기어 가공, 드릴 홈 가공 등에 필수적입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 56,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "유압 회로에서 펌프의 토출 압력이 설정 압력 이상으로 올라가지 않도록 제어하여 회로를 보호하는 밸브는?",
+      choices: [
+        "감압 밸브",
+        "릴리프 밸브",
+        "시퀀스 밸브",
+        "카운터 밸런스 밸브"
+      ],
+      answer: "릴리프 밸브",
+      explanation: "릴리프 밸브(Relief Valve)는 회로 내 압력이 설정치보다 높아지면 탱크로 귀환시켜 과부하를 방지하는 대표적인 안전 밸브입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 57,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "베어링의 안지름 번호가 '04'일 때, 베어링의 안지름은 20mm이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "베어링 안지름 번호가 04 이상인 경우 번호에 5를 곱하여 안지름을 구합니다. 04 × 5 = 20mm입니다. (00:10mm, 01:12mm, 02:15mm, 03:17mm는 예외)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 58,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "PLC 프로그램에서 입력 신호가 ON되는 순간 1스캔(Scan) 동안만 ON 신호를 출력하는 명령어는?",
+      choices: [
+        "미분 명령 (PLS/펄스)",
+        "적분 명령",
+        "타이머 명령",
+        "카운터 명령"
+      ],
+      answer: "미분 명령 (PLS/펄스)",
+      explanation: "입력 신호의 상승 에지(Rising Edge)나 하강 에지(Falling Edge)를 검출하여 한 번만 짧게 신호를 보내는 것을 미분(펄스) 명령이라고 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 59,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 전선을 접속할 때 사용하는 공구가 아닌 것은?",
+      choices: [
+        "와이어 스트리퍼",
+        "압착 펜치(터미널 압착기)",
+        "니퍼",
+        "마이크로미터"
+      ],
+      answer: "마이크로미터",
+      explanation: "마이크로미터는 길이나 두께를 정밀하게 측정하는 측정기기입니다. 전선 접속 작업에는 스트리퍼(피복 제거), 압착 펜치, 니퍼(절단) 등이 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 60,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "내경과 중심이 같도록 외경을 가공할 때 사용하는 선반의 부속장치는?",
+      choices: [
+        "면판",
+        "돌리개",
+        "맨드릴",
+        "방진구"
+      ],
+      answer: "맨드릴",
+      explanation: "맨드릴(Mandrel, 심봉)은 이미 뚫려 있는 구멍을 기준으로 하여 외경을 동심원상으로 가공할 때 구멍에 끼워 사용하는 축입니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 61,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "공압 액추에이터는 유압 액추에이터에 비해 화재의 위험이 적고 청결한 작업 환경을 유지하기 쉽다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "공압은 공기를 사용하므로 누출되어도 오염이 없고 인화성이 없어 화재 위험이 적습니다. 반면 유압은 기름 누유 시 오염과 화재 위험이 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 62,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기계 재료 중 '주철(Cast Iron)'의 가장 큰 특징으로, 진동을 잘 흡수하는 성질은 무엇인가?",
+      choices: [
+        "연성",
+        "전성",
+        "감쇠능(Damping Capacity)",
+        "크리프(Creep)"
+      ],
+      answer: "감쇠능(Damping Capacity)",
+      explanation: "주철은 흑연이 포함되어 있어 진동을 흡수하는 능력인 감쇠능이 뛰어납니다. 그래서 공작기계의 베드(Bed)나 몸체 재료로 많이 쓰입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 63,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "서보 모터 제어 방식 중 '개방 루프 제어(Open Loop Control)'는 엔코더와 같은 검출기로부터 피드백 신호를 받아 오차를 보정한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "피드백 신호를 받아 오차를 보정하는 방식은 '폐루프 제어(Closed Loop Control)'입니다. 개방 루프는 피드백 없이 지령만 내리는 방식(예: 스테핑 모터)입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 64,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "도면에서 치수선, 치수 보조선, 지시선, 해칭선 등에 주로 사용되는 선의 종류는?",
+      choices: [
+        "가는 실선",
+        "굵은 실선",
+        "숨은선(파선)",
+        "1점 쇄선"
+      ],
+      answer: "가는 실선",
+      explanation: "외형선은 굵은 실선을 사용하고, 치수선/보조선/지시선/해칭선 등은 도면을 명확히 하기 위해 '가는 실선'을 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 65,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 자동화 시스템의 입력 장치(센서, 스위치 등)에 해당하지 않는 것은?",
+      choices: [
+        "푸시 버튼 스위치",
+        "솔레노이드 밸브",
+        "리미트 스위치",
+        "근접 센서"
+      ],
+      answer: "솔레노이드 밸브",
+      explanation: "솔레노이드 밸브는 제어 신호를 받아 유로를 개폐하는 '출력 장치(구동기)'에 해당합니다. 나머지는 신호를 보내는 입력 장치입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 66,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 그림과 같은 치수 기입법의 명칭은? (기준점에서 계단식으로 치수 기입)",
+      choices: [
+        "직렬 치수 기입법",
+        "누진 치수 기입법",
+        "좌표 치수 기입법",
+        "병렬 치수 기입법"
+      ],
+      answer: "누진 치수 기입법",
+      explanation: "한 개의 기준점(Datum)에서 출발하여 연속적으로 치수를 누적하여 기입하는 방식을 누진 치수 기입법이라고 합니다. 기준점 표시(○)가 특징입니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
+    },
+    {
+      id: 67,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "유도 전동기의 회전 속도를 제어하는 가변 전압 가변 주파수 장치를 '인버터(Inverter)'라고 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "인버터(VVVF)는 주파수와 전압을 변화시켜 교류(AC) 모터의 속도를 효율적으로 제어하는 장치입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 68,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속의 기계적 성질 중 외부의 힘에 의해 변형되었다가 힘을 제거하면 원래의 모양으로 되돌아가는 성질은?",
+      choices: [
+        "소성",
+        "탄성",
+        "전성",
+        "취성"
+      ],
+      answer: "탄성",
+      explanation: "탄성(Elasticity)은 고무줄이나 스프링처럼 힘을 제거하면 원상 복구되는 성질입니다. 반대로 영구 변형이 남는 성질은 소성(Plasticity)입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 69,
+      certificationId: 1,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "기어(Gear) 제도 시, 이끝원(바깥지름)은 가는 실선으로 그린다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "기어 제도에서 이끝원(바깥지름)은 '굵은 실선'으로, 피치원은 '가는 1점 쇄선'으로, 이뿌리원은 '가는 실선'(단면 시 굵은 실선)으로 그립니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 70,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "시퀀스 제어에서 B접점(Normally Closed)의 동작 설명으로 옳은 것은?",
+      choices: [
+        "평소에는 열려 있다가 조작하면 닫힌다.",
+        "평소에는 닫혀 있다가 조작하면 열린다.",
+        "한 번 조작하면 영구적으로 닫힌다.",
+        "전원이 들어오면 무조건 열린다."
+      ],
+      answer: "평소에는 닫혀 있다가 조작하면 열린다.",
+      explanation: "B접점(NC)은 평상시에 연결(Closed)되어 있어 전류가 흐르다가, 스위치를 누르거나 작동시키면 회로가 끊어지는(Open) 접점입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 71,
+      certificationId: 1,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 CNC 선반 가공 시 절삭 속도(v)를 구하는 공식은? (D: 공작물 지름, N: 회전수)",
+      choices: [
+        "v = πDN / 1000",
+        "v = 1000 / πDN",
+        "v = πD / 1000N",
+        "v = N / πD"
+      ],
+      answer: "v = πDN / 1000",
+      explanation: "절삭 속도 v(m/min)는 π × 지름(D) × 회전수(N) ÷ 1000으로 계산합니다. (단위 환산을 위해 1000으로 나눔)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 72,
+      certificationId: 1,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "그림과 같이 키 홈, 구멍 등 해당 부분 모양만을 도시하는 것으로 충분한 경우 사용하는 투상도로 투상 관계를 나타내기 위하여 주된 그림에 중심선, 기준선, 치수 보조선 등을 연결하여 나타내는 투상도는?",
+      choices: [
+        "회전 투상도",
+        "부분 투상도",
+        "국부 투상도",
+        "보조 투상도"
+      ],
+      answer: "국부 투상도",
+      explanation: "국부 투상도는 대상물의 구멍, 홈 등 필요한 국소 부분만의 모양을 도시할 때 사용합니다. 전체를 그릴 필요가 없을 때 효율적입니다.",
+      examInfo: {
+        year: 2016,
+        round: "2회"
+      }
     }
   ],
   2: [ // 전기기능사
