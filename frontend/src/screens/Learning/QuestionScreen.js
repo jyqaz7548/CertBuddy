@@ -35,7 +35,11 @@ export default function QuestionScreen({ route, navigation }) {
         
         if (isReviewMode) {
           // 복습 세션 시작
-          const session = await questionService.startReviewSession(user?.id || 1);
+          const reviewCertId = route?.params?.certificationId || null;
+          const session = await questionService.startReviewSession(
+            user?.id || 1,
+            reviewCertId
+          );
           setQuestions(session.questions || []);
           setSessionId(session.sessionId);
         } else {

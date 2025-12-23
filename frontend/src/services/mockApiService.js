@@ -835,8 +835,8 @@ export const mockQuestionService = {
     };
   },
 
-  // 복습 문제 목록 조회
-  getReviewQuestions: async (userId) => {
+  // 복습 문제 목록 조회 (자격증별 필터 가능)
+  getReviewQuestions: async (userId, certificationId = null) => {
     await delay(400);
     
     const reviewQuestions = await mockData.loadFromStorage(
@@ -844,14 +844,20 @@ export const mockQuestionService = {
       []
     );
     
-    const userReviewQuestions = reviewQuestions.filter(
-      rq => rq.userId === userId && !rq.isCompleted
-    );
+    const userReviewQuestions = reviewQuestions.filter(rq => {
+      if (rq.userId !== userId || rq.isCompleted) return false;
+      if (certificationId !== null && certificationId !== undefined) {
+        return rq.certificationId === certificationId;
+      }
+      return true;
+    });
     
-    // 문제 ID로 실제 문제 데이터 가져오기 (모든 자격증의 문제에서 찾기)
-    const allQuestions = Object.values(mockData.questions || {}).flat();
+    // 문제 ID로 실제 문제 데이터 가져오기 (자격증별로 안전하게 조회)
     const questions = userReviewQuestions
-      .map(rq => allQuestions.find(q => q.id === rq.questionId))
+      .map(rq => {
+        const certQuestions = mockData.questions?.[rq.certificationId] || [];
+        return certQuestions.find(q => q.id === rq.questionId);
+      })
       .filter(q => q !== undefined);
     
     return questions;
@@ -930,10 +936,10 @@ export const mockQuestionService = {
   },
 
   // 복습 세션 시작
-  startReviewSession: async (userId) => {
+  startReviewSession: async (userId, certificationId = null) => {
     await delay(300);
     
-    const questions = await mockQuestionService.getReviewQuestions(userId);
+    const questions = await mockQuestionService.getReviewQuestions(userId, certificationId);
     
     return {
       sessionId: `review_session_${Date.now()}`,

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '../../store/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { questionService } from '../../services/questionService';
 import { learningService } from '../../services/learningService';
+import { mockData } from '../../services/mockData';
 
 export default function HomeScreen({ navigation }) {
   const { user, refreshUser } = useAuth();
@@ -67,10 +68,68 @@ export default function HomeScreen({ navigation }) {
     }, [user?.id, user?.school, user?.department, refreshUser])
   );
 
-  const handleStartReview = () => {
-    navigation.navigate('Question', {
-      isReview: true,
-    });
+  const handleStartReview = async () => {
+    try {
+      const userId = user?.id || 1;
+      const reviewQuestions = await questionService.getReviewQuestions(userId);
+
+      if (!reviewQuestions || reviewQuestions.length === 0) {
+        // 복습할 문제가 없음
+        return;
+      }
+
+      // 자격증별로 그룹화
+      const certIdSet = new Set(reviewQuestions.map(q => q.certificationId).filter(Boolean));
+      const certIds = Array.from(certIdSet);
+
+      // 자격증 이름 매핑
+      const getCertName = (id) => {
+        const found = mockData.tutorialCertifications.find(c => c.id === id);
+        return found ? found.name : `자격증 ${id}`;
+      };
+
+      if (certIds.length <= 1) {
+        const firstCertId = certIds[0] || null;
+        navigation.navigate('Question', {
+          isReview: true,
+          certificationId: firstCertId,
+        });
+        return;
+      }
+
+      // 여러 자격증이 있을 경우 선택지 제공
+      const buttons = certIds.slice(0, 3).map(id => ({
+        text: getCertName(id),
+        onPress: () => {
+          navigation.navigate('Question', {
+            isReview: true,
+            certificationId: id,
+          });
+        },
+      }));
+
+      // Alert는 3개까지만 버튼 지원하므로 3개 초과 시 첫 번째로 이동
+      if (certIds.length > 3) {
+        buttons.push({
+          text: '기타(첫 자격증으로 진행)',
+          onPress: () => {
+            navigation.navigate('Question', {
+              isReview: true,
+              certificationId: certIds[0],
+            });
+          },
+        });
+      }
+
+      buttons.push({ text: '취소', style: 'cancel' });
+
+      Alert.alert('복습할 자격증을 선택하세요', '', buttons);
+    } catch (error) {
+      console.error('복습 시작 실패:', error);
+      navigation.navigate('Question', {
+        isReview: true,
+      });
+    }
   };
 
   const handleCertificationSelect = (certificationId, certificationName) => {
@@ -101,15 +160,16 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
 
-      {/* 오늘의 학습 버튼 - 학습 완료 + 복습 없음일 때만 "추가 학습하기" */}
-      {todayStatus.isLearningCompleted && reviewCount === 0 ? (
-        // 오늘의 학습 완료 + 복습 문제 없음 = 추가 학습하기
+      {/* 오늘의 학습 버튼 */}
+      {todayStatus.isLearningCompleted &&
+      (!todayStatus.hasReviewQuestions || todayStatus.isReviewCompleted || reviewCount === 0) ? (
+        // 오늘의 학습 완료 + 복습도 완료 혹은 없음 = 완료 상태
         <TouchableOpacity
           style={styles.startButtonCompleted}
           onPress={() => navigation.navigate('Learning')}
         >
-          <Text style={styles.startButtonText}>추가 학습하기</Text>
-          <Text style={styles.startButtonSubtext}>✓ 오늘의 학습 완료!</Text>
+          <Text style={styles.startButtonText}>오늘의 학습을 완료했습니다.</Text>
+          <Text style={styles.startButtonSubtext}>추가 학습하기</Text>
         </TouchableOpacity>
       ) : todayStatus.isLearningCompleted && reviewCount > 0 ? (
         // 오늘의 학습 완료했지만 복습 문제가 남아있음
@@ -145,10 +205,10 @@ export default function HomeScreen({ navigation }) {
       ) : (
         <View style={styles.reviewButtonCompleted}>
           <Text style={styles.reviewButtonTextCompleted}>
-            ✓ 오늘의 복습 완료!
+            복습할 문제가 없습니다
           </Text>
           <Text style={styles.reviewButtonSubtextCompleted}>
-            모든 복습 문제를 완료했습니다
+            오늘의 학습을 시작해주세요
           </Text>
         </View>
       )}

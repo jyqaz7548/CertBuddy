@@ -105,14 +105,14 @@ export const questionService = {
     return response.data;
   },
 
-  // 복습 문제 목록 조회
-  getReviewQuestions: async (userId) => {
+  // 복습 문제 목록 조회 (자격증별 필터 가능)
+  getReviewQuestions: async (userId, certificationId = null) => {
     if (USE_MOCK_API) {
-      return await mockQuestionService.getReviewQuestions(userId);
+      return await mockQuestionService.getReviewQuestions(userId, certificationId);
     }
     
     const response = await api.get('/api/questions/review', {
-      params: { userId },
+      params: { userId, certificationId },
     });
     return response.data;
   },
@@ -144,14 +144,15 @@ export const questionService = {
     return response.data;
   },
 
-  // 복습 세션 시작
-  startReviewSession: async (userId) => {
+  // 복습 세션 시작 (자격증별 필터 가능)
+  startReviewSession: async (userId, certificationId = null) => {
     if (USE_MOCK_API) {
-      return await mockQuestionService.startReviewSession(userId);
+      return await mockQuestionService.startReviewSession(userId, certificationId);
     }
     
     const response = await api.post('/api/questions/review/sessions', {
       userId,
+      certificationId,
     });
     return response.data;
   },
