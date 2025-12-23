@@ -46,11 +46,21 @@ public class LearningService {
         
         // 현재 사용자 제외
         sameDepartmentUsers = sameDepartmentUsers.stream()
-                .filter(u -> !u.getId().equals(userId))
+                .filter(u -> userId == null || !u.getId().equals(userId))
                 .collect(Collectors.toList());
         
         if (sameDepartmentUsers.isEmpty()) {
             return new ArrayList<>();
+        }
+        
+        // 현재 사용자가 이미 취득한 자격증 조회 (추천에서 제외하기 위해)
+        Set<Long> userAcquiredCertIds = new HashSet<>();
+        if (userId != null) {
+            List<UserCertification> userAcquiredCerts = userCertificationRepository
+                    .findByUserIdAndType(userId, UserCertification.CertificationType.ACQUIRED);
+            userAcquiredCertIds = userAcquiredCerts.stream()
+                    .map(uc -> uc.getCertification().getId())
+                    .collect(Collectors.toSet());
         }
         
         // 각 학생의 취득한 자격증 조회 (ACQUIRED 타입만)
@@ -84,6 +94,7 @@ public class LearningService {
         
         List<Map.Entry<Long, Double>> recommendedCerts = sortedCertifications.stream()
                 .filter(entry -> entry.getValue() >= MIN_RATIO) // 최소 비율 이상
+                .filter(entry -> !userAcquiredCertIds.contains(entry.getKey())) // 이미 취득한 자격증 제외
                 .limit(MAX_RECOMMENDATIONS) // 상위 N개만
                 .collect(Collectors.toList());
         

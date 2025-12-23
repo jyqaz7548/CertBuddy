@@ -30,10 +30,10 @@ export const userService = {
     throw new Error(response.data.message || '자격증 삭제에 실패했습니다.');
   },
 
-  // 취득한 자격증 일괄 설정
-  setAcquiredCertifications: async (certificationIds) => {
+  // 취득한 자격증 일괄 설정 (자격증 이름 목록)
+  setAcquiredCertifications: async (certificationNames) => {
     const response = await api.put('/api/users/certifications/acquired', {
-      certificationIds,
+      certificationNames,
     });
     if (response.data.success) {
       return response.data.data;
