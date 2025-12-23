@@ -14,6 +14,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockData } from '../../services/mockData';
+import { userService } from '../../services/userService';
 
 export default function ProfileScreen({ navigation }) {
   const { user, logout, refreshUser } = useAuth();
@@ -144,27 +145,35 @@ export default function ProfileScreen({ navigation }) {
   const handleSaveAcquired = async () => {
     try {
       const filtered = selectedCerts.filter(id => id !== 14);
+      
+      // 자격증 ID를 이름으로 변환
+      const certMap = {};
+      const tutorialCerts = mockData.tutorialCertifications || mockData.mockTutorialCertifications || [];
+      tutorialCerts.forEach(cert => {
+        certMap[cert.id] = cert.name;
+      });
+      
+      const certificationNames = filtered
+        .map(id => certMap[id])
+        .filter(name => name && name !== '없음' && name !== '기타');
+      
+      // 백엔드에 저장
+      await userService.setAcquiredCertifications(certificationNames);
+      
+      // AsyncStorage에도 저장 (호환성 유지)
       if (filtered.length > 0) {
         await AsyncStorage.setItem('acquiredCertifications', JSON.stringify(filtered));
       } else {
         await AsyncStorage.removeItem('acquiredCertifications');
       }
       
-      // 유저 정보 업데이트 (빈 배열도 저장)
-      const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
-      const userIndex = users.findIndex(u => u.id === user?.id);
-      if (userIndex !== -1) {
-        users[userIndex].certifications = filtered; // 빈 배열도 저장하여 추천 시스템에 반영
-        await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
-        // AuthContext의 user 정보도 갱신 (이렇게 하면 HomeScreen의 추천이 자동으로 업데이트됨)
-        await refreshUser();
-      }
-      
       setShowAddAcquiredModal(false);
       loadCertifications();
+      await refreshUser();
       Alert.alert('완료', '취득한 자격증이 저장되었습니다.');
     } catch (error) {
-      Alert.alert('오류', '자격증 저장에 실패했습니다.');
+      console.error('자격증 저장 실패:', error);
+      Alert.alert('오류', error.message || '자격증 저장에 실패했습니다.');
     }
   };
 
