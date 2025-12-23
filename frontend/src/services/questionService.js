@@ -118,14 +118,15 @@ export const questionService = {
   },
 
   // 복습 문제 추가 (틀린 문제를 복습 리스트에 추가)
-  addReviewQuestion: async (userId, questionId) => {
+  addReviewQuestion: async (userId, questionId, certificationId) => {
     if (USE_MOCK_API) {
-      return await mockQuestionService.addReviewQuestion(userId, questionId);
+      return await mockQuestionService.addReviewQuestion(userId, questionId, certificationId);
     }
     
     const response = await api.post('/api/questions/review', {
       userId,
       questionId,
+      certificationId,
     });
     return response.data;
   },

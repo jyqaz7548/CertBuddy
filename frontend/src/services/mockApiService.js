@@ -407,20 +407,30 @@ export const mockQuestionService = {
     // 해당 자격증의 문제 목록 가져오기
     const allQuestions = await mockQuestionService.getQuestions(certificationId);
     
-    // 복습 문제 목록 가져오기
+    // 복습 문제 목록 가져오기 (해당 자격증의 복습 문제만)
     const reviewQuestions = await mockData.loadFromStorage(
       mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
       []
     );
-    const userReviewQuestions = reviewQuestions.filter(
-      rq => rq.userId === userId && !rq.isCompleted
-    );
     
-    // 해당 자격증의 문제 ID만 필터링
+    // 해당 자격증의 문제 ID 목록
     const certQuestionIds = new Set(allQuestions.map(q => q.id));
-    const certReviewQuestions = userReviewQuestions.filter(
-      rq => certQuestionIds.has(rq.questionId)
-    );
+    
+    // 해당 자격증의 복습 문제만 필터링
+    // certificationId가 있으면 그것으로 필터링, 없으면 문제 ID로 필터링 (하위 호환성)
+    const certReviewQuestions = reviewQuestions.filter(rq => {
+      if (rq.userId !== userId || rq.isCompleted) {
+        return false;
+      }
+      
+      // certificationId가 있으면 그것으로 필터링
+      if (rq.certificationId !== undefined && rq.certificationId !== null) {
+        return rq.certificationId === certificationId;
+      }
+      
+      // certificationId가 없으면 문제 ID로 필터링 (기존 데이터 호환성)
+      return certQuestionIds.has(rq.questionId);
+    });
     
     // 각 일차별 문제 ID 범위 계산 (하루에 6문제씩)
     const getDayQuestionIds = (day) => {
@@ -432,6 +442,11 @@ export const mockQuestionService = {
     // 각 일차별 복습 문제 수 계산
     const dayReviewCounts = {};
     certReviewQuestions.forEach(rq => {
+      // 문제 ID가 해당 자격증의 문제 범위에 있는지 확인
+      if (!certQuestionIds.has(rq.questionId)) {
+        return; // 해당 자격증의 문제가 아니면 스킵
+      }
+      
       for (let day = 1; day <= TOTAL_DAYS; day++) {
         const { startId, endId } = getDayQuestionIds(day);
         if (rq.questionId >= startId && rq.questionId <= endId) {
@@ -451,21 +466,33 @@ export const mockQuestionService = {
       
       // 복습 문제가 있으면 완료 처리하지 않음
       const hasReviewQuestions = reviewCount > 0;
+      const actuallyCompleted = isCompleted && !hasReviewQuestions;
       
       // 이전 일차가 완료되었거나 1일차인 경우 잠금 해제
+      // 이전 일차가 완료되었고 복습 문제가 없어야 다음 일차 잠금 해제
       let isLocked = false;
       if (day > 1) {
+        // 이전 일차의 완료 상태와 복습 문제 수 확인
         const previousDayCompleted = completedDays.has(day - 1);
-        isLocked = !previousDayCompleted;
+        const previousDayReviewCount = dayReviewCounts[day - 1] || 0;
+        // 이전 일차가 완료되었고 복습 문제가 없어야 잠금 해제
+        const previousDayActuallyCompleted = previousDayCompleted && previousDayReviewCount === 0;
+        isLocked = !previousDayActuallyCompleted;
       }
       
       dayStatuses.push({
         day,
-        isCompleted: isCompleted && !hasReviewQuestions, // 복습 문제가 있으면 완료로 표시하지 않음
+        isCompleted: actuallyCompleted, // 복습 문제가 있으면 완료로 표시하지 않음
         isLocked,
         reviewCount, // 복습 문제 수
       });
     }
+    
+    // 디버깅 로그
+    console.log('getDayStatuses - certificationId:', certificationId);
+    console.log('  - certReviewQuestions count:', certReviewQuestions.length);
+    console.log('  - dayReviewCounts:', dayReviewCounts);
+    console.log('  - completedDays:', Array.from(completedDays));
     
     return dayStatuses;
   },
@@ -831,7 +858,7 @@ export const mockQuestionService = {
   },
 
   // 복습 문제 추가 (틀린 문제를 복습 리스트에 추가)
-  addReviewQuestion: async (userId, questionId) => {
+  addReviewQuestion: async (userId, questionId, certificationId) => {
     await delay(300);
     
     const reviewQuestions = await mockData.loadFromStorage(
@@ -839,9 +866,12 @@ export const mockQuestionService = {
       []
     );
     
-    // 이미 존재하는지 확인
+    // 이미 존재하는지 확인 (자격증별로도 확인)
     const existing = reviewQuestions.find(
-      rq => rq.userId === userId && rq.questionId === questionId && !rq.isCompleted
+      rq => rq.userId === userId && 
+            rq.questionId === questionId && 
+            rq.certificationId === certificationId &&
+            !rq.isCompleted
     );
     
     if (existing) {
@@ -852,6 +882,7 @@ export const mockQuestionService = {
       id: reviewQuestions.length + 1,
       userId,
       questionId,
+      certificationId, // 자격증 ID 추가
       createdAt: new Date().toISOString(),
       lastReviewedAt: null,
       reviewCount: 0,

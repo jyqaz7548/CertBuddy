@@ -161,9 +161,11 @@ export default function QuestionScreen({ route, navigation }) {
           // 틀린 문제는 복습 리스트에 추가 (재학습 모드가 아닐 때만)
           if (!isCorrect && !isRelearning) {
             try {
+              const certificationId = route?.params?.certificationId || currentQuestion.certificationId;
               await questionService.addReviewQuestion(
                 user?.id || 1,
-                currentQuestion.id
+                currentQuestion.id,
+                certificationId
               );
             } catch (error) {
               console.error('복습 리스트 추가 실패:', error);
@@ -199,11 +201,15 @@ export default function QuestionScreen({ route, navigation }) {
             // 일반 학습 모드에서 모두 틀렸을 때 복습 리스트에 모든 문제 추가 (재학습 모드가 아닐 때만)
             if (!isReviewMode && !isRelearning) {
               try {
-                for (const result of results) {
-                  await questionService.addReviewQuestion(
-                    user?.id || 1,
-                    result.questionId
-                  );
+                const certificationId = route?.params?.certificationId;
+                if (certificationId) {
+                  for (const result of results) {
+                    await questionService.addReviewQuestion(
+                      user?.id || 1,
+                      result.questionId,
+                      certificationId
+                    );
+                  }
                 }
               } catch (error) {
                 console.error('복습 리스트 추가 실패:', error);
