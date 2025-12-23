@@ -176,7 +176,7 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>
-          안녕하세요, {user?.name || '사용자'}님!
+          {user?.name || '사용자'}님, 오늘도 화이팅! 💪
         </Text>
       </View>
 

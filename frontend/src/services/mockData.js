@@ -154,6 +154,13 @@ const mockFriendsData = [
     grade: 2,
     certifications: [3, 2], // 프로그래밍기능사, 전기기능사
   },
+  {
+    id: 9,
+    name: '이OO',
+    department: '설계과',
+    grade: 2,
+    certifications: [9, 11], // 전산응용기계제도기능사, 3D프린터운용기능사
+  },
 ];
 
 // 친구 데이터를 기반으로 실제 통계 계산 함수

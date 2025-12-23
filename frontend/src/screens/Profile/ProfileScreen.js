@@ -181,7 +181,10 @@ export default function ProfileScreen({ navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
       {/* 프로필 헤더 */}
       <View style={styles.profileHeader}>
         <View style={styles.avatar}>
@@ -413,6 +416,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  scrollContent: {
+    paddingTop: 40,
   },
   loadingContainer: {
     flex: 1,
