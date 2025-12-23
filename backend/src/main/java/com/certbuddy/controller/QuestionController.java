@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/questions")
@@ -55,12 +54,12 @@ public class QuestionController {
     }
     
     @GetMapping("/certifications/{certificationId}/days")
-    public ResponseEntity<ApiResponse<Map<Integer, Boolean>>> getDayStatuses(
+    public ResponseEntity<ApiResponse<List<DayStatusResponse>>> getDayStatuses(
             @PathVariable Long certificationId,
             Authentication authentication) {
         try {
             Long userId = getUserIdFromAuthentication(authentication);
-            Map<Integer, Boolean> dayStatuses = questionService.getDayStatuses(certificationId, userId);
+            List<DayStatusResponse> dayStatuses = questionService.getDayStatuses(certificationId, userId);
             return ResponseEntity.ok(ApiResponse.success(dayStatuses));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));

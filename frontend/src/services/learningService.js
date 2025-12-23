@@ -1,16 +1,8 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../constants/config';
+import api from './apiService';
 import { mockLearningService } from './mockApiService';
 
 // Mock 모드 활성화 여부 (백엔드 준비되면 false로 변경)
 const USE_MOCK_API = false; // 백엔드 연동 완료
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 export const learningService = {
   // 추천 자격증 조회

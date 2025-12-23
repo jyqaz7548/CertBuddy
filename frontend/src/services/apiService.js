@@ -12,9 +12,16 @@ const api = axios.create({
 // 요청 인터셉터: 토큰 자동 추가
 api.interceptors.request.use(
   async (config) => {
-    const token = await AsyncStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log('토큰 전송:', config.url, token.substring(0, 20) + '...');
+      } else {
+        console.warn('토큰 없음:', config.url);
+      }
+    } catch (error) {
+      console.error('토큰 로딩 실패:', error);
     }
     return config;
   },
@@ -27,9 +34,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
-      // 토큰 만료 시 로그아웃 처리
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      // 토큰 만료 또는 인증 실패 시 로그아웃 처리
+      console.error('인증 실패:', error.response?.status, error.response?.data);
       await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('userId');
       // TODO: 로그인 화면으로 리다이렉트
     }
     return Promise.reject(error);
