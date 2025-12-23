@@ -10,6 +10,7 @@ import {
 import { useAuth } from '../../store/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockData } from '../../services/mockData';
+import { userService } from '../../services/userService';
 
 export default function TutorialScreen({ navigation }) {
   const { user, refreshUser } = useAuth();
@@ -77,6 +78,28 @@ export default function TutorialScreen({ navigation }) {
 
       // 취득한 자격증 저장 (없음 제외)
       const acquired = acquiredCertifications.filter(id => id !== 14);
+      
+      // 자격증 ID를 이름으로 변환
+      const certMap = {};
+      certifications.forEach(cert => {
+        certMap[cert.id] = cert.name;
+      });
+      
+      const certificationNames = acquired
+        .map(id => certMap[id])
+        .filter(name => name && name !== '없음' && name !== '기타');
+      
+      // 백엔드에 취득한 자격증 저장
+      if (certificationNames.length > 0 && user?.id) {
+        try {
+          await userService.setAcquiredCertifications(certificationNames);
+        } catch (error) {
+          console.error('백엔드 자격증 저장 실패:', error);
+          // 백엔드 저장 실패해도 계속 진행 (AsyncStorage는 저장)
+        }
+      }
+      
+      // AsyncStorage에도 저장 (호환성 유지)
       if (acquired.length > 0) {
         await AsyncStorage.setItem('acquiredCertifications', JSON.stringify(acquired));
       }
@@ -89,16 +112,9 @@ export default function TutorialScreen({ navigation }) {
         await AsyncStorage.setItem('priorityCertificationId', desired[0].toString());
       }
 
-      // 유저 정보에 취득한 자격증 동기화
+      // 유저 정보 갱신
       if (user?.id) {
-        const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
-        const userIndex = users.findIndex(u => u.id === user.id);
-        if (userIndex !== -1) {
-          users[userIndex].certifications = acquired;
-          await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
-          // AuthContext의 user 정보도 갱신
-          await refreshUser();
-        }
+        await refreshUser();
       }
 
       // 홈 화면으로 이동

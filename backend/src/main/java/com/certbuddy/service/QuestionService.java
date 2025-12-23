@@ -307,16 +307,21 @@ public class QuestionService {
                     .build();
             questionAnswerRepository.save(answer);
             
-            // 틀린 문제는 복습 문제로 추가 (중복 체크는 addReviewQuestion 내부에서 처리)
-            if (!result.getIsCorrect()) {
+            // 틀린 문제는 복습 문제로 추가 (재학습 모드가 아닐 때만)
+            // 재학습 모드는 이미 완료한 일차를 다시 학습하는 것이므로 복습 문제에 추가하지 않음
+            if (!result.getIsCorrect() && !session.getIsRelearning()) {
                 addReviewQuestion(userId, result.getQuestionId(), session.getCertification().getId());
             }
         }
         
-        // XP 계산 (간단한 구현: 문제당 10XP, 정답률에 따라 보너스)
-        int baseXp = totalQuestions * 10;
-        int bonusXp = (int) (correctAnswers * 5); // 정답당 5XP 보너스
-        int totalXp = baseXp + bonusXp;
+        // XP 계산: 한 문제당 10XP, 틀릴 때마다 5XP 차감, 다 틀리면 0XP
+        // 단, 재학습 모드(isRelearning=true)에서는 XP를 주지 않음
+        int totalXp = 0;
+        if (!session.getIsRelearning()) {
+            int correctCount = (int) correctAnswers;
+            int wrongCount = totalQuestions - correctCount;
+            totalXp = Math.max(0, (correctCount * 10) - (wrongCount * 5));
+        }
         
         session.setTotalQuestions(totalQuestions);
         session.setCorrectAnswers((int) correctAnswers);
@@ -324,9 +329,11 @@ public class QuestionService {
         session.setStatus(QuestionSession.SessionStatus.COMPLETED);
         session.setCompletedAt(LocalDateTime.now());
         
-        // 사용자 XP 업데이트
+        // 사용자 XP 업데이트 (재학습 모드가 아닐 때만)
         User user = session.getUser();
-        user.setTotalXp(user.getTotalXp() + totalXp);
+        if (!session.getIsRelearning()) {
+            user.setTotalXp(user.getTotalXp() + totalXp);
+        }
         user.setLastStudyDate(LocalDateTime.now()); // 마지막 학습일 업데이트
         user.setStreak(user.getStreak() + 1); // 스트릭 증가 (TODO: 연속 학습 여부 확인 로직 추가 필요)
         userRepository.save(user);
@@ -482,8 +489,11 @@ public class QuestionService {
             throw new RuntimeException("이미 완료된 세션입니다.");
         }
 
-        // 답안 저장 (복습 문제는 이미 completeReviewQuestion에서 처리되었으므로 여기서는 답안만 저장)
+        // 답안 저장 및 완료된 복습 문제 확인 (완료된 문제는 XP에서 제외)
         int correctCount = 0;
+        int xpEligibleCorrectCount = 0; // XP를 받을 수 있는 정답 수 (완료되지 않은 문제만)
+        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
+        
         for (QuestionAnswerRequest result : results) {
             Question question = questionRepository.findById(result.getQuestionId())
                     .orElseThrow(() -> new RuntimeException("문제를 찾을 수 없습니다."));
@@ -500,6 +510,19 @@ public class QuestionService {
 
             if (result.getIsCorrect()) {
                 correctCount++;
+                
+                // 복습 문제가 이미 완료되었는지 확인 (nextReviewDate가 1년 이상 미래면 완료)
+                Optional<ReviewQuestion> reviewQuestionOpt = reviewQuestionRepository
+                        .findByUserIdAndQuestionId(userId, result.getQuestionId());
+                
+                // 복습 문제가 없거나, 아직 완료되지 않은 경우에만 XP 지급
+                boolean isAlreadyCompleted = reviewQuestionOpt
+                        .map(rq -> rq.getNextReviewDate() != null && rq.getNextReviewDate().isAfter(oneYearLater))
+                        .orElse(false);
+                
+                if (!isAlreadyCompleted) {
+                    xpEligibleCorrectCount++;
+                }
             }
             // 복습 문제 완료 처리는 이미 completeReviewQuestion에서 처리되었으므로 여기서는 하지 않음
         }
@@ -509,10 +532,9 @@ public class QuestionService {
         session.setStatus(QuestionSession.SessionStatus.COMPLETED);
         session.setCompletedAt(LocalDateTime.now());
 
-        // 복습 보너스 XP 계산 및 사용자 XP 업데이트
-        int baseXp = correctCount * 5; // 맞춘 문제당 5XP
-        int reviewBonusXp = 50; // 복습 보너스
-        int totalXp = baseXp + reviewBonusXp;
+        // 복습 XP 계산: 한 문제당 5XP, 틀리면 0XP (즉 맞춘 문제만 5XP씩), 다 틀리면 0XP
+        // 단, 이미 완료된 복습 문제는 XP에서 제외
+        int totalXp = xpEligibleCorrectCount * 5;
         session.setXpEarned(totalXp);
         user.setTotalXp(user.getTotalXp() + totalXp);
         user.setLastStudyDate(LocalDateTime.now()); // 마지막 학습일 업데이트
