@@ -19,9 +19,8 @@ export const friendService = {
       return await mockFriendService.getFriends(userId);
     }
     
-    const response = await api.get('/api/friends', {
-      params: { userId },
-    });
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
+    const response = await api.get('/api/friends');
     return response.data.success ? response.data.data : response.data;
   },
 
@@ -51,9 +50,8 @@ export const friendService = {
       return await mockFriendService.getFriendRequests(userId);
     }
     
-    const response = await api.get('/api/friends/requests', {
-      params: { userId },
-    });
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
+    const response = await api.get('/api/friends/requests');
     return response.data.success ? response.data.data : response.data;
   },
 
@@ -63,9 +61,8 @@ export const friendService = {
       return await mockFriendService.getRanking(userId);
     }
     
-    const response = await api.get('/api/friends/ranking', {
-      params: { userId },
-    });
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
+    const response = await api.get('/api/friends/ranking');
     return response.data.success ? response.data.data : response.data;
   },
 
@@ -87,8 +84,9 @@ export const friendService = {
       return await mockFriendService.getRecommendedUsers(userId, department, grade);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.get('/api/friends/recommendations', {
-      params: { userId, department, grade },
+      params: { department, grade },
     });
     return response.data.success ? response.data.data : response.data;
   },

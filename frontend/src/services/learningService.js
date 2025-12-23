@@ -19,8 +19,9 @@ export const learningService = {
       return await mockLearningService.getRecommendations(school, department, grade, userId);
     }
     
+    // 백엔드에서 userId는 선택사항이므로 전달하지 않아도 됨
     const response = await api.get('/api/learning/recommendations', {
-      params: { school, department, grade, userId },
+      params: { school, department, grade },
     });
     return response.data.success ? response.data.data : response.data;
   },
@@ -41,9 +42,9 @@ export const learningService = {
       return await mockLearningService.startLearningSession(certificationId, userId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post('/api/learning/sessions', {
       certificationId,
-      userId,
     });
     return response.data.success ? response.data.data : response.data;
   },
@@ -67,9 +68,8 @@ export const learningService = {
       return await mockLearningService.getReviewCards(userId);
     }
     
-    const response = await api.get('/api/learning/review', {
-      params: { userId },
-    });
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
+    const response = await api.get('/api/learning/review');
     return response.data.success ? response.data.data : response.data;
   },
 
@@ -79,8 +79,8 @@ export const learningService = {
       return await mockLearningService.addReviewCard(userId, flashCardId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post('/api/learning/review', {
-      userId,
       flashCardId,
     });
     return response.data.success ? response.data.data : response.data;

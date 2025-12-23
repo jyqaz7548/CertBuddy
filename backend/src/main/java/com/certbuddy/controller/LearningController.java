@@ -28,9 +28,22 @@ public class LearningController {
             @RequestParam(required = false) String school,
             @RequestParam(required = false) String department,
             @RequestParam(required = false) Integer grade,
-            @RequestParam(required = false) Long userId) {
+            @RequestParam(required = false) Long userId,
+            Authentication authentication) {
         try {
-            List<Certification> certifications = learningService.getRecommendations(school, department, grade, userId);
+            // Authentication이 있으면 그것을 우선 사용, 없으면 파라미터 사용
+            Long finalUserId = null;
+            if (authentication != null) {
+                try {
+                    finalUserId = getUserIdFromAuthentication(authentication);
+                } catch (Exception e) {
+                    // 인증 실패 시 파라미터 사용
+                    finalUserId = userId;
+                }
+            } else {
+                finalUserId = userId;
+            }
+            List<Certification> certifications = learningService.getRecommendations(school, department, grade, finalUserId);
             return ResponseEntity.ok(ApiResponse.success(certifications));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));

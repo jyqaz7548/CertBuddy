@@ -12,7 +12,7 @@ export const questionService = {
     }
     
     const response = await api.get('/api/questions/certifications');
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 자격증별 학습률 조회
@@ -21,10 +21,9 @@ export const questionService = {
       return await mockQuestionService.getCertificationProgress(certificationId, userId);
     }
     
-    const response = await api.get(`/api/questions/certifications/${certificationId}/progress`, {
-      params: { userId },
-    });
-    return response.data;
+    // 백엔드에서 Authentication에서 userId를 가져오므로 파라미터 불필요
+    const response = await api.get(`/api/questions/certifications/${certificationId}/progress`);
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 오늘 학습 완료 여부 확인
@@ -33,10 +32,9 @@ export const questionService = {
       return await mockQuestionService.getTodayLearningStatus(userId);
     }
     
-    const response = await api.get('/api/questions/today-status', {
-      params: { userId },
-    });
-    return response.data;
+    // 백엔드에서 Authentication에서 userId를 가져오므로 파라미터 불필요
+    const response = await api.get('/api/questions/today-status');
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 일차별 완료 상태 조회
@@ -45,10 +43,9 @@ export const questionService = {
       return await mockQuestionService.getDayStatuses(certificationId, userId);
     }
     
-    const response = await api.get(`/api/questions/certifications/${certificationId}/days`, {
-      params: { userId },
-    });
-    return response.data;
+    // 백엔드에서 Authentication에서 userId를 가져오므로 파라미터 불필요
+    const response = await api.get(`/api/questions/certifications/${certificationId}/days`);
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 문제 목록 조회 (자격증별)
@@ -60,7 +57,7 @@ export const questionService = {
     const response = await api.get(`/api/questions`, {
       params: { certificationId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 문제 세션 시작 (학습 시작)
@@ -69,13 +66,13 @@ export const questionService = {
       return await mockQuestionService.startQuestionSession(certificationId, userId, specificDay, isRelearning);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post('/api/questions/sessions', {
       certificationId,
-      userId,
       specificDay,
       isRelearning,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 문제 답안 제출 및 결과 저장
@@ -89,7 +86,7 @@ export const questionService = {
       selectedAnswer,
       isCorrect,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 학습 세션 완료
@@ -98,11 +95,11 @@ export const questionService = {
       return await mockQuestionService.completeQuestionSession(sessionId, results, userId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post(`/api/questions/sessions/${sessionId}/complete`, {
       results,
-      userId,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 문제 목록 조회 (자격증별 필터 가능)
@@ -111,10 +108,11 @@ export const questionService = {
       return await mockQuestionService.getReviewQuestions(userId, certificationId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.get('/api/questions/review', {
-      params: { userId, certificationId },
+      params: { certificationId },
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 문제 추가 (틀린 문제를 복습 리스트에 추가)
@@ -123,12 +121,12 @@ export const questionService = {
       return await mockQuestionService.addReviewQuestion(userId, questionId, certificationId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post('/api/questions/review', {
-      userId,
       questionId,
       certificationId,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 문제 완료 처리
@@ -137,11 +135,11 @@ export const questionService = {
       return await mockQuestionService.completeReviewQuestion(userId, questionId, isCorrect);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post(`/api/questions/review/${questionId}/complete`, {
-      userId,
       isCorrect,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 세션 시작 (자격증별 필터 가능)
@@ -150,11 +148,11 @@ export const questionService = {
       return await mockQuestionService.startReviewSession(userId, certificationId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post('/api/questions/review/sessions', {
-      userId,
       certificationId,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 
   // 복습 세션 완료 (보너스 XP 지급)
@@ -163,11 +161,11 @@ export const questionService = {
       return await mockQuestionService.completeReviewSession(sessionId, results, userId);
     }
     
+    // 백엔드에서 Authentication에서 userId를 가져오므로 userId 파라미터 불필요
     const response = await api.post(`/api/questions/review/sessions/${sessionId}/complete`, {
       results,
-      userId,
     });
-    return response.data;
+    return response.data.success ? response.data.data : response.data;
   },
 };
 
