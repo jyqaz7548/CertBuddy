@@ -21,7 +21,14 @@ function HomeStack() {
       <Stack.Screen 
         name="HomeMain" 
         component={HomeScreen}
-        options={{ title: '홈' }}
+        options={{ 
+          title: '홈',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontSize: 28,
+            fontWeight: 'bold',
+          },
+        }}
       />
       <Stack.Screen 
         name="DaySelect" 
@@ -53,7 +60,14 @@ function LearningStack() {
       <Stack.Screen 
         name="LearningMain" 
         component={LearningScreen}
-        options={{ title: '학습' }}
+        options={{ 
+          title: '학습',
+          headerTitleAlign: 'left',
+          headerTitleStyle: {
+            fontSize: 28,
+            fontWeight: 'bold',
+          },
+        }}
       />
       <Stack.Screen 
         name="DaySelect" 

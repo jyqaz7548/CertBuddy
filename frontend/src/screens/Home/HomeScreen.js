@@ -174,8 +174,8 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.greeting}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>
           {user?.name || '사용자'}님, 오늘도 화이팅! 💪
         </Text>
       </View>
@@ -410,15 +410,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
-  header: {
-    backgroundColor: '#007AFF',
+  titleContainer: {
     padding: 20,
     paddingTop: 60,
+    paddingBottom: 10,
   },
-  greeting: {
-    fontSize: 24,
+  title: {
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000',
   },
   statsContainer: {
     flexDirection: 'row',
