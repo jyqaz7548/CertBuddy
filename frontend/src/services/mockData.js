@@ -1176,6 +1176,666 @@ const mockQuestions = {
         year: 2016,
         round: "2회"
       }
+    },
+    {
+      id: 55,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "전류계의 측정 범위를 넓히기 위해 전류계와 '병렬'로 연결하여 사용하는 저항기를 무엇이라고 합니까?",
+      choices: [
+        "분류기",
+        "배율기",
+        "변압기",
+        "유도기"
+      ],
+      answer: "분류기",
+      explanation: "큰 전류가 흐를 때 전류계가 타지 않도록, 저항(분류기)을 병렬로 연결하여 전류를 나누어 흐르게 하는 원리입니다. (배율기는 전압계와 직렬)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 56,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "직류 전동기가 회전할 때 발생하는 '역기전력'은 회전 속도가 빠를수록 작아진다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "직류 전동기의 역기전력(E)은 회전 속도(N)와 자속(Φ)에 비례합니다. 즉, 회전 속도가 빨라질수록 역기전력도 커집니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 57,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "평행판 콘덴서의 정전용량(C)은 극판의 면적이 넓을수록 커지고, 극판 사이의 [   ]이/가 멀어질수록 작아집니다.",
+      choices: [
+        "간격",
+        "전압",
+        "전류",
+        "저항"
+      ],
+      answer: "간격",
+      explanation: "정전용량 C = ε(A/d)입니다. 즉, 유전율(ε)과 면적(A)에는 비례하고, 극판 간격(d)에는 반비례합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 58,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속 전선관을 절단한 후, 전선의 피복이 손상되지 않도록 관의 안쪽 날카로운 부분을 다듬는 데 사용하는 공구는?",
+      choices: [
+        "리머 (Reamer)",
+        "오스터 (Oster)",
+        "노크아웃 펀치",
+        "파이프 렌치"
+      ],
+      answer: "리머 (Reamer)",
+      explanation: "금속관 절단면의 거친 부분을 매끄럽게 다듬는 공구를 리머라고 합니다. (오스터는 나사산을 낼 때 사용)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 59,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "코일(인덕터)은 흐르는 전류가 급격히 변하는 것을 막으려는 성질(유도 기전력 발생)을 가지고 있다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "코일은 전류가 변하면 그 변화를 방해하는 방향으로 유도 기전력을 만들어냅니다. 이를 렌츠의 법칙이라고 하며, 평활 회로 등에 이용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 60,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "복도나 계단처럼 2개의 장소에서 전등 1개를 켜고 끌 수(점멸) 있도록 배선할 때 필요한 스위치는?",
+      choices: [
+        "3로 스위치",
+        "단로 스위치",
+        "4로 스위치",
+        "타임 스위치"
+      ],
+      answer: "3로 스위치",
+      explanation: "2개소 점멸 회로에는 '3로 스위치' 2개가 필요합니다. (참고: 3개소 이상에서 제어하려면 3로 스위치 사이에 4로 스위치를 추가합니다.)",
+      examInfo: {
+        year: 2015,
+        round: "4회"
+      }
+    },
+    {
+      id: 61,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속관 공사에서 관을 서로 연결하거나 관과 부속품을 연결할 때 사용하는 '커플링(Coupling)'은 관의 바깥지름보다 약 몇 배 이상 깊게 끼워야 할까요?",
+      choices: [
+        "1.2배",
+        "2.5배",
+        "3.0배",
+        "0.8배"
+      ],
+      answer: "1.2배",
+      explanation: "관의 연결 부분은 튼튼해야 하므로, 커플링 안쪽으로 관의 바깥지름의 약 1.2배 이상 깊이까지 삽입하여 접속해야 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 62,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "납축전지의 용량을 나타내는 단위는 Ah(암페어 아워)를 사용한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "축전지 용량은 '방전 전류(A) × 방전 시간(h)'으로 나타내며 단위는 Ah입니다. (예: 100Ah는 1A로 100시간, 또는 10A로 10시간 쓸 수 있는 양)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 63,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "3상 유도 전동기의 회전 방향을 반대로 바꾸려면, 전원선 3가닥(R, S, T) 중 [   ]가닥의 연결을 서로 바꾸면 됩니다.",
+      choices: [
+        "2",
+        "1",
+        "3",
+        "모든"
+      ],
+      answer: "2",
+      explanation: "3상 전원 중 임의의 2선(예: R과 S, 또는 S와 T)을 서로 바꿔 연결하면 회전 자계의 방향이 반대가 되어 모터가 역회전합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 64,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "전기 기기 내부에서 절연유(기름)의 온도 상승이나 가스 발생 등을 감지하여 변압기 고장을 보호하는 계전기는?",
+      choices: [
+        "부흐홀츠 계전기",
+        "차동 계전기",
+        "과전류 계전기",
+        "지락 계전기"
+      ],
+      answer: "부흐홀츠 계전기",
+      explanation: "부흐홀츠 계전기는 유입 변압기 내부 고장 시 발생하는 가스나 유류의 흐름을 감지하여 동작하는 기계적 보호 장치입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 65,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "가공 전선로의 지지물(전봇대 등)을 세울 때, 땅에 묻히는 깊이는 일반적으로 지지물 전체 길이의 1/6 이상이어야 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "전주가 넘어지지 않도록 충분히 깊게 묻어야 하며, 표준 깊이는 전장(전체 길이)의 6분의 1 이상입니다. (단, 15m 초과 시에는 2.5m 이상)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 66,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 전선 접속 시 전선의 전기 저항을 증가시키지 않기 위해 사용하는 접속 기구가 '아닌' 것은?",
+      choices: [
+        "와이어 스트리퍼",
+        "슬리브",
+        "와이어 커넥터",
+        "터미널 러그"
+      ],
+      answer: "와이어 스트리퍼",
+      explanation: "와이어 스트리퍼는 전선의 피복을 벗기는 공구입니다. 슬리브, 커넥터, 터미널 러그는 전선을 접속(연결)할 때 사용하는 자재입니다.",
+      examInfo: {
+        year: 2017,
+        round: "3회"
+      }
+    },
+    {
+      id: 67,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속관 공사에서 전선의 피복 손상을 방지하기 위해 관 끝부분에 끼우는 부속품은 무엇입니까?",
+      choices: [
+        "부싱 (Bushing)",
+        "로크 너트",
+        "커플링",
+        "노멀 밴드"
+      ],
+      answer: "부싱 (Bushing)",
+      explanation: "금속관 절단면의 날카로운 부분으로부터 전선 피복을 보호하기 위해 관 끝단에 부싱을 끼웁니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 68,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "단상 유도 전동기 중 기동 토크가 가장 큰 것은 '반발 기동형'이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "단상 유도 전동기의 기동 토크 크기 순서는 '반발 기동형 > 반발 유도형 > 콘덴서 기동형 > 분상 기동형 > 셰이딩 코일형'입니다. (암기팁: 반콘분셰)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 69,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "변압기의 철심(Core)은 규소 강판을 겹쳐서 만듭니다. 이렇게 얇은 판을 여러 장 겹치는(성층) 이유는 무엇을 줄이기 위해서일까요?",
+      choices: [
+        "와류손 (맴돌이 전류 손실)",
+        "히스테리시스손",
+        "동손",
+        "유전체손"
+      ],
+      answer: "와류손 (맴돌이 전류 손실)",
+      explanation: "철심 내부에서 맴도는 전류(와전류)로 인한 열 손실을 줄이기 위해 절연된 얇은 강판을 겹쳐서 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 70,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "반도체 소자인 SCR(실리콘 제어 정류기)의 단자 3개는 애노드(A), 캐소드(K), 그리고 [   ]입니다.",
+      choices: [
+        "게이트 (G)",
+        "베이스 (B)",
+        "컬렉터 (C)",
+        "이미터 (E)"
+      ],
+      answer: "게이트 (G)",
+      explanation: "SCR은 애노드와 캐소드 사이에 전압을 걸고, 게이트(Gate)에 신호를 주어 전류를 흐르게 하는 3단자 사이리스터입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 71,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "가공 전선로에서 지지물(전주)을 보호하기 위해 설치하는 '지선(Stay Wire)'의 안전율은 2.5 이상이어야 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "지선은 전주가 쓰러지지 않도록 지탱하는 중요한 설비이므로 안전율을 2.5 이상으로 하여 충분히 튼튼하게 설치해야 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 72,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "주택이나 아파트 등 저압 옥내 배선 공사에서 사용할 수 '없는' 전선 굵기(단면적)는?",
+      choices: [
+        "1.5㎟",
+        "2.5㎟",
+        "4.0㎟",
+        "6.0㎟"
+      ],
+      answer: "1.5㎟",
+      explanation: "저압 옥내 배선에는 일반적으로 단면적 2.5㎟ 이상의 연동선(또는 이와 동등 이상의 세기 및 굵기)을 사용해야 합니다.",
+      examInfo: {
+        year: 2016,
+        round: "4회"
+      }
+    },
+    {
+      id: 73,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "가공 전선로에서 지지물과 전선 사이를 절연하고 전선을 지지하는 역할을 하는 것은 무엇입니까?",
+      choices: [
+        "애자",
+        "완금",
+        "지선",
+        "변압기"
+      ],
+      answer: "애자",
+      explanation: "애자(Insulator)는 전기가 통하지 않는 절연체로 만들어져, 전선이 지지물(전봇대)을 통해 땅으로 누전되는 것을 막아줍니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 74,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "변압기는 2차측(부하측)을 개방(Open)한 상태에서 1차측에 정격 전압을 가하면 '무부하 시험'을 할 수 있다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "무부하 시험은 2차측에 아무것도 연결하지 않은 상태에서 진행하며, 이를 통해 변압기의 철손(히스테리시스손+와류손)과 여자 전류를 알 수 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 75,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "교류 회로에서 유효전력(P)과 무효전력(Pr)을 벡터 합한 전체 전력을 [   ] 전력이라고 합니다.",
+      choices: [
+        "피상",
+        "순시",
+        "최대",
+        "평균"
+      ],
+      answer: "피상",
+      explanation: "피상 전력(Pa)은 전압과 전류의 실효값을 단순히 곱한 값으로, 단위는 VA(볼트암페어)를 사용합니다. (Pa = √(P² + Pr²))",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 76,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "전기 기기 외함의 접지 공사 시, 접지선은 가스관이나 수도관과 함께 묶어서 시공하는 것이 원칙이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "가스관은 폭발 위험이 있어 접지극으로 사용할 수 없습니다. 수도관은 특정 조건(저항값 등)을 만족할 때만 제한적으로 사용 가능합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 77,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 빛을 받으면 전기가 발생하는 '광전 효과'를 이용한 다이오드는 무엇입니까?",
+      choices: [
+        "포토 다이오드",
+        "제너 다이오드",
+        "발광 다이오드 (LED)",
+        "터널 다이오드"
+      ],
+      answer: "포토 다이오드",
+      explanation: "포토 다이오드는 빛 에너지를 전기 에너지로 변환하는 센서 역할을 합니다. 반대로 LED는 전기를 빛으로 바꿉니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 78,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "3상 동기 발전기를 병렬 운전할 때 반드시 같지 않아도 되는 조건은?",
+      choices: [
+        "용량",
+        "주파수",
+        "위상",
+        "전압의 크기"
+      ],
+      answer: "용량",
+      explanation: "병렬 운전 조건은 전압의 크기, 위상, 주파수, 파형이 같아야 합니다. 하지만 발전기 각각의 용량이나 전류 크기는 달라도 운전할 수 있습니다.",
+      examInfo: {
+        year: 2017,
+        round: "3회"
+      }
+    },
+    {
+      id: 79,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "3상 4선식 배전 방식에서, 전압선(Line)과 중성선(Neutral) 사이의 전압을 [   ] 전압이라고 합니다.",
+      choices: [
+        "상",
+        "선간",
+        "대지",
+        "단자"
+      ],
+      answer: "상",
+      explanation: "3상 4선식에서 각 전압선과 중성선 사이를 연결하면 상전압(220V)을 얻을 수 있고, 전압선끼리 연결하면 선간 전압(380V)을 얻습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 80,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "금속 덕트 공사 시, 덕트 내부에는 전선의 접속점이 있어도 무방하다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "금속관 공사와 마찬가지로 금속 덕트 내부에서도 전선의 접속점을 만들면 안 됩니다. 점검 및 유지보수가 어렵고 화재 위험이 있기 때문입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 81,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 전선의 굵기를 결정할 때 고려해야 할 3요소에 해당하지 '않는' 것은?",
+      choices: [
+        "가격",
+        "허용 전류",
+        "전압 강하",
+        "기계적 강도"
+      ],
+      answer: "가격",
+      explanation: "전선을 선정할 때는 안전하게 흘릴 수 있는 '허용 전류', 전기가 오면서 떨어지는 '전압 강하', 그리고 끊어지지 않는 '기계적 강도'를 최우선으로 고려합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 82,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "교류 회로에서 '어드미턴스(Admittance)'는 전류가 흐르기 쉬운 정도를 나타내며, 임피던스(Z)의 역수이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "임피던스가 전류를 방해하는 전체 저항이라면, 어드미턴스(Y)는 반대로 전류를 잘 흐르게 하는 성질입니다. (Y = 1/Z, 단위: 모[℧] 또는 지멘스[S])",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 83,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "단위 시간(1초) 동안 이동한 전하의 양(Q/t)을 무엇이라고 정의합니까?",
+      choices: [
+        "전류",
+        "전압",
+        "전력",
+        "저항"
+      ],
+      answer: "전류",
+      explanation: "전류(I)는 전하의 흐름입니다. 1초 동안 1쿨롱(C)의 전하가 이동하면 1암페어(A)의 전류가 흐르는 것입니다. (I = Q/t)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 84,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 반도체 소자를 이용한 '정류 회로'에서 가장 이상적인(효율이 좋은) 파형은?",
+      choices: [
+        "삼상 전파 정류",
+        "단상 반파 정류",
+        "단상 전파 정류",
+        "삼상 반파 정류"
+      ],
+      answer: "삼상 전파 정류",
+      explanation: "맥동률(Ripple Factor)이 작을수록 직류에 가깝고 효율이 좋습니다. 순서는 '삼상 전파 > 삼상 반파 > 단상 전파 > 단상 반파' 순으로 성능이 좋습니다.",
+      examInfo: {
+        year: 2017,
+        round: "4회"
+      }
+    },
+    {
+      id: 85,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 '전선'을 보호하고 전선을 정리하기 위해 사용하는 '금속제'의 함(Box)으로, 내부에서 전선을 접속할 수 '없는' 것은?",
+      choices: [
+        "풀 박스 (Pull Box)",
+        "정크션 박스",
+        "아웃렛 박스",
+        "스위치 박스"
+      ],
+      answer: "풀 박스 (Pull Box)",
+      explanation: "풀 박스는 전선의 배관 길이가 길거나 굴곡이 많을 때 전선을 쉽게 당기기(Pull) 위해 설치하는 함입니다. 원칙적으로 접속점이 없어야 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 86,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "RLC 직렬 회로에서 유도성 리액턴스(XL)가 용량성 리액턴스(XC)보다 크면, 전체 회로는 '콘덴서'와 같은 성질을 가진다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "XL(코일 성분)이 XC(콘덴서 성분)보다 크면, 전체 회로는 '유도성(코일)' 성질을 가지게 되어 전류가 전압보다 뒤지는 지상 회로가 됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 87,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "직류 발전기에서 전기자가 회전하면서 만든 교류를 직류로 바꾸어 주는 핵심 부품은 '정류자'와 [   ]입니다.",
+      choices: [
+        "브러시",
+        "계자",
+        "철심",
+        "베어링"
+      ],
+      answer: "브러시",
+      explanation: "정류자는 회전하면서 극성을 바꿔주고, 브러시는 정류자에 접촉하여 발생된 전기를 외부 회로로 전달하는 역할을 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 88,
+      certificationId: 2,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "전선의 색상을 구분할 때, 보호 도체(PE, 접지선)는 반드시 '녹색과 노란색'이 섞인 색을 사용해야 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "KEC(한국전기설비규정)에 따라 보호 도체(접지선)는 녹색-노란색 교차 무늬를 사용해야 하며, 중성선(N)은 파란색을 사용합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 89,
+      certificationId: 2,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "물질 내에서 자속이 통과하기 어려운 정도를 나타내는 '자기 저항'의 단위는 무엇입니까?",
+      choices: [
+        "AT/Wb",
+        "Wb/m²",
+        "H/m",
+        "AT/m"
+      ],
+      answer: "AT/Wb",
+      explanation: "자기 저항(R)은 기자력(F)을 자속(Φ)으로 나눈 값입니다. 기자력의 단위 AT(암페어턴)와 자속의 단위 Wb(웨버)를 사용하여 AT/Wb가 됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 90,
+      certificationId: 2,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 전선을 접속할 때 사용하는 '쥐꼬리 접속' 후에 접속 부분을 보호하고 절연하기 위해 사용하는 부품은?",
+      choices: [
+        "와이어 커넥터",
+        "터미널 러그",
+        "링 슬리브",
+        "케이블 타이"
+      ],
+      answer: "와이어 커넥터",
+      explanation: "박스 내에서 가는 전선을 꼬아서 접속(쥐꼬리 접속)한 후에는, 풀리지 않게 고정하고 절연 처리를 하기 위해 와이어 커넥터를 씌웁니다.",
+      examInfo: {
+        year: 2015,
+        round: "1회"
+      }
     }
   ]
 };
