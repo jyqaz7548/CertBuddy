@@ -4182,6 +4182,1106 @@ const mockQuestions = {
         year: 2014,
         round: "1회"
       }
+    },
+    {
+      id: 31,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "바이트의 윗면 경사각을 크게 하면 절삭 저항이 감소하고 표면 거칠기가 좋아진다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "경사각(Rake angle)이 커지면 날카로워져 절삭성이 좋아지고 절삭 저항이 감소하여 다듬질면이 깨끗해집니다. 단, 날이 약해질 수 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 32,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "밀링 머신에서 분할대(Dividing Head)는 공작물의 각도를 등분하거나 나선 홈을 가공할 때 사용된다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "분할대는 밀링 머신의 중요한 부속 장치로, 기어 이 가공, 다각형 가공, 나선 홈 가공 등에 필수적으로 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 33,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "선반 가공에서 테이퍼를 절삭하는 방법이 아닌 것은?",
+      choices: [
+        "복식 공구대 선회법",
+        "심압대 편위법",
+        "테이퍼 절삭 장치 사용법",
+        "방진구 사용법"
+      ],
+      answer: "방진구 사용법",
+      explanation: "방진구는 가늘고 긴 공작물이 처지거나 떨리는 것을 방지하는 지지 장치이지, 테이퍼를 깎는 방법은 아닙니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 34,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "드릴링 머신에서 이미 뚫린 구멍을 넓혀서 정확한 치수와 고운 표면으로 다듬질하는 작업은?",
+      choices: [
+        "리밍(Reaming)",
+        "보링(Boring)",
+        "태핑(Tapping)",
+        "스폿 페이싱(Spot Facing)"
+      ],
+      answer: "리밍(Reaming)",
+      explanation: "리머(Reamer)라는 공구를 사용하여 구멍 내면을 정밀하게 다듬는 작업을 리밍이라고 합니다. 보링은 구멍을 넓히거나 위치를 교정하는 작업입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 35,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "연삭 작업 시 숫돌 표면에 칩(Chip)이 끼어 눈이 메워지는 현상은?",
+      choices: [
+        "로딩(Loading)",
+        "글레이징(Glazing)",
+        "드레싱(Dressing)",
+        "트루잉(Truing)"
+      ],
+      answer: "로딩(Loading)",
+      explanation: "로딩(눈메움)은 연한 재료를 연삭할 때 칩이 기공을 막는 현상입니다. 글레이징(눈무딤)은 입자가 탈락하지 않고 무뎌져서 미끄러지는 현상입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 36,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "절삭공구류에서 초경 합금의 특성이 아닌 것은?",
+      choices: [
+        "경도가 높다",
+        "마모성이 좋다.",
+        "압축 강도가 높다.",
+        "고온 경도가 양호하다"
+      ],
+      answer: "마모성이 좋다.",
+      explanation: "'마모성이 좋다'는 말은 '잘 닳는다'는 뜻이므로 공구 재료로서 나쁜 특성입니다. 초경 합금은 내마모성(마모에 견디는 성질)이 우수해야 합니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 37,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "스퍼 기어 제도 시 이끝원(바깥지름)은 가는 실선으로 그린다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "이끝원은 굵은 실선, 피치원은 가는 1점 쇄선, 이뿌리원은 가는 실선(단면 시 굵은 실선)으로 그립니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 38,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "도면에서 치수 숫자는 원칙적으로 치수선의 중앙 위쪽에 기입한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "치수 숫자는 치수선 중앙의 위쪽에 쓰는 것이 원칙이며, 치수선을 중단하고 그 사이에 쓸 수도 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 39,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "베어링 호칭 번호 '6206'에서 안지름은 몇 mm인가?",
+      choices: [
+        "6mm",
+        "20mm",
+        "30mm",
+        "60mm"
+      ],
+      answer: "30mm",
+      explanation: "베어링 안지름 번호가 '04' 이상일 경우 번호에 5를 곱합니다. 06 × 5 = 30mm입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 40,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 '표면 거칠기'를 지시하는 기호가 아닌 것은?",
+      choices: [
+        "Ra",
+        "Rz",
+        "Ry",
+        "Rc"
+      ],
+      answer: "Rc",
+      explanation: "Ra(중심선 평균 거칠기), Rz(10점 평균 거칠기), Ry(최대 높이 거칠기)는 표면 거칠기 파라미터입니다. Rc는 관용 테이퍼 암나사 기호입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 41,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기하공차 중 자세 공차(Orientation)에 해당하는 것은?",
+      choices: [
+        "진직도",
+        "직각도",
+        "위치도",
+        "동심도"
+      ],
+      answer: "직각도",
+      explanation: "자세 공차에는 평행도, 직각도, 경사도가 있습니다. 진직도는 모양 공차, 위치도와 동심도는 위치 공차입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 42,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 '가는 선 : 굵은 선 : 아주 굵은 선' 굵기의 비율이 옳은 것은?",
+      choices: [
+        "1 : 2 : 4",
+        "1 : 3 : 4",
+        "1 : 3 : 6",
+        "1 : 4 : 8"
+      ],
+      answer: "1 : 2 : 4",
+      explanation: "KS 규격에서 선의 굵기 비율은 가는 선을 1로 보았을 때, 굵은 선은 2, 아주 굵은 선은 4의 비율을 갖습니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 43,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "주철은 탄소 함유량이 2.11%~6.67%인 철-탄소 합금이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "철은 탄소 함유량에 따라 순철(~0.02%), 강(0.02~2.11%), 주철(2.11~6.67%)로 분류됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 44,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "황동의 자연 균열(Season Cracking)을 방지하기 위해서는 저온 풀림(Annealing) 처리를 해야 한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "가공된 황동은 잔류 응력에 의해 시간이 지나면 균열이 생길 수 있는데, 이를 방지하기 위해 저온 풀림으로 응력을 제거합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 45,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속의 결정 격자 구조 중, 전연성이 가장 좋고 가공하기 쉬운 구조는?",
+      choices: [
+        "체심 입방 격자(BCC)",
+        "면심 입방 격자(FCC)",
+        "조밀 육방 격자(HCP)",
+        "정방 격자"
+      ],
+      answer: "면심 입방 격자(FCC)",
+      explanation: "면심 입방 격자(FCC)는 슬립면이 많아 전연성이 우수하고 가공성이 좋습니다. 대표적으로 알루미늄, 구리, 금, 은 등이 있습니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 46,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 비중이 1.74로 실용 금속 중 가장 가벼운 금속은?",
+      choices: [
+        "알루미늄(Al)",
+        "마그네슘(Mg)",
+        "티타늄(Ti)",
+        "베릴륨(Be)"
+      ],
+      answer: "마그네슘(Mg)",
+      explanation: "마그네슘은 비중이 약 1.74로 구조용 금속 중 가장 가볍습니다. 알루미늄은 약 2.7입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 47,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "강의 표면만을 단단하게 하고 내부는 인성을 유지하게 하는 표면 경화법이 아닌 것은?",
+      choices: [
+        "침탄법",
+        "질화법",
+        "고주파 경화법",
+        "풀림"
+      ],
+      answer: "풀림",
+      explanation: "풀림(Annealing)은 재료 전체를 연하게 하고 내부 응력을 제거하는 열처리입니다. 나머지는 표면 경화법입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 48,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "황동의 연신율이 가장 클 때 아연(Zn)의 함유량은 몇 % 정도인가?",
+      choices: [
+        "30",
+        "40",
+        "50",
+        "60"
+      ],
+      answer: "30",
+      explanation: "7-3황동(아연 30%, 구리 70%)에서 연신율이 최대가 되며, 6-4황동(아연 40%)에서 인장 강도가 최대가 됩니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 49,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "웜과 웜 기어는 역전 방지(Self-locking) 기능이 있어 승강 장치나 윈치 등에 사용된다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "웜 기어 장치는 웜에서 웜 휠로만 동력이 전달되고, 반대로는 회전이 안 되는 자립(Self-locking) 성질이 있어 안전 장치로 활용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 50,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "미터 나사의 나사산 각도는 55°이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "미터 나사(M)와 유니파이 나사(UNC/UNF)의 나사산 각도는 60°입니다. 55°는 휘트워스 나사입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 51,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 축 방향 하중만을 지지하는 베어링은?",
+      choices: [
+        "레이디얼 베어링",
+        "스러스트 베어링",
+        "테이퍼 롤러 베어링",
+        "니들 롤러 베어링"
+      ],
+      answer: "스러스트 베어링",
+      explanation: "스러스트 베어링(Thrust Bearing)은 축선과 평행한 방향의 하중(스러스트 하중)을 지지합니다. 레이디얼은 축 직각 방향 하중을 지지합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 52,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "회전 운동을 직선 왕복 운동으로 바꾸거나 그 반대로 바꿀 때 사용하는 기어 장치는?",
+      choices: [
+        "래크와 피니언",
+        "베벨 기어",
+        "헬리컬 기어",
+        "내접 기어"
+      ],
+      answer: "래크와 피니언",
+      explanation: "피니언(작은 기어)의 회전 운동을 래크(직선 기어)의 직선 운동으로 변환합니다. 선반의 왕복대 이동 등에 쓰입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 53,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "직접 전동 장치가 아닌 것은?",
+      choices: [
+        "기어 전동",
+        "마찰차 전동",
+        "벨트 전동",
+        "캠 전동"
+      ],
+      answer: "벨트 전동",
+      explanation: "벨트 전동, 체인 전동, 로프 전동은 중간 매개체를 이용하는 간접 전동 장치입니다. 기어, 마찰차, 캠은 직접 접촉하여 동력을 전달합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 54,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "합금의 종류 중 고용융점 합금에 해당하는 것은?",
+      choices: [
+        "티탄 합금",
+        "텅스텐 합금",
+        "마그네슘 합금",
+        "알루미늄 합금"
+      ],
+      answer: "텅스텐 합금",
+      explanation: "텅스텐(W)은 녹는점이 약 3410°C로 금속 중 가장 높습니다. 고온에 견뎌야 하는 필라멘트나 로켓 노즐 등에 사용되는 고용융점 금속입니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 55,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "CAD 시스템에서 '줌(Zoom)' 기능은 물체의 실제 크기를 확대하거나 축소하여 변경하는 기능이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "줌(Zoom) 기능은 화면에 보이는 배율만 확대/축소하는 것이지, 모델링 데이터의 실제 치수를 변경하는 것은 아닙니다. 실제 크기 변경은 '스케일(Scale)'입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 56,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "CPU는 주기억장치에 비해 속도가 매우 빠르므로, 속도 차이를 줄이기 위해 캐시 메모리(Cache Memory)를 사용한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "캐시 메모리는 CPU와 주기억장치(RAM) 사이의 속도 차이를 완충하여 시스템 성능을 향상시키는 고속 메모리입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 57,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 출력 장치에 해당하는 것은?",
+      choices: [
+        "디지타이저",
+        "라이트 펜",
+        "플로터",
+        "조이스틱"
+      ],
+      answer: "플로터",
+      explanation: "플로터(Plotter)는 대형 도면을 인쇄하는 출력 장치입니다. 나머지는 모두 입력 장치입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 58,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "1바이트(Byte)는 몇 비트(Bit)로 구성되는가?",
+      choices: [
+        "4비트",
+        "8비트",
+        "16비트",
+        "32비트"
+      ],
+      answer: "8비트",
+      explanation: "1 Byte = 8 Bit 입니다. 4 Bit는 1 니블(Nibble)이라고 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 59,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "CAD 시스템의 좌표계 중 현재 위치를 기준으로 이동할 거리(증분값)를 입력하는 방식은?",
+      choices: [
+        "절대 좌표계",
+        "상대 좌표계",
+        "극 좌표계",
+        "원통 좌표계"
+      ],
+      answer: "상대 좌표계",
+      explanation: "상대 좌표계(Relative Coordinate)는 현재 커서 위치를 기준(0,0)으로 간주하고 다음 점까지의 변위량(dx, dy)을 입력하는 방식입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 60,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 구름 베어링의 특성이 아닌 것은?",
+      choices: [
+        "감쇠력이 작아 충격 흡수력이 작다.",
+        "축심의 변동이 작다.",
+        "표준형 양산품으로 호환성이 높다.",
+        "일반적으로 소음이 작다."
+      ],
+      answer: "일반적으로 소음이 작다.",
+      explanation: "구름 베어링(Rolling Bearing)은 점이나 선 접촉을 하므로 미끄럼 베어링에 비해 소음과 진동이 큰 편입니다. '소음이 작다'는 미끄럼 베어링의 특징입니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 61,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "SM 45C에서 '45'는 탄소 함유량이 약 0.45%임을 나타낸다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "SM 45C는 기계구조용 탄소강으로, 숫자 45는 탄소 함유량 0.45%를 의미합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 62,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "주철을 파단했을 때 파단면이 회색인 것은 시멘타이트(Cementite)가 주성분이기 때문이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "파단면이 회색인 회주철은 탄소가 흑연(Graphite) 상태로 유리되어 있기 때문입니다. 시멘타이트가 주성분인 것은 파단면이 흰색인 백주철입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 63,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "금속을 상온에서 가공하면 경도와 강도는 증가하지만 연신율은 감소하는 현상은?",
+      choices: [
+        "가공 경화",
+        "시효 경화",
+        "청열 취성",
+        "저온 취성"
+      ],
+      answer: "가공 경화",
+      explanation: "가공 경화(Strain Hardening)는 금속을 재결정 온도 이하에서 소성 변형시킬 때 결정 격자의 뒤틀림으로 인해 단단해지는 현상입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 64,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "황(S) 성분이 많을 때 고온에서 금속이 깨지기 쉬운 성질은?",
+      choices: [
+        "적열 취성",
+        "청열 취성",
+        "저온 취성",
+        "상온 취성"
+      ],
+      answer: "적열 취성",
+      explanation: "황(S)은 강 중에서 망간(Mn)과 결합하지 못하고 황화철(FeS)을 형성하면 입계를 약하게 하여 고온에서 깨지는 적열 취성(Hot Shortness)을 유발합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 65,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "스테인리스강(Stainless Steel)의 주된 합금 원소로 내식성을 향상시키는 것은?",
+      choices: [
+        "크롬(Cr)",
+        "탄소(C)",
+        "황(S)",
+        "인(P)"
+      ],
+      answer: "크롬(Cr)",
+      explanation: "스테인리스강은 철에 크롬(Cr)을 12% 이상 첨가하여 표면에 부동태 피막을 형성시켜 녹이 잘 슬지 않게 한 합금강입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 66,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "지름이 50mm 축에 10mm인 성크 키를 설치했을 때, 일반적으로 전단하중만을 받을 경우 키가 파손되지 않으려면 키의 길이는 몇 mm인가?",
+      choices: [
+        "25mm",
+        "75mm",
+        "150mm",
+        "200mm"
+      ],
+      answer: "75mm",
+      explanation: "키 설계의 경험적 공식에 따르면, 보통 키의 길이는 축 지름의 약 1.5배 정도로 합니다. 50mm * 1.5 = 75mm 입니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 67,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "평 벨트 전동은 V 벨트 전동보다 미끄럼이 적고 전동 효율이 높다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "X",
+      explanation: "V 벨트는 쐐기 작용(Wedge Effect)으로 마찰력이 커서 평 벨트보다 미끄럼이 적고 전동 효율이 높으며, 비교적 짧은 축간 거리에 사용됩니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 68,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "브레이크는 기계의 운동 에너지를 열 에너지로 바꾸어 제동하는 장치이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "브레이크는 마찰력을 이용해 운동 에너지를 마찰열로 소산시켜 기계를 정지시키거나 속도를 줄이는 기계요소입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 69,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 스프링 상수가 가장 큰 것은?",
+      choices: [
+        "직렬 연결된 스프링",
+        "병렬 연결된 스프링",
+        "길이가 긴 스프링",
+        "소선 지름이 가는 스프링"
+      ],
+      answer: "병렬 연결된 스프링",
+      explanation: "스프링을 병렬로 연결하면 전체 스프링 상수는 각 스프링 상수의 합(k = k1 + k2)이 되어 강성이 커집니다. 직렬 연결은 상수가 작아집니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 70,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 풀림 방지용 너트가 아닌 것은?",
+      choices: [
+        "나비 너트",
+        "로크 너트",
+        "캐슬 너트",
+        "플랜지 너트"
+      ],
+      answer: "나비 너트",
+      explanation: "나비 너트는 공구 없이 손으로 쉽게 조이고 풀 수 있도록 만든 너트입니다. 풀림 방지 기능보다는 편의성을 위한 것입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 71,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기어의 피치원 지름(D)을 구하는 공식은? (단, M은 모듈, Z는 잇수)",
+      choices: [
+        "D = M + Z",
+        "D = M × Z",
+        "D = M / Z",
+        "D = Z / M"
+      ],
+      answer: "D = M × Z",
+      explanation: "피치원 지름(D)은 모듈(M)에 잇수(Z)를 곱하여 구합니다. (D = MZ)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 72,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "롤링 베어링의 내륜이 고정되는 곳은?",
+      choices: [
+        "저널",
+        "하우징",
+        "궤도면",
+        "리테이너"
+      ],
+      answer: "저널",
+      explanation: "베어링에서 축과 접촉하여 지지하는 부분을 저널(Journal)이라고 합니다. 롤링 베어링의 내륜은 회전하는 축(저널)에 끼워져 고정됩니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 73,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "연삭 숫돌의 자생 작용(Self-sharpening)은 무뎌진 입자가 탈락하고 새로운 날카로운 입자가 나오는 현상이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "연삭 중 마모된 입자가 저항을 이기지 못해 탈락하고, 안쪽에 있던 예리한 입자가 표면으로 나와 절삭성을 유지하는 것을 자생 작용이라고 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 74,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "선반의 크기는 베드 위의 스윙과 양 센터 사이의 최대 거리로 나타낸다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "선반의 크기 규격은 가공 가능한 최대 지름을 뜻하는 '베드 위의 스윙'과 가공 가능한 최대 길이를 뜻하는 '양 센터 사이의 거리'로 표시합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 75,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "CNC 공작 기계에서 공구의 위치를 보정하거나 좌표계를 설정하는 준비 기능 코드는?",
+      choices: [
+        "G 코드",
+        "M 코드",
+        "T 코드",
+        "S 코드"
+      ],
+      answer: "G 코드",
+      explanation: "G 코드는 준비 기능(Preparatory Function)으로 동작 모드(직선, 원호 등)를 설정합니다. M은 보조 기능, T는 공구 기능, S는 주축 기능입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 76,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "절삭 유제(Cutting Fluid)의 주요 작용 3가지에 해당하지 않는 것은?",
+      choices: [
+        "냉각 작용",
+        "윤활 작용",
+        "세척 작용",
+        "가열 작용"
+      ],
+      answer: "가열 작용",
+      explanation: "절삭 유제는 공구와 공작물의 마찰 열을 식히는 냉각(Cooling), 마찰을 줄이는 윤활(Lubrication), 칩을 씻어내는 세척(Washing) 작용을 합니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 77,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 비절삭 가공법에 해당하는 것은?",
+      choices: [
+        "선반 가공",
+        "밀링 가공",
+        "주조",
+        "연삭"
+      ],
+      answer: "주조",
+      explanation: "주조, 소성 가공, 용접 등은 칩을 생성하지 않는 비절삭 가공입니다. 선반, 밀링, 연삭은 칩을 깎아내는 절삭 가공입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 78,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "기계재료의 단단한 정도를 측정하는 가장 적합한 시험법은?",
+      choices: [
+        "경도시험",
+        "수축시험",
+        "파괴시험",
+        "굽힘시험"
+      ],
+      answer: "경도시험",
+      explanation: "재료의 단단한 정도(Hardness)를 측정하는 시험은 경도 시험입니다. 브리넬, 로크웰, 비커스 경도 시험 등이 있습니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 79,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "제 3각법은 눈 -> 투상면 -> 물체 순서로 배치하여 투상하는 방법이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "제 3각법은 투상면이 물체보다 앞에 있어 보는 그대로 그려지는 방식입니다. (눈-투상면-물체). 제 1각법은 눈-물체-투상면 순서입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 80,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "치수 보조 기호 'C'는 45도 모따기를 의미한다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "C는 Chamfering의 약자로 45° 모따기를 나타낼 때 치수 앞에 붙입니다. (예: C2)",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 81,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "기하공차 기호 중 '평행도'를 나타내는 기호는?",
+      choices: [
+        "⫽",
+        "⊥",
+        "∠",
+        "◎"
+      ],
+      answer: "⫽",
+      explanation: "⫽는 평행도, ⊥는 직각도, ∠는 경사도, ◎는 동심도를 나타냅니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 82,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "선의 종류 중 가상선(Phantom line)의 용도가 아닌 것은?",
+      choices: [
+        "가동 부분의 이동 후 위치 표시",
+        "인접한 부분의 참고 표시",
+        "되풀이되는 도형의 생략",
+        "보이지 않는 부분의 형상 표시"
+      ],
+      answer: "보이지 않는 부분의 형상 표시",
+      explanation: "보이지 않는 부분의 형상은 숨은선(파선)을 사용합니다. 가상선은 가는 2점 쇄선으로 이동 위치, 인접 부품 등을 가상으로 나타낼 때 씁니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 83,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "치수 기입 시, 치수 수치와 함께 공차값을 기입하지 않고 별도로 규격화된 기호(H7, g6 등)를 사용하는 공차 방식은?",
+      choices: [
+        "일반 공차",
+        "끼워맞춤 공차",
+        "기하 공차",
+        "치수 공차"
+      ],
+      answer: "끼워맞춤 공차",
+      explanation: "끼워맞춤 공차는 IT 등급을 사용하여 구멍(대문자)과 축(소문자)의 공차역을 기호로 표시하는 방식입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 84,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "모듈 5, 잇수가 40인 표준 평기어의 이끝원 지름은 몇 mm인가?",
+      choices: [
+        "200mm",
+        "210mm",
+        "220mm",
+        "240mm"
+      ],
+      answer: "210mm",
+      explanation: "이끝원 지름(Do) = 모듈(M) × (잇수(Z) + 2) 입니다. Do = 5 × (40 + 2) = 5 × 42 = 210mm.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
+    },
+    {
+      id: 85,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "기계 제도에서 'SR'은 구(Sphere)의 반지름을 나타내는 치수 보조 기호이다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "S는 Sphere(구), R은 Radius(반지름)을 뜻하며, 합쳐서 SR은 구의 반지름을 의미합니다. 구의 지름은 Sø입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 86,
+      certificationId: 9,
+      type: "OX",
+      source: "AI_GENERATED",
+      question: "단면도에서 얇은 판, 리브, 바퀴의 암, 축, 볼트, 너트 등은 절단면이 길이 방향일 경우 단면하지 않고 외형으로 그린다.",
+      choices: [
+        "O",
+        "X"
+      ],
+      answer: "O",
+      explanation: "축, 리브, 볼트 등은 길이 방향으로 절단하면 이해하기 어렵거나 의미가 없으므로 원칙적으로 절단하지 않고 도시합니다 (도시 불가능한 경우 제외).",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 87,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "표면 거칠기 기호 중 '제거 가공을 하지 않음'을 나타내는 기호는?",
+      choices: [
+        "○ 안에 물결",
+        "○",
+        "∇",
+        "√"
+      ],
+      answer: "○",
+      explanation: "지시선 끝의 60도 ∨ 기호 안에 동그라미(○)가 있으면 제거 가공을 하지 말라는(주조나 단조 표면 그대로 두라는) 뜻입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 88,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 중 위치수 허용차(Deviation)를 나타내는 용어가 아닌 것은?",
+      choices: [
+        "위치수 허용차",
+        "아래치수 허용차",
+        "기초가 되는 치수 허용차",
+        "실 치수"
+      ],
+      answer: "실 치수",
+      explanation: "실 치수는 가공 완료 후 실제로 측정한 치수를 말합니다. 허용차는 기준 치수와 허용 한계 치수와의 차이입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 89,
+      certificationId: 9,
+      type: "BLANK",
+      source: "AI_GENERATED",
+      question: "다음 재료 기호 중 회주철을 나타내는 것은?",
+      choices: [
+        "GC 200",
+        "SC 450",
+        "SF 340A",
+        "SM 45C"
+      ],
+      answer: "GC 200",
+      explanation: "GC(Gray Cast iron)는 회주철입니다. SC는 탄소강 주강품, SF는 탄소강 단강품, SM은 기계구조용 탄소강입니다.",
+      examInfo: {
+        year: null,
+        round: null
+      }
+    },
+    {
+      id: 90,
+      certificationId: 9,
+      type: "BLANK",
+      source: "REAL_CBT",
+      question: "다음 중 테이블이 일정한 각도로 선회할 수 있는 구조로 기어 등 복잡한 제품을 가공할 수 있는 것은?",
+      choices: [
+        "플레인 밀링 머신",
+        "만능 밀링 머신",
+        "생산형 밀링 머신",
+        "플라노 밀러"
+      ],
+      answer: "만능 밀링 머신",
+      explanation: "만능 밀링 머신(Universal Milling Machine)은 테이블을 수평면 내에서 회전시킬 수 있어 나선 홈, 기어 등 복잡한 가공이 가능합니다.",
+      examInfo: {
+        year: 2014,
+        round: "1회"
+      }
     }
   ]
 };
