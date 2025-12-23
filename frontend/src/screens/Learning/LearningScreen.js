@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-export default function LearningScreen({ navigation }) {
+export default function LearningScreen({ route, navigation }) {
+  // route.params에서 certificationId를 받거나 기본값 사용
+  const certificationId = route?.params?.certificationId || 2; // 기본값: 전기기능사
+  
   const handleStartLearning = () => {
     // 문제 풀이 화면으로 이동
-    // certificationId를 전달 (현재는 기본값 1 사용)
-    // 실제로는 사용자가 선택한 자격증 ID를 전달해야 함
+    // certificationId: 2 = 전기기능사, 7 = 정보처리기능사
     navigation.navigate('Question', {
-      certificationId: 1, // 전기기능사 예시
+      certificationId: certificationId,
     });
   };
 

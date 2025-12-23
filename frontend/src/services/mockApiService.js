@@ -294,9 +294,9 @@ export const mockQuestionService = {
   getQuestions: async (certificationId) => {
     await delay(500);
     
-    // 현재는 전기기능사 예시 데이터만 있음
-    // 실제로는 certificationId에 따라 필터링
-    return mockData.questions || [];
+    // 자격증 ID에 따라 해당 자격증의 문제만 반환
+    // certificationId: 2 = 전기기능사, 7 = 정보처리기능사
+    return mockData.questions[certificationId] || [];
   },
 
   // 문제 세션 시작 (학습 시작)
@@ -391,8 +391,8 @@ export const mockQuestionService = {
       rq => rq.userId === userId && !rq.isCompleted
     );
     
-    // 문제 ID로 실제 문제 데이터 가져오기
-    const allQuestions = mockData.questions || [];
+    // 문제 ID로 실제 문제 데이터 가져오기 (모든 자격증의 문제에서 찾기)
+    const allQuestions = Object.values(mockData.questions || {}).flat();
     const questions = userReviewQuestions
       .map(rq => allQuestions.find(q => q.id === rq.questionId))
       .filter(q => q !== undefined);
