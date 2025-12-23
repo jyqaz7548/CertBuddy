@@ -96,20 +96,27 @@ public class QuestionService {
         
         boolean isLearningCompleted = !todaySessions.isEmpty();
         
-        // 복습 문제 확인
-        List<ReviewQuestion> reviewQuestions = reviewQuestionRepository
-                .findByUserIdAndNextReviewDateLessThanEqual(userId, LocalDateTime.now());
+        // 복습 문제 확인: 미완료 복습 문제만 조회
+        // 완료된 복습 문제는 nextReviewDate가 1년 이상 미래인 것으로 간주
+        List<ReviewQuestion> allReviewQuestions = reviewQuestionRepository.findByUserId(userId);
+        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
         
-        boolean hasReviewQuestions = !reviewQuestions.isEmpty();
+        // 완료되지 않은 복습 문제만 필터링
+        List<ReviewQuestion> activeReviewQuestions = allReviewQuestions.stream()
+                .filter(rq -> rq.getNextReviewDate() == null || rq.getNextReviewDate().isBefore(oneYearLater))
+                .collect(Collectors.toList());
         
-        // 오늘 복습 완료 여부 (간단한 구현)
-        boolean isReviewCompleted = false; // TODO: 복습 세션 완료 여부 확인
+        boolean hasReviewQuestions = !activeReviewQuestions.isEmpty();
+        
+        // 복습 완료 여부: 복습 문제가 없을 때만 완료
+        // 틀린 문제가 있으면 복습이 필요하므로 복습 완료로 표시하지 않음
+        boolean isReviewCompleted = !hasReviewQuestions;
         
         return TodayLearningStatusResponse.builder()
                 .isLearningCompleted(isLearningCompleted)
                 .isReviewCompleted(isReviewCompleted)
                 .hasReviewQuestions(hasReviewQuestions)
-                .reviewCount(reviewQuestions.size())
+                .reviewCount(activeReviewQuestions.size()) // 미완료 복습 문제 개수만 반환
                 .build();
     }
     
@@ -129,10 +136,16 @@ public class QuestionService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         
-        // 각 일차별 복습 문제 수 계산
+        // 각 일차별 복습 문제 수 계산 (미완료 복습 문제만)
         Map<Integer, Integer> dayReviewCounts = new HashMap<>();
-        List<ReviewQuestion> reviewQuestions = reviewQuestionRepository
+        List<ReviewQuestion> allReviewQuestions = reviewQuestionRepository
                 .findByUserIdAndCertificationId(userId, certificationId);
+        
+        // 완료된 복습 문제 필터링 (nextReviewDate가 1년 이상 미래인 것은 완료로 간주)
+        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
+        List<ReviewQuestion> reviewQuestions = allReviewQuestions.stream()
+                .filter(rq -> rq.getNextReviewDate() == null || rq.getNextReviewDate().isBefore(oneYearLater))
+                .collect(Collectors.toList());
         
         // 해당 자격증의 모든 문제를 ID 순서로 가져오기
         List<Question> allQuestions = questionRepository.findByCertificationId(certificationId)
@@ -291,16 +304,9 @@ public class QuestionService {
                     .build();
             questionAnswerRepository.save(answer);
             
-            // 틀린 문제는 복습 문제로 추가 (이미 추가되지 않은 경우만)
+            // 틀린 문제는 복습 문제로 추가 (중복 체크는 addReviewQuestion 내부에서 처리)
             if (!result.getIsCorrect()) {
-                try {
-                    addReviewQuestion(userId, result.getQuestionId(), session.getCertification().getId());
-                } catch (RuntimeException e) {
-                    // 이미 복습 문제에 추가된 경우 무시
-                    if (!e.getMessage().contains("이미 복습 문제에 추가된")) {
-                        throw e;
-                    }
-                }
+                addReviewQuestion(userId, result.getQuestionId(), session.getCertification().getId());
             }
         }
         
@@ -334,22 +340,26 @@ public class QuestionService {
         if (certificationId != null) {
             reviewQuestions = reviewQuestionRepository.findByUserIdAndCertificationId(userId, certificationId);
         } else {
-            reviewQuestions = reviewQuestionRepository
-                    .findByUserIdAndNextReviewDateLessThanEqual(userId, LocalDateTime.now());
+            // certificationId가 없으면 모든 복습 문제 조회 (홈화면과 일관성 유지)
+            reviewQuestions = reviewQuestionRepository.findByUserId(userId);
         }
         
-        return reviewQuestions.stream()
+        // 완료된 복습 문제 필터링 (nextReviewDate가 1년 이상 미래인 것은 완료로 간주)
+        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
+        List<QuestionResponse> activeReviewQuestions = reviewQuestions.stream()
+                .filter(rq -> rq.getNextReviewDate() == null || rq.getNextReviewDate().isBefore(oneYearLater))
                 .map(ReviewQuestion::getQuestion)
                 .map(this::mapToQuestionResponse)
                 .collect(Collectors.toList());
+        
+        return activeReviewQuestions;
     }
     
     // 복습 문제 추가
     @Transactional
     public void addReviewQuestion(Long userId, Long questionId, Long certificationId) {
-        // 이미 복습 문제로 등록되어 있고 완료되지 않은 경우 중복 추가 방지
-        Optional<ReviewQuestion> existing = reviewQuestionRepository.findByUserIdAndQuestionId(userId, questionId);
-        if (existing.isPresent() && (existing.get().getIsCompleted() == null || !existing.get().getIsCompleted())) {
+        // 이미 복습 문제로 등록된 경우 중복 추가 방지
+        if (reviewQuestionRepository.existsByUserIdAndQuestionId(userId, questionId)) {
             return; // 이미 추가되어 있으면 무시
         }
         
@@ -385,7 +395,9 @@ public class QuestionService {
         
         // 간단한 알고리즘: 정답이면 다음 복습일을 늘리고, 오답이면 다음날로 설정
         if (isCorrect) {
-            reviewQuestion.setNextReviewDate(LocalDateTime.now().plusDays(reviewQuestion.getReviewCount() * 2));
+            // 정답을 맞추면 복습 완료로 간주 (매우 먼 미래로 설정하여 복습 목록에서 제외)
+            // 복습 세션 완료 시에는 여러 번 맞춘 경우를 고려하지만, 개별 문제 완료 시에는 한 번만 맞춰도 완료 처리
+            reviewQuestion.setNextReviewDate(LocalDateTime.now().plusYears(10));
         } else {
             reviewQuestion.setNextReviewDate(LocalDateTime.now().plusDays(1));
         }
@@ -396,8 +408,63 @@ public class QuestionService {
     // 복습 세션 시작
     @Transactional
     public QuestionSessionResponse startReviewSession(Long userId, Long certificationId) {
-        // 복습 문제를 일반 문제 세션으로 시작
-        return startQuestionSession(certificationId, userId, null, true);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+        
+        // 복습 문제 조회 (미완료 복습 문제만)
+        List<ReviewQuestion> reviewQuestions;
+        Certification certification;
+        
+        // 완료된 복습 문제 필터링 (nextReviewDate가 1년 이상 미래인 것은 완료로 간주)
+        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
+        
+        if (certificationId != null) {
+            // 특정 자격증의 복습 문제만 조회
+            List<ReviewQuestion> allReviewQuestions = reviewQuestionRepository.findByUserIdAndCertificationId(userId, certificationId);
+            reviewQuestions = allReviewQuestions.stream()
+                    .filter(rq -> rq.getNextReviewDate() == null || rq.getNextReviewDate().isBefore(oneYearLater))
+                    .collect(Collectors.toList());
+            if (reviewQuestions.isEmpty()) {
+                throw new RuntimeException("해당 자격증에 대한 복습할 문제가 없습니다");
+            }
+            certification = certificationRepository.findById(certificationId)
+                    .orElseThrow(() -> new RuntimeException("자격증을 찾을 수 없습니다"));
+        } else {
+            // certificationId가 없으면 모든 복습 문제 조회
+            List<ReviewQuestion> allReviewQuestions = reviewQuestionRepository.findByUserId(userId);
+            reviewQuestions = allReviewQuestions.stream()
+                    .filter(rq -> rq.getNextReviewDate() == null || rq.getNextReviewDate().isBefore(oneYearLater))
+                    .collect(Collectors.toList());
+            if (reviewQuestions.isEmpty()) {
+                throw new RuntimeException("복습할 문제가 없습니다");
+            }
+            // 첫 번째 복습 문제의 자격증 정보 사용
+            certification = reviewQuestions.get(0).getCertification();
+        }
+        
+        // 복습 문제를 QuestionResponse로 변환
+        List<QuestionResponse> questions = reviewQuestions.stream()
+                .map(ReviewQuestion::getQuestion)
+                .map(this::mapToQuestionResponse)
+                .collect(Collectors.toList());
+        
+        // 복습 세션 생성
+        QuestionSession session = QuestionSession.builder()
+                .user(user)
+                .certification(certification)
+                .specificDay(null)
+                .isRelearning(true) // 복습 세션임을 표시
+                .status(QuestionSession.SessionStatus.IN_PROGRESS)
+                .totalQuestions(questions.size())
+                .startedAt(LocalDateTime.now())
+                .build();
+        
+        session = questionSessionRepository.save(session);
+        
+        QuestionSessionResponse response = mapToQuestionSessionResponse(session);
+        response.setQuestions(questions);
+        
+        return response;
     }
     
     // 복습 세션 완료
@@ -416,6 +483,30 @@ public class QuestionService {
         User user = session.getUser();
         user.setTotalXp(user.getTotalXp() + reviewBonusXp);
         userRepository.save(user);
+        
+        // 복습 문제 완료 처리: 정답인 문제는 복습 문제에서 제거 (nextReviewDate를 매우 먼 미래로 설정)
+        for (QuestionAnswerRequest result : results) {
+            Optional<ReviewQuestion> reviewQuestionOpt = reviewQuestionRepository
+                    .findByUserIdAndQuestionId(userId, result.getQuestionId());
+            
+            if (reviewQuestionOpt.isPresent()) {
+                ReviewQuestion reviewQuestion = reviewQuestionOpt.get();
+                
+                if (result.getIsCorrect()) {
+                    // 정답인 경우 복습 완료 처리: 한 번만 맞춰도 완료로 간주 (매우 먼 미래로 설정)
+                    reviewQuestion.setNextReviewDate(LocalDateTime.now().plusYears(10));
+                    reviewQuestion.setLastReviewedAt(LocalDateTime.now());
+                    // 복습 횟수는 이미 completeReviewQuestion에서 증가했으므로 여기서는 증가시키지 않음
+                } else {
+                    // 오답인 경우 복습 횟수 증가 및 다음 복습일 설정
+                    reviewQuestion.setReviewCount(reviewQuestion.getReviewCount() + 1);
+                    reviewQuestion.setNextReviewDate(LocalDateTime.now().plusDays(1));
+                    reviewQuestion.setLastReviewedAt(LocalDateTime.now());
+                }
+                
+                reviewQuestionRepository.save(reviewQuestion);
+            }
+        }
         
         session = questionSessionRepository.save(session);
         

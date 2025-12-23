@@ -67,9 +67,10 @@ export default function DaySelectScreen({ route, navigation }) {
           {
             text: '복습하기',
             onPress: () => {
-              // 복습 화면으로 이동
+              // 복습 화면으로 이동 (특정 자격증의 복습 문제만)
               navigation.navigate('Question', {
                 isReview: true,
+                certificationId: certificationId, // 특정 자격증의 복습 문제만 가져오기
               });
             },
           },

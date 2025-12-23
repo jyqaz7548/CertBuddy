@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 export default function ReviewNeededScreen({ route, navigation }) {
-  const { isReview = false } = route?.params || {};
+  const { isReview = false, certificationId = null } = route?.params || {};
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
@@ -35,6 +35,7 @@ export default function ReviewNeededScreen({ route, navigation }) {
     // 복습 리스트에 추가하고 복습 화면으로 이동 (현재 화면을 교체)
     navigation.replace('Question', {
       isReview: true,
+      certificationId: certificationId, // 특정 자격증의 복습 문제만 가져오기 위해 전달
     });
   };
 

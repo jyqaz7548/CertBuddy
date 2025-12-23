@@ -218,6 +218,7 @@ export default function QuestionScreen({ route, navigation }) {
             
             navigation.replace('ReviewNeeded', {
               isReview: isReviewMode,
+              certificationId: route?.params?.certificationId, // 특정 자격증의 복습 문제만 가져오기 위해 전달
             });
             return;
           }
@@ -356,9 +357,9 @@ export default function QuestionScreen({ route, navigation }) {
           {currentQuestion.source === 'REAL_CBT' && (
             <View style={styles.realCbtBadge}>
               <Text style={styles.realCbtText}>실전 기출 문제</Text>
-              {currentQuestion.examInfo.year && (
+              {currentQuestion.examYear && (
                 <Text style={styles.examInfo}>
-                  {currentQuestion.examInfo.year}년 {currentQuestion.examInfo.round}
+                  {currentQuestion.examYear}년 {currentQuestion.examRound || ''}
                 </Text>
               )}
             </View>
