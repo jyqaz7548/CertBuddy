@@ -47,6 +47,7 @@ export const mockAuthService = {
         grade: user.grade,
         totalXp: user.totalXp,
         streak: user.streak,
+        certifications: user.certifications || [],
       },
     };
   },
@@ -75,6 +76,7 @@ export const mockAuthService = {
       totalXp: 0,
       streak: 0,
       userCode: `CERT-${paddedId}`, // 고유 코드 생성
+      certifications: [], // 취득한 자격증은 튜토리얼에서 선택하므로 초기값은 빈 배열
     };
     
     users.push(newUser);
@@ -95,6 +97,7 @@ export const mockAuthService = {
         totalXp: newUser.totalXp,
         streak: newUser.streak,
         userCode: newUser.userCode,
+        certifications: newUser.certifications || [],
       },
     };
   },
@@ -133,6 +136,7 @@ export const mockAuthService = {
       totalXp: user.totalXp,
       streak: user.streak,
       userCode: user.userCode,
+      certifications: user.certifications || [],
     };
   },
 };
@@ -140,14 +144,91 @@ export const mockAuthService = {
 // Mock 학습 서비스
 export const mockLearningService = {
   // 추천 자격증 조회 (같은 학과 학생들의 자격증 기반, 학년 무관)
-  getRecommendations: async (school, department, grade) => {
+  getRecommendations: async (school, department, grade, userId = null) => {
     await delay(600);
     
     const recommendations = [];
     const certMapByName = new Map(); // 이름 기준 중복 제거용
     
-    // 1. 같은 학과의 모든 학년 학생들의 자격증 통계 가져오기 (학년 무관)
-    if (department) {
+    // 사용자의 취득한 자격증 가져오기 (이미 취득한 자격증은 추천에서 제외)
+    let userCertifications = [];
+    if (userId) {
+      const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+      const currentUser = users.find(u => u.id === userId);
+      if (currentUser && currentUser.certifications) {
+        userCertifications = currentUser.certifications;
+      }
+    }
+    
+    // 실제 사용자 데이터를 기반으로 통계 계산 (사용자 본인 포함)
+    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+    const sameDeptUsers = users.filter(u => u.department === department);
+    
+    if (sameDeptUsers.length > 0) {
+      // 자격증 이름별로 몇 명이 가지고 있는지 카운트 (사용자 본인 포함)
+      const certCountsByName = {};
+      const certIdsByName = {}; // 이름별 자격증 ID 추적
+      
+      sameDeptUsers.forEach(user => {
+        if (user.certifications && user.certifications.length > 0) {
+          user.certifications.forEach(certId => {
+            const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
+            if (certInfo) {
+              const certName = certInfo.name;
+              if (!certCountsByName[certName]) {
+                certCountsByName[certName] = 0;
+                certIdsByName[certName] = certId; // 첫 번째 ID를 대표 ID로 사용
+              }
+              certCountsByName[certName]++;
+            }
+          });
+        }
+      });
+      
+      // 친구 데이터도 통계에 포함
+      const sameDeptFriends = mockData.friendsData.filter(
+        friend => friend.department === department
+      );
+      
+      sameDeptFriends.forEach(friend => {
+        friend.certifications.forEach(certId => {
+          const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
+          if (certInfo) {
+            const certName = certInfo.name;
+            if (!certCountsByName[certName]) {
+              certCountsByName[certName] = 0;
+              certIdsByName[certName] = certId;
+            }
+            certCountsByName[certName]++;
+          }
+        });
+      });
+      
+      // 전체 사용자 수 (사용자 + 친구 데이터)
+      const totalUsers = sameDeptUsers.length + sameDeptFriends.length;
+      
+      // 퍼센테이지 계산하여 추천 목록에 추가
+      Object.keys(certCountsByName).forEach(certName => {
+        const count = certCountsByName[certName];
+        const percentage = Math.round((count / totalUsers) * 100);
+        const certId = certIdsByName[certName];
+        
+        // 사용자가 이미 취득한 자격증은 추천에서 제외하지만, 통계에는 포함됨
+        if (!userCertifications.includes(certId)) {
+          certMapByName.set(certName, {
+            id: certId,
+            name: certName,
+            category: getCategoryFromId(certId),
+            description: `같은 과 학생들의 ${percentage}%가 취득했어요`,
+            percentage: percentage,
+            source: 'department_stats',
+          });
+        }
+      });
+    }
+    
+    // 기존 하드코딩된 통계도 보조적으로 사용 (실제 데이터가 없을 때)
+    if (department && certMapByName.size === 0) {
       const deptStats = mockData.departmentCertStats[department];
       if (deptStats) {
         // 모든 학년의 통계를 합쳐서 평균 계산 (이름 기준으로 통합)
@@ -161,7 +242,7 @@ export const mockLearningService = {
               allStatsByName[certName] = {
                 name: certName,
                 percentages: [],
-                certificationIds: new Set(), // 어떤 ID들이 이 이름에 해당하는지 추적
+                certificationIds: new Set(),
               };
             }
             allStatsByName[certName].percentages.push(stat.percentage);
@@ -175,49 +256,23 @@ export const mockLearningService = {
           const avgPercentage = Math.round(
             stat.percentages.reduce((sum, p) => sum + p, 0) / stat.percentages.length
           );
-          // 가장 작은 ID를 대표 ID로 사용
           const minCertId = Math.min(...Array.from(stat.certificationIds));
-          const certInfo = mockData.tutorialCertifications.find(c => c.id === minCertId);
-          if (certInfo) {
-            certMapByName.set(certName, {
-              id: minCertId,
-              name: certName,
-              category: getCategoryFromId(minCertId),
-              description: `같은 과 학생들의 ${avgPercentage}%가 취득했어요`,
-              percentage: avgPercentage,
-              source: 'department_stats',
-            });
-          }
-        });
-      }
-    }
-    
-    // 2. 같은 학과 친구들의 실제 자격증도 추가 (이름 기준 중복 제거)
-    if (department) {
-      const sameDeptFriends = mockData.friendsData.filter(
-        friend => friend.department === department
-      );
-      
-      sameDeptFriends.forEach(friend => {
-        friend.certifications.forEach(certId => {
-          const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
-          if (certInfo) {
-            const certName = certInfo.name;
-            // 이미 추가된 자격증인지 이름으로 확인
-            if (!certMapByName.has(certName)) {
-              const maskedName = mockData.maskName(friend.name);
+          // 사용자가 이미 취득한 자격증은 제외
+          if (!userCertifications.includes(minCertId)) {
+            const certInfo = mockData.tutorialCertifications.find(c => c.id === minCertId);
+            if (certInfo) {
               certMapByName.set(certName, {
-                id: certId,
+                id: minCertId,
                 name: certName,
-                category: getCategoryFromId(certId),
-                description: `${maskedName}님이 취득했어요`,
-                source: 'friend',
-                friendName: maskedName,
+                category: getCategoryFromId(minCertId),
+                description: `같은 과 학생들의 ${avgPercentage}%가 취득했어요`,
+                percentage: avgPercentage,
+                source: 'department_stats',
               });
             }
           }
         });
-      });
+      }
     }
     
     return Array.from(certMapByName.values());

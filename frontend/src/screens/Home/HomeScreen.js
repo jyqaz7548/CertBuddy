@@ -53,7 +53,8 @@ export default function HomeScreen({ navigation }) {
         const recommendations = await learningService.getRecommendations(
           user.school || '',
           user.department,
-          user.grade
+          user.grade,
+          user.id
         );
         setRecommendedCerts(recommendations);
       }
@@ -97,7 +98,7 @@ export default function HomeScreen({ navigation }) {
       if (refreshUser) {
         refreshUser();
       }
-    }, [user?.id, user?.school, user?.department, refreshUser])
+    }, [user?.id, user?.school, user?.department, user?.certifications, refreshUser]) // certifications 변경 시에도 추천 다시 로드
   );
 
   const handleStartReview = async () => {

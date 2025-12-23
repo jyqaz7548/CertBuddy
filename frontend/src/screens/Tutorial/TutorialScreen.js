@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { mockData } from '../../services/mockData';
 
 export default function TutorialScreen({ navigation }) {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [step, setStep] = useState(1);
   const [acquiredCertifications, setAcquiredCertifications] = useState([]); // 취득한 자격증
   const [desiredCertifications, setDesiredCertifications] = useState([]); // 취득하고 싶은 자격증
@@ -87,6 +87,18 @@ export default function TutorialScreen({ navigation }) {
         await AsyncStorage.setItem('desiredCertifications', JSON.stringify(desired));
         // 첫 번째 취득하고 싶은 자격증을 우선 표시용으로 저장
         await AsyncStorage.setItem('priorityCertificationId', desired[0].toString());
+      }
+
+      // 유저 정보에 취득한 자격증 동기화
+      if (user?.id) {
+        const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+        const userIndex = users.findIndex(u => u.id === user.id);
+        if (userIndex !== -1) {
+          users[userIndex].certifications = acquired;
+          await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+          // AuthContext의 user 정보도 갱신
+          await refreshUser();
+        }
       }
 
       // 홈 화면으로 이동

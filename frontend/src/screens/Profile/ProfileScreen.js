@@ -149,8 +149,20 @@ export default function ProfileScreen({ navigation }) {
       } else {
         await AsyncStorage.removeItem('acquiredCertifications');
       }
+      
+      // 유저 정보 업데이트 (빈 배열도 저장)
+      const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+      const userIndex = users.findIndex(u => u.id === user?.id);
+      if (userIndex !== -1) {
+        users[userIndex].certifications = filtered; // 빈 배열도 저장하여 추천 시스템에 반영
+        await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+        // AuthContext의 user 정보도 갱신 (이렇게 하면 HomeScreen의 추천이 자동으로 업데이트됨)
+        await refreshUser();
+      }
+      
       setShowAddAcquiredModal(false);
       loadCertifications();
+      Alert.alert('완료', '취득한 자격증이 저장되었습니다.');
     } catch (error) {
       Alert.alert('오류', '자격증 저장에 실패했습니다.');
     }

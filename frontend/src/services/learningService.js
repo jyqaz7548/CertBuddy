@@ -14,13 +14,13 @@ const api = axios.create({
 
 export const learningService = {
   // 추천 자격증 조회
-  getRecommendations: async (school, department, grade) => {
+  getRecommendations: async (school, department, grade, userId = null) => {
     if (USE_MOCK_API) {
-      return await mockLearningService.getRecommendations(school, department, grade);
+      return await mockLearningService.getRecommendations(school, department, grade, userId);
     }
     
     const response = await api.get('/api/learning/recommendations', {
-      params: { school, department, grade },
+      params: { school, department, grade, userId },
     });
     return response.data;
   },
