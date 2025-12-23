@@ -57,10 +57,12 @@ export default function LearningScreen({ route, navigation }) {
       
       setCertifications(sortedCerts.map(({ cert }) => cert));
       
-      // 학습률 맵 생성
+      // 학습률 맵 생성 (백분율로 저장)
       const progressObj = {};
       certsWithProgress.forEach(({ cert, progress }) => {
-        progressObj[cert.id] = progress.progress;
+        // progress.progress는 0.0~1.0 범위이므로 100을 곱하여 백분율로 변환
+        // 또는 progress.progressPercentage를 직접 사용
+        progressObj[cert.id] = progress.progressPercentage || (progress.progress * 100);
       });
       setProgressMap(progressObj);
     } catch (error) {

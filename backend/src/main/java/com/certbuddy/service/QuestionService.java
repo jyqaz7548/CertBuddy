@@ -52,10 +52,11 @@ public class QuestionService {
     
     // 자격증별 학습률 조회
     public CertificationProgressResponse getCertificationProgress(Long certificationId, Long userId) {
-        // 일차별 완료 상태 조회
+        // 일차별 완료 상태 조회 (재학습 제외)
         List<QuestionSession> completedSessions = questionSessionRepository
                 .findByUserIdAndCertificationId(userId, certificationId).stream()
                 .filter(s -> s.getStatus() == QuestionSession.SessionStatus.COMPLETED)
+                .filter(s -> !s.getIsRelearning()) // 재학습 세션 제외
                 .collect(Collectors.toList());
         
         Set<Integer> completedDays = completedSessions.stream()
@@ -63,9 +64,10 @@ public class QuestionService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
         
-        // 간단한 구현: 30일 기준
-        int totalDays = 30;
-        double progressPercentage = (completedDays.size() / (double) totalDays) * 100;
+        // 프론트엔드와 동일하게 15일 기준
+        int totalDays = 15;
+        double progress = completedDays.size() / (double) totalDays; // 0.0 ~ 1.0 범위
+        double progressPercentage = progress * 100; // 백분율
         
         Map<Integer, Boolean> dayStatuses = new HashMap<>();
         for (int day = 1; day <= totalDays; day++) {
@@ -76,6 +78,7 @@ public class QuestionService {
                 .certificationId(certificationId)
                 .totalDays(totalDays)
                 .completedDays(completedDays.size())
+                .progress(progress) // 프론트엔드 호환성을 위해 추가
                 .progressPercentage(progressPercentage)
                 .dayStatuses(dayStatuses)
                 .build();
@@ -470,46 +473,53 @@ public class QuestionService {
     // 복습 세션 완료
     @Transactional
     public QuestionSessionResponse completeReviewSession(Long sessionId, List<QuestionAnswerRequest> results, Long userId) {
-        // 일반 세션 완료와 동일하지만 보너스 XP 추가
-        completeQuestionSession(sessionId, results, userId);
-        
-        // 복습 보너스 XP 추가
-        QuestionSession session = questionSessionRepository.findById(sessionId)
+        QuestionSession session = questionSessionRepository.findByIdAndUserId(sessionId, userId)
                 .orElseThrow(() -> new RuntimeException("세션을 찾을 수 없습니다"));
-        
-        int reviewBonusXp = 50; // 복습 보너스
-        session.setXpEarned(session.getXpEarned() + reviewBonusXp);
-        
-        User user = session.getUser();
-        user.setTotalXp(user.getTotalXp() + reviewBonusXp);
-        userRepository.save(user);
-        
-        // 복습 문제 완료 처리: 정답인 문제는 복습 문제에서 제거 (nextReviewDate를 매우 먼 미래로 설정)
-        for (QuestionAnswerRequest result : results) {
-            Optional<ReviewQuestion> reviewQuestionOpt = reviewQuestionRepository
-                    .findByUserIdAndQuestionId(userId, result.getQuestionId());
-            
-            if (reviewQuestionOpt.isPresent()) {
-                ReviewQuestion reviewQuestion = reviewQuestionOpt.get();
-                
-                if (result.getIsCorrect()) {
-                    // 정답인 경우 복습 완료 처리: 한 번만 맞춰도 완료로 간주 (매우 먼 미래로 설정)
-                    reviewQuestion.setNextReviewDate(LocalDateTime.now().plusYears(10));
-                    reviewQuestion.setLastReviewedAt(LocalDateTime.now());
-                    // 복습 횟수는 이미 completeReviewQuestion에서 증가했으므로 여기서는 증가시키지 않음
-                } else {
-                    // 오답인 경우 복습 횟수 증가 및 다음 복습일 설정
-                    reviewQuestion.setReviewCount(reviewQuestion.getReviewCount() + 1);
-                    reviewQuestion.setNextReviewDate(LocalDateTime.now().plusDays(1));
-                    reviewQuestion.setLastReviewedAt(LocalDateTime.now());
-                }
-                
-                reviewQuestionRepository.save(reviewQuestion);
-            }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
+
+        if (session.getStatus() == QuestionSession.SessionStatus.COMPLETED) {
+            throw new RuntimeException("이미 완료된 세션입니다.");
         }
-        
-        session = questionSessionRepository.save(session);
-        
+
+        // 답안 저장 (복습 문제는 이미 completeReviewQuestion에서 처리되었으므로 여기서는 답안만 저장)
+        int correctCount = 0;
+        for (QuestionAnswerRequest result : results) {
+            Question question = questionRepository.findById(result.getQuestionId())
+                    .orElseThrow(() -> new RuntimeException("문제를 찾을 수 없습니다."));
+
+            // 답안 저장
+            QuestionAnswer answer = QuestionAnswer.builder()
+                    .session(session)
+                    .question(question)
+                    .selectedAnswer(result.getSelectedAnswer())
+                    .isCorrect(result.getIsCorrect())
+                    .answeredAt(LocalDateTime.now())
+                    .build();
+            questionAnswerRepository.save(answer);
+
+            if (result.getIsCorrect()) {
+                correctCount++;
+            }
+            // 복습 문제 완료 처리는 이미 completeReviewQuestion에서 처리되었으므로 여기서는 하지 않음
+        }
+
+        session.setCorrectAnswers(correctCount);
+        session.setTotalQuestions(results.size());
+        session.setStatus(QuestionSession.SessionStatus.COMPLETED);
+        session.setCompletedAt(LocalDateTime.now());
+
+        // 복습 보너스 XP 계산 및 사용자 XP 업데이트
+        int baseXp = correctCount * 5; // 맞춘 문제당 5XP
+        int reviewBonusXp = 50; // 복습 보너스
+        int totalXp = baseXp + reviewBonusXp;
+        session.setXpEarned(totalXp);
+        user.setTotalXp(user.getTotalXp() + totalXp);
+        user.setLastStudyDate(LocalDateTime.now()); // 마지막 학습일 업데이트
+
+        questionSessionRepository.save(session);
+        userRepository.save(user);
+
         return mapToQuestionSessionResponse(session);
     }
     

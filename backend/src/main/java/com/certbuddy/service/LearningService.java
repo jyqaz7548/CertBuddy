@@ -2,6 +2,7 @@ package com.certbuddy.service;
 
 import com.certbuddy.dto.request.AddReviewCardRequest;
 import com.certbuddy.dto.request.CompleteSessionRequest;
+import com.certbuddy.dto.response.CertificationResponse;
 import com.certbuddy.dto.response.FlashCardResponse;
 import com.certbuddy.dto.response.LearningSessionResponse;
 import com.certbuddy.entity.*;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +26,7 @@ public class LearningService {
     private final LearningSessionRepository learningSessionRepository;
     private final ReviewCardRepository reviewCardRepository;
     private final UserRepository userRepository;
+    private final UserCertificationRepository userCertificationRepository;
     private final ObjectMapper objectMapper;
     
     public Long getUserIdByEmail(String email) {
@@ -33,9 +35,95 @@ public class LearningService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다"));
     }
     
-    public List<Certification> getRecommendations(String school, String department, Integer grade, Long userId) {
-        // 간단한 구현: 모든 자격증 반환 (나중에 로직 추가 가능)
-        return certificationRepository.findAll();
+    public List<CertificationResponse> getRecommendations(String school, String department, Integer grade, Long userId) {
+        // 학과 정보가 없으면 빈 리스트 반환
+        if (department == null || department.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        // 같은 학과 학생들 조회
+        List<User> sameDepartmentUsers = userRepository.findByDepartment(department);
+        
+        // 현재 사용자 제외
+        sameDepartmentUsers = sameDepartmentUsers.stream()
+                .filter(u -> !u.getId().equals(userId))
+                .collect(Collectors.toList());
+        
+        if (sameDepartmentUsers.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        // 각 학생의 취득한 자격증 조회 (ACQUIRED 타입만)
+        Map<Long, Integer> certificationCountMap = new HashMap<>();
+        int totalUsers = sameDepartmentUsers.size();
+        
+        for (User user : sameDepartmentUsers) {
+            List<UserCertification> acquiredCerts = userCertificationRepository
+                    .findByUserIdAndType(user.getId(), UserCertification.CertificationType.ACQUIRED);
+            
+            for (UserCertification uc : acquiredCerts) {
+                Long certId = uc.getCertification().getId();
+                certificationCountMap.put(certId, certificationCountMap.getOrDefault(certId, 0) + 1);
+            }
+        }
+        
+        // 자격증별 취득 비율 계산 및 정렬 (비율 내림차순)
+        Map<Long, Double> certificationRatioMap = new HashMap<>();
+        certificationCountMap.forEach((certId, count) -> {
+            double ratio = (double) count / totalUsers;
+            certificationRatioMap.put(certId, ratio);
+        });
+        
+        List<Map.Entry<Long, Double>> sortedCertifications = certificationRatioMap.entrySet().stream()
+                .sorted((e1, e2) -> Double.compare(e2.getValue(), e1.getValue())) // 비율 내림차순
+                .collect(Collectors.toList());
+        
+        // 상위 3개만 추천 (또는 비율이 10% 이상인 것만)
+        final double MIN_RATIO = 0.1; // 최소 10% 이상
+        final int MAX_RECOMMENDATIONS = 3; // 최대 3개
+        
+        List<Map.Entry<Long, Double>> recommendedCerts = sortedCertifications.stream()
+                .filter(entry -> entry.getValue() >= MIN_RATIO) // 최소 비율 이상
+                .limit(MAX_RECOMMENDATIONS) // 상위 N개만
+                .collect(Collectors.toList());
+        
+        if (recommendedCerts.isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        // 자격증 ID 목록 추출
+        List<Long> recommendedCertIds = recommendedCerts.stream()
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+        
+        // 자격증 엔티티 조회 후 DTO로 변환 (비율 정보 포함)
+        List<Certification> certifications = certificationRepository.findAllById(recommendedCertIds);
+        
+        // ID로 빠른 조회를 위한 맵 생성
+        Map<Long, Certification> certMap = certifications.stream()
+                .collect(Collectors.toMap(Certification::getId, cert -> cert));
+        
+        // 정렬된 순서대로 DTO 생성 (비율 정보 포함)
+        return recommendedCerts.stream()
+                .map(entry -> {
+                    Long certId = entry.getKey();
+                    Double ratio = entry.getValue();
+                    Certification cert = certMap.get(certId);
+                    
+                    if (cert == null) {
+                        return null;
+                    }
+                    
+                    return CertificationResponse.builder()
+                            .id(cert.getId())
+                            .name(cert.getName())
+                            .description(cert.getDescription())
+                            .department(department) // 추천 기준 학과
+                            .acquisitionRate(ratio) // 취득 비율 (0.0 ~ 1.0)
+                            .build();
+                })
+                .filter(cert -> cert != null)
+                .collect(Collectors.toList());
     }
     
     public List<FlashCardResponse> getFlashCards(Long certificationId) {

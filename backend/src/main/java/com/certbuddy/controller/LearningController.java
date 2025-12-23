@@ -4,9 +4,9 @@ import com.certbuddy.dto.request.AddReviewCardRequest;
 import com.certbuddy.dto.request.CompleteSessionRequest;
 import com.certbuddy.dto.request.LearningSessionRequest;
 import com.certbuddy.dto.response.ApiResponse;
+import com.certbuddy.dto.response.CertificationResponse;
 import com.certbuddy.dto.response.FlashCardResponse;
 import com.certbuddy.dto.response.LearningSessionResponse;
-import com.certbuddy.entity.Certification;
 import com.certbuddy.service.LearningService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class LearningController {
     private final LearningService learningService;
     
     @GetMapping("/recommendations")
-    public ResponseEntity<ApiResponse<List<Certification>>> getRecommendations(
+    public ResponseEntity<ApiResponse<List<CertificationResponse>>> getRecommendations(
             @RequestParam(required = false) String school,
             @RequestParam(required = false) String department,
             @RequestParam(required = false) Integer grade,
@@ -43,7 +43,7 @@ public class LearningController {
             } else {
                 finalUserId = userId;
             }
-            List<Certification> certifications = learningService.getRecommendations(school, department, grade, finalUserId);
+            List<CertificationResponse> certifications = learningService.getRecommendations(school, department, grade, finalUserId);
             return ResponseEntity.ok(ApiResponse.success(certifications));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));

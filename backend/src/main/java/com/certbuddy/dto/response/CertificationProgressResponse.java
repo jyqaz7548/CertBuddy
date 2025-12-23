@@ -15,7 +15,8 @@ public class CertificationProgressResponse {
     private Long certificationId;
     private Integer totalDays;
     private Integer completedDays;
-    private Double progressPercentage;
+    private Double progress; // 0.0 ~ 1.0 범위 (프론트엔드 호환성)
+    private Double progressPercentage; // 백분율
     private Map<Integer, Boolean> dayStatuses; // day -> completed
 }
 

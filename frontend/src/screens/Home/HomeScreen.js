@@ -292,25 +292,32 @@ export default function HomeScreen({ navigation }) {
             style={styles.certScrollView}
             contentContainerStyle={styles.certScrollContent}
           >
-            {recommendedCerts.map((cert) => (
-              <TouchableOpacity
-                key={cert.id}
-                style={styles.certCard}
-                onPress={() => handleCertificationSelect(cert.id, cert.name)}
-                activeOpacity={0.7}
-              >
-                <View style={styles.certCardHeader}>
-                  <Text style={styles.certName}>{cert.name}</Text>
-                  <Text style={styles.certCategory}>{cert.category || '자격증'}</Text>
-                </View>
-                <Text style={styles.certDescription} numberOfLines={2}>
-                  {cert.description || '자격증 설명이 없습니다.'}
-                </Text>
-                <View style={styles.certCardFooter}>
-                  <Text style={styles.certActionText}>학습 시작하기 →</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            {recommendedCerts.map((cert) => {
+              // 비율 정보가 있으면 표시, 없으면 기본 설명 표시
+              const rateText = cert.acquisitionRate 
+                ? `${cert.department || user?.department || '같은 학과'}에 ${Math.round(cert.acquisitionRate * 100)}%가 이 자격증을 취득했어요`
+                : (cert.description || '자격증 설명이 없습니다.');
+              
+              return (
+                <TouchableOpacity
+                  key={cert.id}
+                  style={styles.certCard}
+                  onPress={() => handleCertificationSelect(cert.id, cert.name)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.certCardHeader}>
+                    <Text style={styles.certName}>{cert.name}</Text>
+                    <Text style={styles.certCategory}>{cert.category || '자격증'}</Text>
+                  </View>
+                  <Text style={styles.certDescription} numberOfLines={2}>
+                    {rateText}
+                  </Text>
+                  <View style={styles.certCardFooter}>
+                    <Text style={styles.certActionText}>학습 시작하기 →</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         ) : (
           <View style={styles.emptyState}>
