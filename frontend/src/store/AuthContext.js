@@ -41,15 +41,12 @@ export const AuthProvider = ({ children }) => {
       if (response && response.token) {
         await AsyncStorage.setItem('authToken', response.token);
         await AsyncStorage.setItem('userId', response.user.id.toString());
-        console.log('로그인 성공, 토큰 저장됨:', response.token.substring(0, 20) + '...');
         setUser(response.user);
         return { success: true };
       } else {
-        console.error('로그인 응답에 토큰이 없습니다:', response);
         return { success: false, error: '로그인 응답에 토큰이 없습니다.' };
       }
     } catch (error) {
-      console.error('Login error:', error);
       return { success: false, error: error.message || '로그인에 실패했습니다.' };
     }
   };

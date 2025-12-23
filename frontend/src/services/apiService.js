@@ -16,9 +16,6 @@ api.interceptors.request.use(
       const token = await AsyncStorage.getItem('authToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-        console.log('토큰 전송:', config.url, token.substring(0, 20) + '...');
-      } else {
-        console.warn('토큰 없음:', config.url);
       }
     } catch (error) {
       console.error('토큰 로딩 실패:', error);
@@ -36,7 +33,6 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401 || error.response?.status === 403) {
       // 토큰 만료 또는 인증 실패 시 로그아웃 처리
-      console.error('인증 실패:', error.response?.status, error.response?.data);
       await AsyncStorage.removeItem('authToken');
       await AsyncStorage.removeItem('userId');
       // TODO: 로그인 화면으로 리다이렉트

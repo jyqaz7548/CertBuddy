@@ -27,16 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         
         final String authHeader = request.getHeader("Authorization");
-        final String requestPath = request.getRequestURI();
-        
-        // 인증이 필요한 경로인지 확인 (인증 경로 제외)
-        if (!requestPath.startsWith("/api/auth/")) {
-            if (authHeader == null) {
-                logger.warn("Authorization header missing for path: " + requestPath);
-            } else if (!authHeader.startsWith("Bearer ")) {
-                logger.warn("Invalid Authorization header format for path: " + requestPath);
-            }
-        }
         
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -58,8 +48,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                } else {
-                    logger.warn("JWT token validation failed for user: " + userEmail);
                 }
             }
         } catch (Exception e) {
