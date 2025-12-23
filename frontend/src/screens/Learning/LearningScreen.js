@@ -118,6 +118,7 @@ export default function LearningScreen({ route, navigation }) {
             )}
             {certifications.map((cert, index) => {
               const progress = progressMap[cert.id] || 0;
+              const progressDisplay = typeof progress === 'number' ? progress.toFixed(1) : progress;
               const isPriority = priorityCertIds.includes(cert.id);
               
               // 첫 번째 일반 자격증 앞에 섹션 구분선 표시
@@ -158,7 +159,7 @@ export default function LearningScreen({ route, navigation }) {
                             ]} 
                           />
                         </View>
-                        <Text style={styles.progressText}>{progress}%</Text>
+                        <Text style={styles.progressText}>{progressDisplay}%</Text>
                       </View>
                     </View>
                     <View style={styles.arrowContainer}>
