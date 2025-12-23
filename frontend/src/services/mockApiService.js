@@ -291,18 +291,257 @@ export const mockLearningService = {
 
 // Mock 문제 서비스
 export const mockQuestionService = {
+  // 문제가 있는 자격증 목록 조회
+  getAvailableCertifications: async () => {
+    await delay(300);
+    
+    // 문제가 있는 자격증만 필터링
+    const availableCertIds = Object.keys(mockData.questions || {}).map(id => parseInt(id));
+    const certifications = mockData.tutorialCertifications.filter(cert => 
+      availableCertIds.includes(cert.id)
+    );
+    
+    return certifications;
+  },
+
+  // 자격증별 학습률 조회
+  getCertificationProgress: async (certificationId, userId) => {
+    await delay(300);
+    
+    const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
+    
+    // 해당 자격증의 완료된 학습 세션만 필터링
+    const completedSessions = sessions.filter(s => 
+      s.userId === userId && 
+      s.certificationId === certificationId && 
+      s.isCompleted === true &&
+      s.isReview === false
+    );
+    
+    if (completedSessions.length === 0) {
+      return {
+        certificationId,
+        progress: 0,
+        completedDays: 0,
+        totalDays: 15,
+      };
+    }
+    
+    // 세션에 저장된 currentDay를 사용하여 최대 완료 일차 계산
+    const completedDays = completedSessions
+      .map(s => s.currentDay)
+      .filter(day => day !== undefined && day !== null)
+      .reduce((max, day) => Math.max(max, day), 0);
+    
+    // currentDay가 없는 경우 날짜 기반으로 계산 (하위 호환성)
+    let calculatedDays = completedDays;
+    if (calculatedDays === 0) {
+      const startDateKey = `${mockData.STORAGE_KEYS.LEARNING_START_DATE}_${userId}_${certificationId}`;
+      const startDateStr = await AsyncStorage.getItem(startDateKey);
+      
+      if (startDateStr) {
+        const startDate = new Date(startDateStr);
+        startDate.setHours(0, 0, 0, 0);
+        
+        const completedDates = completedSessions
+          .map(s => {
+            if (!s.completedAt) return null;
+            const completedDate = new Date(s.completedAt);
+            completedDate.setHours(0, 0, 0, 0);
+            return completedDate;
+          })
+          .filter(d => d !== null);
+        
+        if (completedDates.length > 0) {
+          const latestCompletedDate = new Date(Math.max(...completedDates.map(d => d.getTime())));
+          const diffTime = latestCompletedDate.getTime() - startDate.getTime();
+          calculatedDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        }
+      }
+    }
+    
+    // 학습률 계산 (최대 15일)
+    const totalDays = 15;
+    const progress = Math.min(100, Math.round((calculatedDays / totalDays) * 100));
+    
+    return {
+      certificationId,
+      progress,
+      completedDays: Math.min(calculatedDays, totalDays),
+      totalDays,
+    };
+  },
+
   // 문제 목록 조회 (자격증별)
   getQuestions: async (certificationId) => {
     await delay(500);
     
     // 자격증 ID에 따라 해당 자격증의 문제만 반환
-    // certificationId: 2 = 전기기능사, 7 = 정보처리기능사
+    // certificationId: 1 = 자동화설비기능사, 2 = 전기기능사
     return mockData.questions[certificationId] || [];
   },
 
-  // 문제 세션 시작 (학습 시작)
-  startQuestionSession: async (certificationId, userId) => {
+  // 일차별 완료 상태 조회
+  getDayStatuses: async (certificationId, userId) => {
     await delay(300);
+    
+    const TOTAL_DAYS = 15;
+    const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
+    
+    // 해당 자격증의 완료된 학습 세션들
+    const completedSessions = sessions.filter(s => 
+      s.userId === userId && 
+      s.certificationId === certificationId && 
+      s.isCompleted === true &&
+      s.isReview === false
+    );
+    
+    // 완료된 일차들 추출
+    const completedDays = new Set(
+      completedSessions
+        .map(s => s.currentDay)
+        .filter(day => day !== undefined && day !== null)
+    );
+    
+    // 각 일차별 상태 생성
+    const dayStatuses = [];
+    for (let day = 1; day <= TOTAL_DAYS; day++) {
+      const isCompleted = completedDays.has(day);
+      
+      // 이전 일차가 완료되었거나 1일차인 경우 잠금 해제
+      let isLocked = false;
+      if (day > 1) {
+        const previousDayCompleted = completedDays.has(day - 1);
+        isLocked = !previousDayCompleted;
+      }
+      
+      dayStatuses.push({
+        day,
+        isCompleted,
+        isLocked,
+      });
+    }
+    
+    return dayStatuses;
+  },
+
+  // 오늘 학습 완료 여부 확인
+  getTodayLearningStatus: async (userId) => {
+    await delay(200);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
+    
+    const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
+    
+    // 오늘 완료된 학습 세션이 있는지 확인 (모든 자격증)
+    const todayCompletedLearning = sessions.find(s => 
+      s.userId === userId && 
+      s.isCompleted === true && 
+      s.isReview === false &&
+      s.completedAt &&
+      s.completedAt.split('T')[0] === todayStr
+    );
+    
+    // 복습 문제가 있는지 확인
+    const reviewQuestions = await mockData.loadFromStorage(
+      mockData.STORAGE_KEYS.REVIEW_QUESTIONS || 'mock_review_questions',
+      []
+    );
+    const pendingReviews = reviewQuestions.filter(
+      rq => rq.userId === userId && !rq.isCompleted
+    );
+    
+    // 오늘 복습 완료 여부 확인
+    const todayCompletedReview = sessions.find(s => 
+      s.userId === userId && 
+      s.isCompleted === true && 
+      s.isReview === true &&
+      s.completedAt &&
+      s.completedAt.split('T')[0] === todayStr
+    );
+    
+    return {
+      isLearningCompleted: !!todayCompletedLearning,
+      isReviewCompleted: pendingReviews.length === 0 || !!todayCompletedReview,
+      hasReviewQuestions: pendingReviews.length > 0,
+      reviewCount: pendingReviews.length,
+    };
+  },
+
+  // 문제 세션 시작 (학습 시작)
+  startQuestionSession: async (certificationId, userId, specificDay = null, isRelearning = false) => {
+    await delay(300);
+    
+    // isRelearning이 명시적으로 true인지 확인
+    const isRelearningMode = isRelearning === true;
+    
+    console.log('startQuestionSession - 입력값:', {
+      certificationId,
+      userId,
+      specificDay,
+      isRelearning,
+      isRelearningType: typeof isRelearning,
+      isRelearningMode
+    });
+    
+    const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
+    
+    // 특정 일차가 지정된 경우
+    if (specificDay !== null && specificDay !== undefined) {
+      console.log('특정 일차 지정됨:', specificDay, '재학습 모드:', isRelearningMode);
+      
+      // 재학습 모드가 아닐 때만 완료 여부 및 이전 일차 확인
+      if (!isRelearningMode) {
+        const dayCompletedSession = sessions.find(s => 
+          s.userId === userId && 
+          s.certificationId === certificationId && 
+          s.isCompleted === true && 
+          s.isReview === false &&
+          s.currentDay === specificDay
+        );
+        
+        // 이미 완료된 경우 에러
+        if (dayCompletedSession) {
+          throw new Error(`${specificDay}일차 학습을 이미 완료했습니다.`);
+        }
+        
+        // 이전 일차가 완료되었는지 확인 (1일차 제외)
+        if (specificDay > 1) {
+          const previousDayCompleted = sessions.find(s => 
+            s.userId === userId && 
+            s.certificationId === certificationId && 
+            s.isCompleted === true && 
+            s.isReview === false &&
+            s.currentDay === (specificDay - 1)
+          );
+          
+          if (!previousDayCompleted) {
+            throw new Error(`${specificDay - 1}일차 학습을 먼저 완료해주세요.`);
+          }
+        }
+      }
+      // 재학습 모드면 모든 체크를 건너뛰고 바로 진행
+    } else {
+      // 오늘 날짜에 완료된 학습 세션이 있는지 확인 (기존 로직)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = today.toISOString().split('T')[0];
+      
+      const todayCompletedSession = sessions.find(s => 
+        s.userId === userId && 
+        s.certificationId === certificationId && 
+        s.isCompleted === true && 
+        s.isReview === false &&
+        s.completedAt &&
+        s.completedAt.split('T')[0] === todayStr
+      );
+      
+      if (todayCompletedSession) {
+        throw new Error('오늘의 학습을 이미 완료했습니다. 내일 다시 학습할 수 있습니다.');
+      }
+    }
     
     // 모든 문제 가져오기
     const allQuestions = await mockQuestionService.getQuestions(certificationId);
@@ -311,25 +550,40 @@ export const mockQuestionService = {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // 시간을 00:00:00으로 설정
     
-    // 사용자별 학습 시작 날짜 가져오기 또는 설정
-    const startDateKey = `${mockData.STORAGE_KEYS.LEARNING_START_DATE}_${userId}_${certificationId}`;
-    let startDateStr = await AsyncStorage.getItem(startDateKey);
+    let currentDay;
     
-    if (!startDateStr) {
-      // 처음 학습하는 경우 오늘 날짜를 시작 날짜로 저장
-      startDateStr = today.toISOString();
-      await AsyncStorage.setItem(startDateKey, startDateStr);
+    if (specificDay) {
+      // 특정 일차가 지정된 경우 해당 일차 사용
+      currentDay = specificDay;
+      
+      // 학습 시작 날짜가 없으면 설정
+      const startDateKey = `${mockData.STORAGE_KEYS.LEARNING_START_DATE}_${userId}_${certificationId}`;
+      let startDateStr = await AsyncStorage.getItem(startDateKey);
+      if (!startDateStr) {
+        startDateStr = today.toISOString();
+        await AsyncStorage.setItem(startDateKey, startDateStr);
+      }
+    } else {
+      // 사용자별 학습 시작 날짜 가져오기 또는 설정
+      const startDateKey = `${mockData.STORAGE_KEYS.LEARNING_START_DATE}_${userId}_${certificationId}`;
+      let startDateStr = await AsyncStorage.getItem(startDateKey);
+      
+      if (!startDateStr) {
+        // 처음 학습하는 경우 오늘 날짜를 시작 날짜로 저장
+        startDateStr = today.toISOString();
+        await AsyncStorage.setItem(startDateKey, startDateStr);
+      }
+      
+      const startDate = new Date(startDateStr);
+      startDate.setHours(0, 0, 0, 0);
+      
+      // 오늘까지 경과한 일수 계산 (1일차부터 시작)
+      const diffTime = today.getTime() - startDate.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      
+      // 15일 학습 계획이므로 최대 15일차까지만
+      currentDay = Math.min(Math.max(1, diffDays), 15);
     }
-    
-    const startDate = new Date(startDateStr);
-    startDate.setHours(0, 0, 0, 0);
-    
-    // 오늘까지 경과한 일수 계산 (1일차부터 시작)
-    const diffTime = today.getTime() - startDate.getTime();
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    
-    // 15일 학습 계획이므로 최대 15일차까지만
-    const currentDay = Math.min(Math.max(1, diffDays), 15);
     
     // 해당 일차의 문제만 선택 (하루에 6문제씩)
     // Day 1: id 1~6, Day 2: id 7~12, ..., Day 15: id 85~90
@@ -344,8 +598,28 @@ export const mockQuestionService = {
     // 문제가 없으면 (예: 15일을 넘어간 경우) 마지막 날짜의 문제 반환
     const questions = dayQuestions.length > 0 ? dayQuestions : allQuestions.slice(-6);
     
+    const sessionId = `session_${Date.now()}`;
+    
+    // 세션 정보 저장 (전체 문제 수 추적용)
+    sessions.push({
+      sessionId,
+      userId,
+      certificationId,
+      totalQuestions: questions.length,
+      completedQuestions: 0,
+      correctAnswers: 0,
+      wrongAnswers: 0,
+      startedAt: new Date().toISOString(),
+      completedAt: null,
+      isCompleted: false,
+      isReview: false,
+      isRelearning: isRelearningMode, // 재학습 모드 플래그
+      currentDay, // 현재 일차 정보 저장
+    });
+    await mockData.saveToStorage(mockData.STORAGE_KEYS.SESSIONS, sessions);
+    
     return {
-      sessionId: `session_${Date.now()}`,
+      sessionId,
       questions,
       startedAt: new Date().toISOString(),
       currentDay, // 현재 일차 정보도 반환
@@ -370,41 +644,111 @@ export const mockQuestionService = {
   completeQuestionSession: async (sessionId, results, userId) => {
     await delay(500);
     
+    // 세션 정보 조회
+    const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
+    const session = sessions.find(s => s.sessionId === sessionId && s.userId === userId);
+    
+    if (!session) {
+      throw new Error('세션을 찾을 수 없습니다');
+    }
+    
+    // 재학습 모드인지 확인
+    const isRelearning = session.isRelearning || false;
+    
     // XP 계산: 문제당 10XP, 틀리면 10XP씩 차감
     const totalQuestions = results.length;
     const correctAnswers = results.filter(r => r.isCorrect).length;
     const wrongAnswers = totalQuestions - correctAnswers;
     
-    // 기본 XP: 문제당 10XP
-    const baseXp = totalQuestions * 10;
-    // 틀린 문제당 10XP 차감 (문제당 XP 전체 차감)
-    const penaltyXp = wrongAnswers * 10;
-    // 최종 XP (최소 0XP)
-    const xpEarned = Math.max(0, baseXp - penaltyXp);
+    // 재학습 모드면 XP는 0
+    let xpEarned = 0;
+    let baseXp = 0;
+    let penaltyXp = 0;
     
-    // 오늘 학습한 XP를 저장 (복습 보너스 계산용, userId별로 저장)
-    const todayLearningXp = await mockData.loadFromStorage(
-      'mock_today_learning_xp',
-      {}
-    );
-    const userKey = `user_${userId}`;
-    if (!todayLearningXp[userKey]) {
-      todayLearningXp[userKey] = [];
+    if (!isRelearning) {
+      // 기본 XP: 문제당 10XP
+      baseXp = totalQuestions * 10;
+      // 틀린 문제당 10XP 차감 (문제당 XP 전체 차감)
+      penaltyXp = wrongAnswers * 10;
+      // 최종 XP (최소 0XP)
+      xpEarned = Math.max(0, baseXp - penaltyXp);
     }
-    todayLearningXp[userKey].push({
-      sessionId,
-      xp: xpEarned,
-      date: new Date().toISOString().split('T')[0], // 오늘 날짜
-    });
-    await mockData.saveToStorage('mock_today_learning_xp', todayLearningXp);
     
-    // 사용자 XP 업데이트
-    const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
-    const user = users.find(u => u.id === userId);
-    if (user) {
-      user.totalXp = (user.totalXp || 0) + xpEarned;
-      user.streak = (user.streak || 0) + 1;
-      await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+    // 세션 정보 업데이트
+    session.completedQuestions = totalQuestions;
+    session.correctAnswers = correctAnswers;
+    session.wrongAnswers = wrongAnswers;
+    session.completedAt = new Date().toISOString();
+    session.isCompleted = true;
+    await mockData.saveToStorage(mockData.STORAGE_KEYS.SESSIONS, sessions);
+    
+    // 재학습 모드가 아닐 때만 XP 저장 및 업데이트
+    if (!isRelearning) {
+      // 오늘 학습한 XP를 저장 (복습 보너스 계산용, userId별로 저장)
+      const todayLearningXp = await mockData.loadFromStorage(
+        'mock_today_learning_xp',
+        {}
+      );
+      const userKey = `user_${userId}`;
+      if (!todayLearningXp[userKey]) {
+        todayLearningXp[userKey] = [];
+      }
+      todayLearningXp[userKey].push({
+        sessionId,
+        xp: xpEarned,
+        date: new Date().toISOString().split('T')[0], // 오늘 날짜
+      });
+      await mockData.saveToStorage('mock_today_learning_xp', todayLearningXp);
+      
+      // 사용자 XP 업데이트
+      const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
+      const user = users.find(u => u.id === userId);
+      if (user) {
+        user.totalXp = (user.totalXp || 0) + xpEarned;
+        
+        // 연속학습(streak) 업데이트 조건:
+        // 1. 모든 문제를 다 풀었는지 확인 (results.length === session.totalQuestions)
+        // 2. 틀린 문제가 없어야 함 (wrongAnswers === 0)
+        // 3. 오늘 날짜를 확인하여 연속 학습인지 확인
+        const allQuestionsCompleted = totalQuestions === session.totalQuestions;
+        const noWrongAnswers = wrongAnswers === 0;
+        
+        if (allQuestionsCompleted && noWrongAnswers) {
+          // 마지막 학습 날짜 확인
+          const lastLearningDateKey = `last_learning_date_${userId}`;
+          const lastLearningDateStr = await AsyncStorage.getItem(lastLearningDateKey);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          
+          if (lastLearningDateStr) {
+            const lastLearningDate = new Date(lastLearningDateStr);
+            lastLearningDate.setHours(0, 0, 0, 0);
+            
+            const diffTime = today.getTime() - lastLearningDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) {
+              // 연속 학습: streak 증가
+              user.streak = (user.streak || 0) + 1;
+            } else if (diffDays === 0) {
+              // 오늘 이미 학습했으면 streak 유지
+              // streak은 그대로 유지
+            } else {
+              // 연속이 끊어짐: streak 초기화 후 1로 설정
+              user.streak = 1;
+            }
+          } else {
+            // 처음 학습하는 경우: streak 1로 설정
+            user.streak = 1;
+          }
+          
+          // 마지막 학습 날짜 업데이트
+          await AsyncStorage.setItem(lastLearningDateKey, today.toISOString());
+        }
+        // 조건을 만족하지 않으면 streak은 업데이트하지 않음
+        
+        await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
+      }
     }
     
     return {
@@ -539,8 +883,53 @@ export const mockQuestionService = {
     // 사용자 XP 업데이트
     const users = await mockData.loadFromStorage(mockData.STORAGE_KEYS.USERS, mockData.users);
     const user = users.find(u => u.id === userId);
-    if (user && xpEarned > 0) {
-      user.totalXp = (user.totalXp || 0) + xpEarned;
+    
+    if (user) {
+      if (xpEarned > 0) {
+        user.totalXp = (user.totalXp || 0) + xpEarned;
+      }
+      
+      // 연속학습(streak) 업데이트 조건:
+      // 1. 학습에서 틀린 문제가 있었는지 확인 (복습 문제가 있는지)
+      // 2. 복습에서 모두 맞췄을 때만 (wrongAnswers === 0)
+      // 3. 오늘 날짜를 확인하여 연속 학습인지 확인
+      const allReviewCorrect = wrongAnswers === 0;
+      const hasReviewQuestions = totalQuestions > 0; // 복습 문제가 있었는지
+      
+      if (allReviewCorrect && hasReviewQuestions) {
+        // 마지막 학습 날짜 확인
+        const lastLearningDateKey = `last_learning_date_${userId}`;
+        const lastLearningDateStr = await AsyncStorage.getItem(lastLearningDateKey);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (lastLearningDateStr) {
+          const lastLearningDate = new Date(lastLearningDateStr);
+          lastLearningDate.setHours(0, 0, 0, 0);
+          
+          const diffTime = today.getTime() - lastLearningDate.getTime();
+          const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays === 1) {
+            // 연속 학습: streak 증가
+            user.streak = (user.streak || 0) + 1;
+          } else if (diffDays === 0) {
+            // 오늘 이미 학습했으면 streak 유지
+            // streak은 그대로 유지
+          } else {
+            // 연속이 끊어짐: streak 초기화 후 1로 설정
+            user.streak = 1;
+          }
+        } else {
+          // 처음 학습하는 경우: streak 1로 설정
+          user.streak = 1;
+        }
+        
+        // 마지막 학습 날짜 업데이트
+        await AsyncStorage.setItem(lastLearningDateKey, today.toISOString());
+      }
+      // 조건을 만족하지 않으면 streak은 업데이트하지 않음
+      
       await mockData.saveToStorage(mockData.STORAGE_KEYS.USERS, users);
     }
     

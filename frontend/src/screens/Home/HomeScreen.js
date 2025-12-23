@@ -9,6 +9,21 @@ export default function HomeScreen({ navigation }) {
   const { user, refreshUser } = useAuth();
   const [reviewCount, setReviewCount] = useState(0);
   const [recommendedCerts, setRecommendedCerts] = useState([]);
+  const [todayStatus, setTodayStatus] = useState({
+    isLearningCompleted: false,
+    isReviewCompleted: false,
+    hasReviewQuestions: false,
+  });
+
+  const loadTodayStatus = async () => {
+    try {
+      const status = await questionService.getTodayLearningStatus(user?.id || 1);
+      setTodayStatus(status);
+      setReviewCount(status.reviewCount || 0);
+    } catch (error) {
+      console.error('오늘 학습 상태 로딩 실패:', error);
+    }
+  };
 
   const loadReviewCount = async () => {
     try {
@@ -40,10 +55,10 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  // 화면이 포커스될 때마다 복습 개수 갱신 및 사용자 정보 갱신
+  // 화면이 포커스될 때마다 상태 갱신
   useFocusEffect(
     React.useCallback(() => {
-      loadReviewCount();
+      loadTodayStatus();
       loadRecommendations();
       // XP 업데이트를 위해 사용자 정보 갱신
       if (refreshUser) {
@@ -85,13 +100,33 @@ export default function HomeScreen({ navigation }) {
         </View>
       </View>
 
-      {/* 오늘의 학습 시작 버튼 */}
-      <TouchableOpacity
-        style={styles.startButton}
-        onPress={() => navigation.navigate('Learning')}
-      >
-        <Text style={styles.startButtonText}>오늘의 학습 시작하기</Text>
-      </TouchableOpacity>
+      {/* 오늘의 학습 버튼 - 학습 완료 + 복습 없음일 때만 "추가 학습하기" */}
+      {todayStatus.isLearningCompleted && reviewCount === 0 ? (
+        // 오늘의 학습 완료 + 복습 문제 없음 = 추가 학습하기
+        <TouchableOpacity
+          style={styles.startButtonCompleted}
+          onPress={() => navigation.navigate('Learning')}
+        >
+          <Text style={styles.startButtonText}>추가 학습하기</Text>
+          <Text style={styles.startButtonSubtext}>✓ 오늘의 학습 완료!</Text>
+        </TouchableOpacity>
+      ) : todayStatus.isLearningCompleted && reviewCount > 0 ? (
+        // 오늘의 학습 완료했지만 복습 문제가 남아있음
+        <View style={styles.startButtonPending}>
+          <Text style={styles.startButtonTextPending}>오늘의 학습 완료</Text>
+          <Text style={styles.startButtonSubtextPending}>
+            복습을 완료하면 추가 학습이 가능합니다
+          </Text>
+        </View>
+      ) : (
+        // 오늘의 학습 시작 전
+        <TouchableOpacity
+          style={styles.startButton}
+          onPress={() => navigation.navigate('Learning')}
+        >
+          <Text style={styles.startButtonText}>오늘의 학습 시작하기</Text>
+        </TouchableOpacity>
+      )}
 
       {/* 오늘의 복습 시작 버튼 */}
       {reviewCount > 0 ? (
@@ -107,12 +142,12 @@ export default function HomeScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       ) : (
-        <View style={styles.reviewButtonDisabled}>
-          <Text style={styles.reviewButtonTextDisabled}>
-            오늘의 복습 시작하기
+        <View style={styles.reviewButtonCompleted}>
+          <Text style={styles.reviewButtonTextCompleted}>
+            ✓ 오늘의 복습 완료!
           </Text>
-          <Text style={styles.reviewButtonSubtextDisabled}>
-            복습할 문제가 없습니다
+          <Text style={styles.reviewButtonSubtextCompleted}>
+            모든 복습 문제를 완료했습니다
           </Text>
         </View>
       )}
@@ -218,10 +253,44 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
   },
+  startButtonCompleted: {
+    backgroundColor: '#34C759',
+    margin: 15,
+    marginBottom: 10,
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  startButtonPending: {
+    backgroundColor: '#FFF3E0',
+    margin: 15,
+    marginBottom: 10,
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FF9800',
+  },
   startButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  startButtonTextPending: {
+    color: '#FF9800',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  startButtonSubtext: {
+    color: '#fff',
+    fontSize: 13,
+    opacity: 0.9,
+    marginTop: 4,
+  },
+  startButtonSubtextPending: {
+    color: '#FF9800',
+    fontSize: 13,
+    marginTop: 4,
   },
   reviewButton: {
     backgroundColor: '#34C759',
@@ -242,22 +311,24 @@ const styles = StyleSheet.create({
     fontSize: 13,
     opacity: 0.9,
   },
-  reviewButtonDisabled: {
-    backgroundColor: '#E5E5E5',
+  reviewButtonCompleted: {
+    backgroundColor: '#E8F5E9',
     margin: 15,
     marginTop: 0,
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#34C759',
   },
-  reviewButtonTextDisabled: {
-    color: '#8E8E93',
+  reviewButtonTextCompleted: {
+    color: '#34C759',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
   },
-  reviewButtonSubtextDisabled: {
-    color: '#8E8E93',
+  reviewButtonSubtextCompleted: {
+    color: '#34C759',
     fontSize: 13,
   },
   section: {

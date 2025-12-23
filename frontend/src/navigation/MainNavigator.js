@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from '../screens/Home/HomeScreen';
 import LearningScreen from '../screens/Learning/LearningScreen';
+import DaySelectScreen from '../screens/Learning/DaySelectScreen';
 import QuestionScreen from '../screens/Learning/QuestionScreen';
 import XpResultScreen from '../screens/Learning/XpResultScreen';
 import ReviewNeededScreen from '../screens/Learning/ReviewNeededScreen';
@@ -47,6 +48,11 @@ function LearningStack() {
         name="LearningMain" 
         component={LearningScreen}
         options={{ title: '학습' }}
+      />
+      <Stack.Screen 
+        name="DaySelect" 
+        component={DaySelectScreen}
+        options={{ title: '일차 선택' }}
       />
       <Stack.Screen 
         name="Question" 

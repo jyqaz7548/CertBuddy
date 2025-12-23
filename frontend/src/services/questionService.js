@@ -5,6 +5,52 @@ import { mockQuestionService } from './mockApiService';
 const USE_MOCK_API = true;
 
 export const questionService = {
+  // 문제가 있는 자격증 목록 조회
+  getAvailableCertifications: async () => {
+    if (USE_MOCK_API) {
+      return await mockQuestionService.getAvailableCertifications();
+    }
+    
+    const response = await api.get('/api/questions/certifications');
+    return response.data;
+  },
+
+  // 자격증별 학습률 조회
+  getCertificationProgress: async (certificationId, userId) => {
+    if (USE_MOCK_API) {
+      return await mockQuestionService.getCertificationProgress(certificationId, userId);
+    }
+    
+    const response = await api.get(`/api/questions/certifications/${certificationId}/progress`, {
+      params: { userId },
+    });
+    return response.data;
+  },
+
+  // 오늘 학습 완료 여부 확인
+  getTodayLearningStatus: async (userId) => {
+    if (USE_MOCK_API) {
+      return await mockQuestionService.getTodayLearningStatus(userId);
+    }
+    
+    const response = await api.get('/api/questions/today-status', {
+      params: { userId },
+    });
+    return response.data;
+  },
+
+  // 일차별 완료 상태 조회
+  getDayStatuses: async (certificationId, userId) => {
+    if (USE_MOCK_API) {
+      return await mockQuestionService.getDayStatuses(certificationId, userId);
+    }
+    
+    const response = await api.get(`/api/questions/certifications/${certificationId}/days`, {
+      params: { userId },
+    });
+    return response.data;
+  },
+
   // 문제 목록 조회 (자격증별)
   getQuestions: async (certificationId) => {
     if (USE_MOCK_API) {
@@ -18,14 +64,16 @@ export const questionService = {
   },
 
   // 문제 세션 시작 (학습 시작)
-  startQuestionSession: async (certificationId, userId) => {
+  startQuestionSession: async (certificationId, userId, specificDay = null, isRelearning = false) => {
     if (USE_MOCK_API) {
-      return await mockQuestionService.startQuestionSession(certificationId, userId);
+      return await mockQuestionService.startQuestionSession(certificationId, userId, specificDay, isRelearning);
     }
     
     const response = await api.post('/api/questions/sessions', {
       certificationId,
       userId,
+      specificDay,
+      isRelearning,
     });
     return response.data;
   },

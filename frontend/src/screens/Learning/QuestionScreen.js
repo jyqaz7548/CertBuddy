@@ -16,6 +16,7 @@ export default function QuestionScreen({ route, navigation }) {
   const { user } = useAuth();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [results, setResults] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,9 +28,10 @@ export default function QuestionScreen({ route, navigation }) {
     const loadQuestions = async () => {
       try {
         setLoading(true);
+        setError(null);
         
         // 복습 모드인지 확인
-        const isReviewMode = route?.params?.isReview || false;
+        const isReviewMode = route?.params?.isReview === true;
         
         if (isReviewMode) {
           // 복습 세션 시작
@@ -39,16 +41,26 @@ export default function QuestionScreen({ route, navigation }) {
         } else {
           // 일반 학습 세션 시작
           const certificationId = route?.params?.certificationId || 1;
+          const specificDay = route?.params?.specificDay; // 특정 일차 지정 (선택)
+          const isRelearning = route?.params?.isRelearning === true; // 재학습 모드 (명시적으로 true인지 확인)
+          
+          console.log('QuestionScreen - route.params:', route?.params);
+          console.log('QuestionScreen - isRelearning:', isRelearning, 'type:', typeof route?.params?.isRelearning);
+          console.log('QuestionScreen - certificationId:', certificationId, 'specificDay:', specificDay);
+          
           const session = await questionService.startQuestionSession(
             certificationId,
-            user?.id || 1
+            user?.id || 1,
+            specificDay,
+            isRelearning
           );
           setQuestions(session.questions || []);
           setSessionId(session.sessionId);
         }
       } catch (error) {
         console.error('문제 로딩 실패:', error);
-        // 에러 발생 시 빈 배열로 설정
+        // 에러 메시지 저장
+        setError(error.message || '문제를 불러오는데 실패했습니다.');
         setQuestions([]);
       } finally {
         setLoading(false);
@@ -56,7 +68,7 @@ export default function QuestionScreen({ route, navigation }) {
     };
 
     loadQuestions();
-  }, []);
+  }, [route?.params?.isReview, route?.params?.certificationId, route?.params?.specificDay, route?.params?.isRelearning, user?.id]);
 
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -137,6 +149,8 @@ export default function QuestionScreen({ route, navigation }) {
           );
         } else {
           // 일반 학습 모드: 답안 제출
+          const isRelearning = route?.params?.isRelearning === true;
+          
           await questionService.submitAnswer(
             sessionId,
             currentQuestion.id,
@@ -144,8 +158,8 @@ export default function QuestionScreen({ route, navigation }) {
             isCorrect
           );
           
-          // 틀린 문제는 복습 리스트에 추가
-          if (!isCorrect) {
+          // 틀린 문제는 복습 리스트에 추가 (재학습 모드가 아닐 때만)
+          if (!isCorrect && !isRelearning) {
             try {
               await questionService.addReviewQuestion(
                 user?.id || 1,
@@ -172,6 +186,7 @@ export default function QuestionScreen({ route, navigation }) {
   const handleNext = async () => {
     if (isLastQuestion) {
       const isReviewMode = route?.params?.isReview || false;
+      const isRelearning = route?.params?.isRelearning === true;
       
       // 학습/복습 완료 처리
       if (sessionId && results.length > 0) {
@@ -181,8 +196,8 @@ export default function QuestionScreen({ route, navigation }) {
           
           // 모두 틀렸으면 복습 필요 화면으로 이동
           if (allWrong) {
-            // 일반 학습 모드에서 모두 틀렸을 때 복습 리스트에 모든 문제 추가
-            if (!isReviewMode) {
+            // 일반 학습 모드에서 모두 틀렸을 때 복습 리스트에 모든 문제 추가 (재학습 모드가 아닐 때만)
+            if (!isReviewMode && !isRelearning) {
               try {
                 for (const result of results) {
                   await questionService.addReviewQuestion(
@@ -253,16 +268,18 @@ export default function QuestionScreen({ route, navigation }) {
     );
   }
 
-  if (questions.length === 0) {
+  if (questions.length === 0 || error) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.loadingContainer}>
-          <Text style={styles.errorText}>문제를 불러올 수 없습니다.</Text>
+          <Text style={styles.errorText}>
+            {error || '문제를 불러올 수 없습니다.'}
+          </Text>
           <TouchableOpacity
             style={styles.retryButton}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate('Home')}
           >
-            <Text style={styles.retryButtonText}>돌아가기</Text>
+            <Text style={styles.retryButtonText}>홈으로 돌아가기</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
