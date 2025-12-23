@@ -119,31 +119,52 @@ export const mockAuthService = {
 
 // Mock 학습 서비스
 export const mockLearningService = {
-  // 추천 자격증 조회 (같은 학과 학생들의 자격증 기반)
+  // 추천 자격증 조회 (같은 학과 학생들의 자격증 기반, 학년 무관)
   getRecommendations: async (school, department, grade) => {
     await delay(600);
     
     const recommendations = [];
+    const certMap = new Map(); // 중복 제거용
     
-    // 1. 같은 학과+학년 학생들의 자격증 통계 가져오기
-    if (department && grade) {
-      const stats = mockData.departmentCertStats[department]?.[grade] || [];
-      
-      // 통계를 자격증 객체로 변환
-      stats.forEach(stat => {
-        // 튜토리얼 자격증 목록에서 이름 찾기
-        const certInfo = mockData.tutorialCertifications.find(c => c.id === stat.certificationId);
-        if (certInfo) {
-          recommendations.push({
-            id: stat.certificationId,
-            name: certInfo.name,
-            category: getCategoryFromId(stat.certificationId),
-            description: `${stat.percentage}%의 학생들이 취득했어요`,
-            percentage: stat.percentage,
-            source: 'department_stats', // 통계 기반
+    // 1. 같은 학과의 모든 학년 학생들의 자격증 통계 가져오기 (학년 무관)
+    if (department) {
+      const deptStats = mockData.departmentCertStats[department];
+      if (deptStats) {
+        // 모든 학년의 통계를 합쳐서 평균 계산
+        const allStats = {};
+        
+        Object.keys(deptStats).forEach(gradeKey => {
+          const stats = deptStats[gradeKey] || [];
+          stats.forEach(stat => {
+            if (!allStats[stat.certificationId]) {
+              allStats[stat.certificationId] = {
+                certificationId: stat.certificationId,
+                name: stat.name,
+                percentages: [],
+              };
+            }
+            allStats[stat.certificationId].percentages.push(stat.percentage);
           });
-        }
-      });
+        });
+        
+        // 평균 퍼센트 계산하여 자격증 객체로 변환
+        Object.values(allStats).forEach(stat => {
+          const avgPercentage = Math.round(
+            stat.percentages.reduce((sum, p) => sum + p, 0) / stat.percentages.length
+          );
+          const certInfo = mockData.tutorialCertifications.find(c => c.id === stat.certificationId);
+          if (certInfo) {
+            certMap.set(stat.certificationId, {
+              id: stat.certificationId,
+              name: certInfo.name,
+              category: getCategoryFromId(stat.certificationId),
+              description: `같은 과 학생들의 ${avgPercentage}%가 취득했어요`,
+              percentage: avgPercentage,
+              source: 'department_stats',
+            });
+          }
+        });
+      }
     }
     
     // 2. 같은 학과 친구들의 실제 자격증도 추가 (중복 제거)
@@ -155,16 +176,16 @@ export const mockLearningService = {
       sameDeptFriends.forEach(friend => {
         friend.certifications.forEach(certId => {
           // 이미 추가된 자격증인지 확인
-          if (!recommendations.find(r => r.id === certId)) {
+          if (!certMap.has(certId)) {
             const certInfo = mockData.tutorialCertifications.find(c => c.id === certId);
             if (certInfo) {
               const maskedName = mockData.maskName(friend.name);
-              recommendations.push({
+              certMap.set(certId, {
                 id: certId,
                 name: certInfo.name,
                 category: getCategoryFromId(certId),
                 description: `${maskedName}님이 취득했어요`,
-                source: 'friend', // 친구 기반
+                source: 'friend',
                 friendName: maskedName,
               });
             }
@@ -173,13 +194,7 @@ export const mockLearningService = {
       });
     }
     
-    // percentage가 있는 것부터 정렬 (통계 기반이 우선)
-    return recommendations.sort((a, b) => {
-      if (a.percentage && !b.percentage) return -1;
-      if (!a.percentage && b.percentage) return 1;
-      if (a.percentage && b.percentage) return b.percentage - a.percentage;
-      return 0;
-    });
+    return Array.from(certMap.values());
   },
 
   // 플래시카드 조회

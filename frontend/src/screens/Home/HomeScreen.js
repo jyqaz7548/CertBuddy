@@ -21,8 +21,8 @@ export default function HomeScreen({ navigation }) {
 
   const loadRecommendations = async () => {
     try {
-      // department와 grade가 있어야 추천 가능
-      if (user?.department && user?.grade) {
+      // department만 있어도 추천 가능 (학년 무관)
+      if (user?.department) {
         // 같은 학과 학생들의 자격증 기반 추천
         // TODO: 나중에 튜토리얼에서 선택한 기업의 선배 자격증 내역을 우선 표시하도록 확장
         // 1. AsyncStorage에서 selectedCompanyId 조회
@@ -49,7 +49,7 @@ export default function HomeScreen({ navigation }) {
       if (refreshUser) {
         refreshUser();
       }
-    }, [user?.id, user?.school, user?.department, user?.grade, refreshUser])
+    }, [user?.id, user?.school, user?.department, refreshUser])
   );
 
   const handleStartReview = () => {
@@ -121,7 +121,7 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>추천 자격증</Text>
         <Text style={styles.sectionSubtitle}>
-          {user?.department} {user?.grade}학년 학생들이 많이 취득한 자격증이에요
+          {user?.department} 학생들이 많이 취득한 자격증이에요
         </Text>
         {recommendedCerts.length > 0 ? (
           <ScrollView 
@@ -144,11 +144,6 @@ export default function HomeScreen({ navigation }) {
                 <Text style={styles.certDescription} numberOfLines={2}>
                   {cert.description || '자격증 설명이 없습니다.'}
                 </Text>
-                {cert.percentage && (
-                  <View style={styles.percentageBadge}>
-                    <Text style={styles.percentageText}>{cert.percentage}% 취득</Text>
-                  </View>
-                )}
                 <View style={styles.certCardFooter}>
                   <Text style={styles.certActionText}>학습 시작하기 →</Text>
                 </View>
@@ -337,19 +332,6 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 14,
     color: '#8E8E93',
-  },
-  percentageBadge: {
-    backgroundColor: '#E3F2FD',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-    marginTop: 8,
-  },
-  percentageText: {
-    fontSize: 11,
-    color: '#007AFF',
-    fontWeight: '600',
   },
 });
 
