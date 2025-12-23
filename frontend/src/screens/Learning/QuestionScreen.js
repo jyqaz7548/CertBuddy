@@ -48,10 +48,6 @@ export default function QuestionScreen({ route, navigation }) {
           const specificDay = route?.params?.specificDay; // 특정 일차 지정 (선택)
           const isRelearning = route?.params?.isRelearning === true; // 재학습 모드 (명시적으로 true인지 확인)
           
-          console.log('QuestionScreen - route.params:', route?.params);
-          console.log('QuestionScreen - isRelearning:', isRelearning, 'type:', typeof route?.params?.isRelearning);
-          console.log('QuestionScreen - certificationId:', certificationId, 'specificDay:', specificDay);
-          
           const session = await questionService.startQuestionSession(
             certificationId,
             user?.id || 1,

@@ -186,15 +186,6 @@ const calculateDepartmentStats = () => {
     // 퍼센테이지 순으로 정렬
     gradeStats.sort((a, b) => b.percentage - a.percentage);
     
-    // 디버깅 로그
-    if (department === '로봇소프트웨어과' && grade === 2) {
-      console.log('calculateDepartmentStats - 로봇소프트웨어과 2학년:');
-      console.log('  - 친구 수:', totalFriends);
-      console.log('  - 친구별 자격증:', friendCertNames);
-      console.log('  - 이름별 카운트:', certCountsByName);
-      console.log('  - 최종 결과:', gradeStats);
-    }
-    
     // stats에 저장
     if (!stats[department]) {
       stats[department] = {};

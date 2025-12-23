@@ -488,12 +488,6 @@ export const mockQuestionService = {
       });
     }
     
-    // 디버깅 로그
-    console.log('getDayStatuses - certificationId:', certificationId);
-    console.log('  - certReviewQuestions count:', certReviewQuestions.length);
-    console.log('  - dayReviewCounts:', dayReviewCounts);
-    console.log('  - completedDays:', Array.from(completedDays));
-    
     return dayStatuses;
   },
 
@@ -503,18 +497,34 @@ export const mockQuestionService = {
     
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
+    // 로컬 날짜를 YYYY-MM-DD 형식으로 변환 (시간대 문제 해결)
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${year}-${month}-${day}`;
     
     const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
     
     // 오늘 완료된 학습 세션이 있는지 확인 (모든 자격증)
-    const todayCompletedLearning = sessions.find(s => 
-      s.userId === userId && 
-      s.isCompleted === true && 
-      s.isReview === false &&
-      s.completedAt &&
-      s.completedAt.split('T')[0] === todayStr
-    );
+    // 재학습 모드가 아닌 세션만 확인
+    const todayCompletedLearning = sessions.find(s => {
+      if (s.userId !== userId || 
+          s.isCompleted !== true || 
+          s.isReview !== false ||
+          (s.isRelearning && s.isRelearning === true) ||
+          !s.completedAt) {
+        return false;
+      }
+      
+      // completedAt을 로컬 날짜로 변환해서 비교
+      const completedDate = new Date(s.completedAt);
+      const completedYear = completedDate.getFullYear();
+      const completedMonth = String(completedDate.getMonth() + 1).padStart(2, '0');
+      const completedDay = String(completedDate.getDate()).padStart(2, '0');
+      const completedStr = `${completedYear}-${completedMonth}-${completedDay}`;
+      
+      return completedStr === todayStr;
+    });
     
     // 복습 문제가 있는지 확인
     const reviewQuestions = await mockData.loadFromStorage(
@@ -526,13 +536,23 @@ export const mockQuestionService = {
     );
     
     // 오늘 복습 완료 여부 확인
-    const todayCompletedReview = sessions.find(s => 
-      s.userId === userId && 
-      s.isCompleted === true && 
-      s.isReview === true &&
-      s.completedAt &&
-      s.completedAt.split('T')[0] === todayStr
-    );
+    const todayCompletedReview = sessions.find(s => {
+      if (s.userId !== userId || 
+          s.isCompleted !== true || 
+          s.isReview !== true ||
+          !s.completedAt) {
+        return false;
+      }
+      
+      // completedAt을 로컬 날짜로 변환해서 비교
+      const completedDate = new Date(s.completedAt);
+      const completedYear = completedDate.getFullYear();
+      const completedMonth = String(completedDate.getMonth() + 1).padStart(2, '0');
+      const completedDay = String(completedDate.getDate()).padStart(2, '0');
+      const completedStr = `${completedYear}-${completedMonth}-${completedDay}`;
+      
+      return completedStr === todayStr;
+    });
     
     return {
       isLearningCompleted: !!todayCompletedLearning,
@@ -549,20 +569,10 @@ export const mockQuestionService = {
     // isRelearning이 명시적으로 true인지 확인
     const isRelearningMode = isRelearning === true;
     
-    console.log('startQuestionSession - 입력값:', {
-      certificationId,
-      userId,
-      specificDay,
-      isRelearning,
-      isRelearningType: typeof isRelearning,
-      isRelearningMode
-    });
-    
     const sessions = await mockData.loadFromStorage(mockData.STORAGE_KEYS.SESSIONS, []);
     
     // 특정 일차가 지정된 경우
     if (specificDay !== null && specificDay !== undefined) {
-      console.log('특정 일차 지정됨:', specificDay, '재학습 모드:', isRelearningMode);
       
       // 재학습 모드가 아닐 때만 완료 여부 및 이전 일차 확인
       if (!isRelearningMode) {

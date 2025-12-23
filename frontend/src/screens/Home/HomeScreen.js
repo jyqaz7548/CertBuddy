@@ -144,7 +144,7 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>
-          안녕하세요, {user?.name || '사용자'}님! 👋
+          안녕하세요, {user?.name || '사용자'}님!
         </Text>
       </View>
 
@@ -168,8 +168,8 @@ export default function HomeScreen({ navigation }) {
           style={styles.startButtonCompleted}
           onPress={() => navigation.navigate('Learning')}
         >
-          <Text style={styles.startButtonText}>오늘의 학습을 완료했습니다.</Text>
-          <Text style={styles.startButtonSubtext}>추가 학습하기</Text>
+          <Text style={styles.startButtonText}>추가 학습하기</Text>
+          <Text style={styles.startButtonSubtext}>오늘의 학습을 완료했습니다!</Text>
         </TouchableOpacity>
       ) : todayStatus.isLearningCompleted && reviewCount > 0 ? (
         // 오늘의 학습 완료했지만 복습 문제가 남아있음
@@ -202,7 +202,18 @@ export default function HomeScreen({ navigation }) {
             복습 완료 시 보너스 XP 획득!
           </Text>
         </TouchableOpacity>
+      ) : todayStatus.isLearningCompleted ? (
+        // 학습 완료 + 복습도 완료
+        <View style={styles.reviewButtonCompleted}>
+          <Text style={styles.reviewButtonTextCompleted}>
+            ✓ 복습을 완료했습니다
+          </Text>
+          <Text style={styles.reviewButtonSubtextCompleted}>
+            모든 복습 문제를 완료했습니다
+          </Text>
+        </View>
       ) : (
+        // 학습 미완료 + 복습 문제 없음
         <View style={styles.reviewButtonCompleted}>
           <Text style={styles.reviewButtonTextCompleted}>
             복습할 문제가 없습니다
