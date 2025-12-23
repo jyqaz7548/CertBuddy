@@ -362,14 +362,14 @@ export default function FriendsScreen({ navigation, route }) {
                       <View style={styles.requestDetails}>
                         <Text style={styles.requestName}>{request.name}</Text>
                         <Text style={styles.requestDepartment}>
-                          {request.department} {request.school}
+                          {request.department} {request.school || ''}
                         </Text>
                       </View>
                     </View>
                     <View style={styles.requestActions}>
                       <TouchableOpacity
                         style={styles.acceptButton}
-                        onPress={() => handleAcceptRequest(request.friendId)}
+                        onPress={() => handleAcceptRequest(request.friendId || request.userId || request.id)}
                       >
                         <Text style={styles.acceptButtonText}>수락</Text>
                       </TouchableOpacity>

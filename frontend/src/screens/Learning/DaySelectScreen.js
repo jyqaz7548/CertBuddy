@@ -41,8 +41,17 @@ export default function DaySelectScreen({ route, navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      if (certificationId) {
+      if (certificationId && certificationId !== 'undefined') {
         loadDayStatuses();
+      } else {
+        // certificationId가 없으면 기본 상태로 설정
+        const defaultStatuses = Array.from({ length: TOTAL_DAYS }, (_, i) => ({
+          day: i + 1,
+          isCompleted: false,
+          isLocked: i > 0,
+        }));
+        setDayStatuses(defaultStatuses);
+        setLoading(false);
       }
     }, [certificationId, user?.id])
   );

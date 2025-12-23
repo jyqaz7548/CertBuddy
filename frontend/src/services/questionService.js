@@ -17,6 +17,10 @@ export const questionService = {
 
   // 자격증별 학습률 조회
   getCertificationProgress: async (certificationId, userId) => {
+    if (!certificationId) {
+      throw new Error('자격증 ID가 필요합니다.');
+    }
+    
     if (USE_MOCK_API) {
       return await mockQuestionService.getCertificationProgress(certificationId, userId);
     }
@@ -39,6 +43,10 @@ export const questionService = {
 
   // 일차별 완료 상태 조회
   getDayStatuses: async (certificationId, userId) => {
+    if (!certificationId) {
+      throw new Error('자격증 ID가 필요합니다.');
+    }
+    
     if (USE_MOCK_API) {
       return await mockQuestionService.getDayStatuses(certificationId, userId);
     }
