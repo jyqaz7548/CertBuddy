@@ -164,12 +164,34 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
-  const handleCertificationSelect = (certificationId, certificationName) => {
-    // 자격증 선택 시 일차 선택 화면으로 이동
-    navigation.navigate('DaySelect', {
-      certificationId: certificationId,
-      certificationName: certificationName,
-    });
+  const handleCertificationSelect = async (certificationId, certificationName) => {
+    try {
+      // 해당 자격증에 문제가 있는지 확인
+      const availableCerts = await questionService.getAvailableCertifications();
+      const hasQuestions = availableCerts.some(cert => cert.id === certificationId);
+      
+      if (!hasQuestions) {
+        Alert.alert(
+          '문제 자료 없음',
+          `아직 ${certificationName}의 문제 자료가 추가되지 않았습니다.`,
+          [{ text: '확인' }]
+        );
+        return;
+      }
+      
+      // 자격증 선택 시 일차 선택 화면으로 이동
+      navigation.navigate('DaySelect', {
+        certificationId: certificationId,
+        certificationName: certificationName,
+      });
+    } catch (error) {
+      console.error('자격증 확인 실패:', error);
+      Alert.alert(
+        '오류',
+        '자격증 정보를 확인하는 중 오류가 발생했습니다.',
+        [{ text: '확인' }]
+      );
+    }
   };
 
   return (
