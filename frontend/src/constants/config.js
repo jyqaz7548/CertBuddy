@@ -4,7 +4,7 @@
 // Windows에서 IP 주소 확인: ipconfig (IPv4 주소 확인)
 // Mac/Linux에서 IP 주소 확인: ifconfig 또는 ip addr
 export const API_BASE_URL = __DEV__ 
-  ? 'http://172.30.1.97:8080'  // 실제 기기 테스트용 (현재 IP: 172.30.1.93)
+  ? 'http://172.30.4.69:8080'  // 실제 기기 테스트용 (현재 IP: 172.30.1.93)
   // ? 'http://localhost:8080'  // 에뮬레이터/시뮬레이터용 (위 줄 주석 처리하고 이 줄 활성화)
   : 'https://api.certbuddy.com';  // 프로덕션 서버
 
