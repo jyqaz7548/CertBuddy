@@ -314,13 +314,13 @@ public class QuestionService {
             }
         }
         
-        // XP 계산: 한 문제당 10XP, 틀릴 때마다 5XP 차감, 다 틀리면 0XP
+        // XP 계산: 맞춘 문제당 10XP (틀린 문제에 대한 페널티 없음)
         // 단, 재학습 모드(isRelearning=true)에서는 XP를 주지 않음
         int totalXp = 0;
         if (!session.getIsRelearning()) {
             int correctCount = (int) correctAnswers;
-            int wrongCount = totalQuestions - correctCount;
-            totalXp = Math.max(0, (correctCount * 10) - (wrongCount * 5));
+            // 맞춘 문제당 10XP씩 지급 (틀린 문제는 페널티 없음)
+            totalXp = correctCount * 10;
         }
         
         session.setTotalQuestions(totalQuestions);
@@ -489,10 +489,8 @@ public class QuestionService {
             throw new RuntimeException("이미 완료된 세션입니다.");
         }
 
-        // 답안 저장 및 완료된 복습 문제 확인 (완료된 문제는 XP에서 제외)
+        // 답안 저장 및 복습 문제 완료 처리
         int correctCount = 0;
-        int xpEligibleCorrectCount = 0; // XP를 받을 수 있는 정답 수 (완료되지 않은 문제만)
-        LocalDateTime oneYearLater = LocalDateTime.now().plusYears(1);
         
         for (QuestionAnswerRequest result : results) {
             Question question = questionRepository.findById(result.getQuestionId())
@@ -510,21 +508,16 @@ public class QuestionService {
 
             if (result.getIsCorrect()) {
                 correctCount++;
-                
-                // 복습 문제가 이미 완료되었는지 확인 (nextReviewDate가 1년 이상 미래면 완료)
-                Optional<ReviewQuestion> reviewQuestionOpt = reviewQuestionRepository
-                        .findByUserIdAndQuestionId(userId, result.getQuestionId());
-                
-                // 복습 문제가 없거나, 아직 완료되지 않은 경우에만 XP 지급
-                boolean isAlreadyCompleted = reviewQuestionOpt
-                        .map(rq -> rq.getNextReviewDate() != null && rq.getNextReviewDate().isAfter(oneYearLater))
-                        .orElse(false);
-                
-                if (!isAlreadyCompleted) {
-                    xpEligibleCorrectCount++;
-                }
             }
-            // 복습 문제 완료 처리는 이미 completeReviewQuestion에서 처리되었으므로 여기서는 하지 않음
+            
+            // 복습 문제 완료 처리 (각 문제마다 처리)
+            try {
+                completeReviewQuestion(userId, result.getQuestionId(), result.getIsCorrect());
+            } catch (RuntimeException e) {
+                // 복습 문제가 없으면 무시 (이미 완료되었거나 추가되지 않은 문제)
+                // 로그만 출력하고 계속 진행
+                System.out.println("복습 문제 완료 처리 실패 (무시): " + e.getMessage());
+            }
         }
 
         session.setCorrectAnswers(correctCount);
@@ -532,9 +525,8 @@ public class QuestionService {
         session.setStatus(QuestionSession.SessionStatus.COMPLETED);
         session.setCompletedAt(LocalDateTime.now());
 
-        // 복습 XP 계산: 한 문제당 5XP, 틀리면 0XP (즉 맞춘 문제만 5XP씩), 다 틀리면 0XP
-        // 단, 이미 완료된 복습 문제는 XP에서 제외
-        int totalXp = xpEligibleCorrectCount * 5;
+        // 복습 XP 계산: 맞춘 문제당 5XP
+        int totalXp = correctCount * 5;
         session.setXpEarned(totalXp);
         user.setTotalXp(user.getTotalXp() + totalXp);
         user.setLastStudyDate(LocalDateTime.now()); // 마지막 학습일 업데이트
